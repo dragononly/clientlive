@@ -265,7 +265,7 @@ export default defineComponent({
       let url = '/live/getmessage';
       //管理员
       let type: any;
-      if (data.admin) {
+      if (data?.admin) {
         type = 2;
       } else {
         type = 1;
@@ -414,8 +414,12 @@ export default defineComponent({
 
     const adminarr = ['硬件网络维护部', '行政管理总部领导', '教育培训部'];
 
-    if (adminarr.includes(cabg.data.data.departmentchild)) {
+    if (adminarr.includes(cabg?.data?.data?.departmentchild)) {
       data.admin = true;
+      message.info('管理员界面和权限已打开。');
+    } else {
+      data.admin = false;
+      message.info('祝您工作开心～');
     }
 
     // 2.去拉取直播列表的group name arry

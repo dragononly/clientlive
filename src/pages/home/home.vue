@@ -5,7 +5,7 @@
       :xs="{ span: 20, offset: 2 }"
       :md="{ span: 10, offset: 8 }"
     >
-      <div style="box-shadow: 2px 2px 2px #304455">
+      <div>
         <login />
       </div>
     </a-col>

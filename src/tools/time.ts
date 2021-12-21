@@ -13,6 +13,7 @@ export const settime = (eid: any, user: any) => {
 }
 let meid = async () => await localforage.getItem("eid")
 let muser = async () => await localforage.getItem("user")
+
 export const eid = meid
 export const user = muser
 

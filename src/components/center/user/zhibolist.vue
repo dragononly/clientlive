@@ -9,7 +9,7 @@
     </div>
     <a-row>
       <a-col
-        :md="{ span: '6', offset: '1' }"
+        :md="{ span: '4', offset: '1' }"
         :xs="{ span: '17' }"
         style="
           margin: 30px 0 0 70px;
