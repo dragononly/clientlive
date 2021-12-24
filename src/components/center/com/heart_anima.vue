@@ -5,7 +5,7 @@
       style="
         position: absolute;
         top: 0px;
-        z-index: 10000;
+        z-index: 200;
         color: #fff;
         font-weight: bold;
         text-align: center;

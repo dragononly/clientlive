@@ -3,9 +3,13 @@
     <a-col
       style="padding-top: 20px"
       :xs="{ span: 20, offset: 2 }"
-      :md="{ span: 10, offset: 8 }"
+      :md="{ span: 14, offset: 5 }"
+      :lg="{ span: 12, offset: 6 }"
+      :xl="{ span: 9, offset: 8 }"
+      :xxl="{ span: 7, offset: 8 }"
+      :xxxl="{ span: 6, offset: 9 }"
     >
-      <div>
+      <div style="background: red">
         <login />
       </div>
     </a-col>

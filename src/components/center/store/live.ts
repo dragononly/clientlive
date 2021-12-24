@@ -33,6 +33,8 @@ export const data = reactive({
     signdata,
     cssheight: 250,
     cssheight2: 250,
+    sayColor: ['#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81'],
+    saybgcolor: ['#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2'],
     arr1: [
         {
             user: "",

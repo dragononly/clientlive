@@ -1,5 +1,5 @@
 // let e = "测试环境"
-let e = "测试环境22"
+let e = "正式环境"
 let a: string, b: string, c: string
 
 if (e == "测试环境") {
@@ -7,8 +7,8 @@ if (e == "测试环境") {
     b = "http://127.0.0.1:9000"
     c = "ws://localhost:9000/"
 } else {
-    a = "http://cdn.pccpa.cn:9000/public/live/index.html?a="
-    b = "http://cdn.pccpa.cn:9000"
+    a = "http://cdn.pccpa.cn/public/live/index.html?a="
+    b = "http://cdn.pccpa.cn"
     c = "ws://cdn.pccpa.cn:9000/"
 }
 

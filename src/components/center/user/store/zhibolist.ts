@@ -5,7 +5,9 @@ export const zhibolist = reactive({
             starttime: ["2021-07-01 08:39", "2021-07-01 08:39"],
             name: "测试的直播",
             power: [true, false],
+
         },
     ],
+    tiger: "获得生肖祝福",
     show: false,
 })

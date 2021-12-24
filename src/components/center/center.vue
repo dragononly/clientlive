@@ -117,10 +117,17 @@
               </div>
             </div>
 
-            <div v-for="(i, key) in arr2" :key="key">
-              <div style="color: black">{{ i.user }}说：</div>
-              <div style="color: #388e3c; font-weight: bold">
-                {{ i.message }}
+            <div v-for="(i, key) in arr2" :key="key" style="margin-bottom: 5px">
+              <div
+                :style="{
+                  color: sayColor[String(key).charAt(String(key).length - 1)],
+                  backgroundColor:
+                    saybgcolor[String(key).charAt(String(key).length - 1)],
+                }"
+                class="line2 css2"
+              >
+                {{ i.user }}说:
+                <span style="color: #fff"> {{ i.message }}</span>
               </div>
             </div>
           </div>
@@ -144,10 +151,17 @@
               </div>
             </div>
 
-            <div v-for="(i, key) in arr1" :key="key">
-              <div style="color: black">{{ i.user }}说：</div>
-              <div style="color: #388e3c; font-weight: bold; font-size: 11px">
-                {{ i.message }}
+            <div v-for="(i, key) in arr1" :key="key" style="margin-bottom: 5px">
+              <div
+                :style="{
+                  color: sayColor[String(key).charAt(String(key).length - 1)],
+                  backgroundColor:
+                    saybgcolor[String(key).charAt(String(key).length - 1)],
+                }"
+                class="line2 css2"
+              >
+                {{ i.user }}说:
+                <span style="color: #fff"> {{ i.message }}</span>
               </div>
             </div>
           </div>
@@ -166,7 +180,8 @@
     <div
       v-if="nowvideoid"
       style="
-        background: #ececec;
+        background: #349793;
+        border-radius: 5px;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -176,20 +191,30 @@
     >
       <a-row>
         <a-col :xs="24" :md="14">
-          <div style="padding: 2px">
+          <div style="padding: 5px 0px 2px 10px">
             <a-input-search
               v-model:value="value"
-              placeholder="发送消息"
+              placeholder="说点什么吧..."
               enter-button="发送"
               @search="onSearch"
+              style="
+                border-radius: 5px;
+                opacity: 0.7;
+                position: relative;
+                z-index: 8888;
+              "
             />
           </div>
         </a-col>
         <a-col :xs="18" :md="6">
           <div style="padding: 10px 20px">
             <a-radio-group name="radioGroup" v-model:value="radiovalue">
-              <a-radio value="1">给所有人</a-radio>
-              <a-radio value="2">给老师和导播</a-radio>
+              <a-radio value="1" style="font-size: 12px; color: #efca48"
+                >给所有人</a-radio
+              >
+              <a-radio value="2" style="font-size: 12px; color: #efca48"
+                >给老师和导播</a-radio
+              >
             </a-radio-group>
           </div>
         </a-col>
@@ -212,7 +237,7 @@ import {
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
 import { message } from 'ant-design-vue';
-
+import Cookies from 'js-cookie';
 import Zhibolist from '../center/user/zhibolist.vue';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -651,6 +676,16 @@ export default defineComponent({
     //6通过观察 data.nowvideoid ，来判断和增加累计时长
     //6.1先去查询看数据库有没有已经添加的信息
     let addtime = async () => {
+      let sesstime = moment().format('X');
+      let cha = Number(sesstime) - Number(Cookies.get('longtime'));
+      if (!Cookies.get('longtime')) {
+        Cookies.set('longtime', sesstime);
+      } else if (cha > 60) {
+        Cookies.set('longtime', sesstime);
+      } else {
+        return;
+      }
+
       let mydata = {
         zhiboid: data.nowvideoid,
         eid: sessionStorage.eid,
@@ -659,7 +694,7 @@ export default defineComponent({
       };
       const a = await Rget('/zhibolist_longtime', mydata);
 
-      if (a.data.data.length == 0) {
+      if (!a?.data?.data[0]?.time && data.nowvideoid) {
         let data4 = {
           zhiboid: data.nowvideoid,
           eid: sessionStorage.eid,
@@ -667,7 +702,7 @@ export default defineComponent({
           time: '1',
         };
         await Rpost('/zhibolist_longtime', data4);
-      } else {
+      } else if (data.nowvideoid) {
         let data5 = {
           zhiboid: data.nowvideoid,
           eid: sessionStorage.eid,
@@ -685,7 +720,7 @@ export default defineComponent({
         if (a) {
           clearInterval(time60);
           //Execution time increaser
-          time60 = setInterval(addtime, 60 * 1000);
+          time60 = setInterval(addtime, 3 * 1000);
         }
       },
     );
@@ -755,6 +790,12 @@ export default defineComponent({
   margin: 0;
   padding: 0;
 }
+.css2 {
+  border-radius: 5px;
+  font-size: 13px;
+  padding: 3px 5px;
+  font-weight: bold;
+}
 .a1 {
   margin-top: 18px;
   position: absolute;
@@ -793,14 +834,12 @@ export default defineComponent({
 
 .c3,
 .c1 {
-  opacity: 0.7;
-  color: #2490e9;
   position: relative;
   position: fixed;
   z-index: 11;
   top: 0px;
   width: 20%;
-  background: #ededed;
+  background: #349793;
   border-radius: 5px;
   padding: 10px;
   overflow-y: scroll;

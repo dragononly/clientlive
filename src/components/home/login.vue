@@ -1,67 +1,61 @@
 <template>
-  <a-row>
-    <a-col :xs="24" :md="18">
-      <a-card
-        title="请登录"
-        style="width: 100%; box-shadow: 2px 2px 2px #304455"
-      >
-        <template #extra><a href="#">✕</a></template>
-        <a-tabs v-model:activeKey="activeKey">
-          <a-tab-pane key="1">
-            <template #tab>
-              <span>
-                <TeamOutlined />
-                我是天健员工
-              </span>
-            </template>
-            <!-- 用户部分 -->
-            <div>
-              <a-row style="margin-top: 20px">
-                <a-col
-                  style="line-height: 33px"
-                  :xs="6"
-                  :md="{ span: 3, offset: 6 }"
-                  >用户名：</a-col
-                >
-                <a-col :xs="18" :md="10">
-                  <a-input v-model:value="skyuser" placeholder="请输入内容" />
-                </a-col>
-              </a-row>
-              <a-row style="margin-top: 20px">
-                <a-col
-                  style="line-height: 33px"
-                  :xs="6"
-                  :md="{ span: 3, offset: 6 }"
-                  >密&nbsp;&nbsp;&nbsp;&nbsp;码：</a-col
-                >
-                <a-col :xs="18" :md="10">
-                  <a-input-password
-                    v-model:value="skypwd"
-                    placeholder="请输入内容"
-                  />
-                </a-col>
-              </a-row>
-              <a-row style="margin-top: 20px">
-                <a-col :md="{ offset: 9 }">
-                  <a-switch v-model:checked="checked1" />
-                </a-col>
-                <a-col
-                  style="color: #409eff; line-height: 25px; margin-left: 5px"
-                  >自动登陆</a-col
-                >
-              </a-row>
+  <a-card title="请登录" style="width: 100%; box-shadow: 2px 2px 2px #304455">
+    <template #extra><a href="#">✕</a></template>
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane key="1">
+        <template #tab>
+          <span>
+            <TeamOutlined />
+            我是天健员工
+          </span>
+        </template>
+        <!-- 用户部分 -->
+        <div>
+          <a-row style="margin-top: 20px">
+            <a-col
+              style="line-height: 33px"
+              :xs="6"
+              :md="{ span: 3, offset: 6 }"
+              >用户名：</a-col
+            >
+            <a-col :xs="18" :md="10">
+              <a-input v-model:value="skyuser" placeholder="请输入内容" />
+            </a-col>
+          </a-row>
+          <a-row style="margin-top: 20px">
+            <a-col
+              style="line-height: 33px"
+              :xs="6"
+              :md="{ span: 3, offset: 6 }"
+              >密&nbsp;&nbsp;&nbsp;&nbsp;码：</a-col
+            >
+            <a-col :xs="18" :md="10">
+              <a-input-password
+                v-model:value="skypwd"
+                placeholder="请输入内容"
+              />
+            </a-col>
+          </a-row>
+          <a-row style="margin-top: 20px">
+            <a-col :md="{ offset: 9 }">
+              <a-switch v-model:checked="checked1" />
+            </a-col>
+            <a-col style="color: #409eff; line-height: 25px; margin-left: 5px"
+              >自动登陆</a-col
+            >
+          </a-row>
 
-              <a-row style="margin-top: 20px">
-                <a-col :xs="{ offset: 10 }" :md="{ offset: 16 }">
-                  <a-button>取消</a-button>
-                </a-col>
-                <a-col :md="{ offset: 1 }" :xs="{ offset: 1 }">
-                  <a-button @click="skylogin()" type="primary">确定</a-button>
-                </a-col>
-              </a-row>
-            </div>
-          </a-tab-pane>
-          <!-- <a-tab-pane style="display: none" key="2" force-render>
+          <a-row style="margin-top: 20px">
+            <a-col :xs="{ offset: 10 }" :md="{ offset: 16 }">
+              <a-button>取消</a-button>
+            </a-col>
+            <a-col :md="{ offset: 1 }" :xs="{ offset: 1 }">
+              <a-button @click="skylogin()" type="primary">确定</a-button>
+            </a-col>
+          </a-row>
+        </div>
+      </a-tab-pane>
+      <!-- <a-tab-pane style="display: none" key="2" force-render>
         <template #tab>
           <span>
             <UserOutlined />
@@ -111,10 +105,8 @@
           </a-row>
         </div>
       </a-tab-pane> -->
-        </a-tabs>
-      </a-card>
-    </a-col>
-  </a-row>
+    </a-tabs>
+  </a-card>
 
   <!-- <template>
     <div>
