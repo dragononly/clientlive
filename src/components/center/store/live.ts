@@ -2,7 +2,8 @@ import { reactive } from "vue";
 let containerRef2: any, containerRef: any, temog: any
 import device from "current-device";
 // console.log("device.mobile() === %s", device.mobile());
-let width: string = "50%", chatmclass = false, xiaoxiwidth = "80%", ifrawidth = "80%"
+let width: string = "50%", chatmclass = false, xiaoxiwidth = "80%", ifrawidth = "80%", signshowtime: any = 0,
+    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any
 if (device.mobile()) {
     width = '100%'
     chatmclass = true
@@ -11,6 +12,13 @@ if (device.mobile()) {
 }
 let showzhibolist: any = [], signdata: any
 export const data = reactive({
+    passedtime,
+    signed,
+    timeRecord,
+    nowtime,
+    signshowtime,
+    lock2,
+    timeI,
     url: "",
     temog,
     value: "",
@@ -33,6 +41,7 @@ export const data = reactive({
     signdata,
     cssheight: 250,
     cssheight2: 250,
+
     sayColor: ['#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81'],
     saybgcolor: ['#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2'],
     arr1: [

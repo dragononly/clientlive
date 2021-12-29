@@ -1,5 +1,5 @@
 // let e = "测试环境"
-let e = "正式环境"
+let e = "测试环境222"
 let a: string, b: string, c: string
 
 if (e == "测试环境") {

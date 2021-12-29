@@ -40,7 +40,9 @@ export const connectSocket = async () => {
 		}
 
 		const sign = () => {
+
 			wsdata.signdata++
+
 		}
 		const message = () => {
 			wsdata.messagestatus++

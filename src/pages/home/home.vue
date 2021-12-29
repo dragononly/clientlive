@@ -21,13 +21,7 @@ import login from '../../components/home/login.vue';
 import { Rpost } from '../../../config/http/index';
 export default {
   name: 'home',
-  async setup() {
-    let mydata = {
-      lookback: '222',
-    };
-    let c = await Rpost('/zhibolist', mydata);
-    // console.log(c);
-  },
+  async setup() {},
   components: {
     login,
   },

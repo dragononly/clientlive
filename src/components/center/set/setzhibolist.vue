@@ -332,7 +332,7 @@ export default defineComponent({
 
     //发起签到
     const addsigntime = async (id: string) => {
-      let time = moment().format('YYYY-MM-DD HH:mm');
+      let time = moment().format('YYYY-MM-DD HH:mm:ss');
       const url = '/live/addsigntime';
       let mydata = {
         _id: id,

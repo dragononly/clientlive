@@ -11,6 +11,11 @@ export default [
 		name: 'home',
 		component: () => import('../pages/home/home.vue'),
 	},
+	{
+		path: '/sign',
+		name: 'sign',
+		component: () => import('../pages/home/sign.vue'),
+	},
 
 	{
 		path: '/center',

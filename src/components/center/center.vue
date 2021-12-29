@@ -77,15 +77,18 @@
             title="请签到"
             style="width: 100%; font-size: 12px"
           >
-            <template #extra
-              ><a @click="signtimeclick()" style="color: #2c3e50" href="#"
-                >✕</a
-              ></template
-            >
-            <div>点击下面的“签到”按钮，就等你30秒钟，别错过了哦。</div>
+            <template #extra>
+              <!-- <span
+                @click="signtimeclick2()"
+                class="touch"
+                style="color: #2c3e50"
+                >✕</span
+              > -->
+            </template>
+            <div>点击下面的“签到”按钮，等你10分钟，别错过了哦。</div>
             <div style="margin-top: 10px">
               <a-row>
-                <a-col :span="12">剩余时间30秒</a-col>
+                <a-col :span="12">剩余时间{{ signshowtime }}秒</a-col>
                 <a-col :span="8" :offset="4">
                   <a-button @click="signtimeclick()" type="primary"
                     >签到</a-button
@@ -279,6 +282,7 @@ export default defineComponent({
         div2.scrollTop = div2.scrollHeight;
       } catch (error) {}
     };
+
     //4拉取聊天消息
     watch(
       () => wsdata.messagestatus,
@@ -456,7 +460,7 @@ export default defineComponent({
       let grouplist = [];
       //遍历直播列表
 
-      for (const i of cab.data.data) {
+      for (const i of cab?.data?.data) {
         //遍历组名
         if (!i.group) {
           continue;
@@ -539,7 +543,7 @@ export default defineComponent({
     //1.4.1 如果这个直播的时间是超过当前的时间的，那么就应该过期删除
     for (const key in data.showzhibolist) {
       let startTime = data.showzhibolist[key].starttime[1];
-      let nowtime = moment().format('YYYY-MM-DD HH:mm');
+      let nowtime = moment().format('YYYY-MM-DD HH:mm:ss');
       const diff4 = moment(nowtime).diff(moment(startTime), 'minutes');
       //说明过期了
       if (diff4 > 0) {
@@ -599,36 +603,106 @@ export default defineComponent({
       () => {
         getsigndata();
       },
+      {
+        immediate: true, // 这个属性是重点啦
+        deep: true, // 深度监听的参数
+      },
     );
-
+    //这里约定签到的时长
+    let signTime = 600;
     const timethis = async () => {
       //所有的操作都是在进入直播以后干的事情
       if (!data.nowvideoid) {
         return;
       }
       myscroll();
-      let time = moment().format('YYYY-MM-DD HH:mm');
+      data.nowtime = new Date();
+      let time = moment(data.nowtime, 'YYYY-MM-DD HH:mm:ss');
       let letmesee = 0;
+
       for (const i of data.signdata.signtime) {
-        if (i == time) {
-          need = true;
+        let end_date = moment(time, 'YYYY-MM-DD HH:mm:ss');
+        //记录下当前的时间
+        data.timeRecord = i;
+
+        if (end_date.diff(i, 'seconds') < signTime) {
+          //显示的倒计时时间
+          // console.log(i);
+
+          data.signshowtime = signTime - end_date.diff(i, 'seconds');
+          localStorage.setItem('relativetime', i);
+          //上次打卡时间
+
+          //如果没有锁或者，锁开那么就可以，否则需要等待解锁
+          console.log(localStorage.getItem('lock'));
+
+          if (
+            localStorage.getItem('lock') == 'off' ||
+            !localStorage.getItem('lock')
+          ) {
+            need = true;
+            data.signtime = true;
+          }
+
           break;
         } else {
-          letmesee++;
+          need = false;
+          //这里是去匹配第二个时间了，弃用
+          // letmesee++;
         }
       }
       //都没有匹配到说明数组中不存在
-      if (letmesee == data.signdata.signtime.length) {
-        //但防止这分钟的尾声巧合二立马关闭，所以我们给予一个30s的延迟
-        setTimeout(() => {
-          need = false;
-        }, 30000);
+      // if (letmesee == data.signdata.signtime.length) {
+      //   //但防止这分钟的尾声巧合二立马关闭，所以我们给予一个30s的延迟
+
+      //   setTimeout(() => {
+      //     need = false;
+      //   }, 30 * 1000);
+      // }
+      if (data.liveoff < 1000) {
+        data.liveoff++;
+      } else {
+        data.liveoff = 0;
       }
-      data.liveoff++;
     };
+    //timeRecord是一个记录时间点， 改了说明进入了下一个打卡时间，当打卡进入下一个时间的时候，可以重新打卡
+    //因为第一次赋值会变，所以，第一赋值不改变
+
+    watch(
+      () => data.timeRecord,
+      () => {
+        let time1: any = localStorage.getItem('relativetime');
+        let time2 = localStorage.getItem('pretime');
+        let end_date2 = moment(time1, 'YYYY-MM-DD HH:mm:ss');
+        let dftime = end_date2.diff(time2, 'seconds');
+        console.log('监督授权localStorage pretime');
+
+        console.log(
+          time1,
+          time2,
+          dftime,
+          signTime - Number(localStorage.getItem('passedtime')),
+          Number(localStorage.getItem('passedtime')),
+        );
+
+        //上一个打卡时间范围内,见到用户过了很久才签到的那个时间
+        if (dftime < signTime - Number(localStorage.getItem('passedtime'))) {
+          //说明打卡过上个锁
+          localStorage.setItem('lock', 'on');
+        } else {
+          //允许再一次签到，打开锁
+          localStorage.setItem('lock', 'off');
+        }
+      },
+      {
+        immediate: true, // 这个属性是重点啦
+        deep: true, // 深度监听的参数
+      },
+    );
+
     setTimeout(() => {
-      timec = setInterval(timethis, 2000);
-    }, 1000);
+      timec = setInterval(timethis, 1000);
+    }, 100);
 
     watch(
       () => data.liveoff,
@@ -639,9 +713,14 @@ export default defineComponent({
           data.signtime = false;
         }
       },
+      {
+        immediate: true, // 这个属性是重点啦
+        deep: true, // 深度监听的参数
+      },
     );
 
     //签到点击事件
+    let timedeep: any = [];
     const signtimeclick = async () => {
       //阻止多次点击事件
       if (!data.signtime) {
@@ -653,11 +732,29 @@ export default defineComponent({
       //需要签到控制
       need = false;
       //防止时间函数再一次开启签到页面
-      clearInterval(timec);
-      //一分钟后就无法匹配到这次时间
-      setTimeout(() => {
-        timec = setInterval(timethis, 2000);
-      }, 60000);
+      // clearInterval(timec);
+
+      // Date.prototype.clone=function(){
+      //   return new Date(this.valueOf());
+      // }
+      //这里计算出来的是已经过去的时间
+      let time = moment().format('YYYY-MM-DD HH:mm:ss');
+      let time_moment = moment(time, 'YYYY-MM-DD HH:mm:ss');
+      let dftime = time_moment.diff(data.timeRecord, 'seconds');
+      localStorage.setItem('passedtime', String(dftime));
+
+      //干完事后再启动
+      localStorage.setItem('lock', 'on');
+
+      // setTimeout(() => {
+      //   timec = setInterval(timethis, 1000);
+      // }, 100);
+
+      // console.log(timedeep);
+
+      //记录下这个签到的时间
+
+      localStorage.setItem('pretime', time);
 
       //2事件部分
       //2.1把这次点击的时间添加到数据库
@@ -667,7 +764,7 @@ export default defineComponent({
         sign: {
           name: sessionStorage.user,
           eid: sessionStorage.eid,
-          signtime: moment().format('YYYY-MM-DD HH:mm'),
+          signtime: moment().format('YYYY-MM-DD HH:mm:ss'),
         },
       };
       await Mpost(savesign, mydata2);
@@ -723,6 +820,10 @@ export default defineComponent({
           time60 = setInterval(addtime, 3 * 1000);
         }
       },
+      {
+        immediate: true, // 这个属性是重点啦
+        deep: true, // 深度监听的参数
+      },
     );
 
     //7.显示隐藏askshow
@@ -756,6 +857,10 @@ export default defineComponent({
         data.cssheight2 = 300;
       }
     };
+    // const signtimeclick2 = () => {
+    //   data.signtime = false;
+    //   clearInterval(timec);
+    // };
     return {
       showModal,
       handleOk,
