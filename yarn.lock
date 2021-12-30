@@ -4351,6 +4351,11 @@ safe-regex@^1.1.0:
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
+screenfull@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.npmmirror.com/screenfull/download/screenfull-6.0.0.tgz#6f7f37bfe19c5ee50931ac438c1fe380d5b5ff44"
+  integrity sha512-LGY0nhNQkC4FX4DT4pZdJ5cZH5EOz9Gfh9KcVMl779pS677k4IV1Wv7sY/CwC9VKFT21fYgCh7zkTVVefi5XKA==
+
 scroll-into-view-if-needed@^2.2.25:
   version "2.2.28"
   resolved "https://registry.npmjs.org/scroll-into-view-if-needed/-/scroll-into-view-if-needed-2.2.28.tgz"

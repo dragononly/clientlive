@@ -8,8 +8,10 @@
 
 <script lang="ts">
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import screenfull from 'screenfull';
 import { defineComponent } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { data } from './components/center/store/live';
 export default defineComponent({
   data() {
     return {
@@ -18,6 +20,9 @@ export default defineComponent({
   },
   name: 'App',
   setup() {
+    // if (data.mobile) {
+    //   screenfull.toggle();
+    // }
     // const route = useRoute();
     // const router = useRouter();
     // alert(route.query.secret);

@@ -1,17 +1,23 @@
 import { reactive } from "vue";
 let containerRef2: any, containerRef: any, temog: any
 import device from "current-device";
+import { user } from "../../../tools/time";
 // console.log("device.mobile() === %s", device.mobile());
-let width: string = "50%", chatmclass = false, xiaoxiwidth = "80%", ifrawidth = "80%", signshowtime: any = 0,
-    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any
+let width: string = "50%", chatmclass = false, xiaoxiwidth = "100%", ifrawidth = "80%", signshowtime: any = 0,
+    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false
 if (device.mobile()) {
     width = '100%'
     chatmclass = true
     xiaoxiwidth = '100%'
-    ifrawidth = '100%'
+    ifrawidth = '100%',
+        mobile = true
 }
 let showzhibolist: any = [], signdata: any
 export const data = reactive({
+    textsignTitle: "点击下面的“签到”按钮，等你10分钟，别错过了哦。",
+    userOffSignTable: false,
+    mobile,
+    fulloff: true,
     passedtime,
     signed,
     timeRecord,

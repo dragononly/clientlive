@@ -37,16 +37,19 @@
             </a-col>
           </a-row>
           <a-row style="margin-top: 20px">
-            <a-col :md="{ offset: 9 }">
+            <a-col :md="{ offset: 6 }">
               <a-switch v-model:checked="checked1" />
             </a-col>
             <a-col style="color: #409eff; line-height: 25px; margin-left: 5px"
               >自动登陆</a-col
             >
+            <a-col :xs="24" style="color: #e08922; font-weight: bold"
+              >微信用户 设置->通用->横屏开启</a-col
+            >
           </a-row>
 
           <a-row style="margin-top: 20px">
-            <a-col :xs="{ offset: 10 }" :md="{ offset: 16 }">
+            <a-col :xs="{ offset: 0 }" :md="{ offset: 16 }">
               <a-button>取消</a-button>
             </a-col>
             <a-col :md="{ offset: 1 }" :xs="{ offset: 1 }">
@@ -199,15 +202,6 @@ export default defineComponent({
         user: data.skyuser,
         pwd: data.skypwd,
       };
-
-      //这里授权一个外部登陆账号
-      if (data.skyuser == 'test' && data.skypwd == '000000') {
-        sessionStorage.eid = '115097';
-        sessionStorage.user = '熊忠波';
-        message.success('欢迎登陆👏 ' + sessionStorage.user);
-        router.push('center');
-        return;
-      }
 
       //这里是一个仿生账号
       if (data.skyuser == 'test2' && data.skypwd == '000000') {

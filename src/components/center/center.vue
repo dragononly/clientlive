@@ -14,6 +14,22 @@
         :style="{ fontSize: '15px' }"
       />
     </div>
+    <div
+      class="a1"
+      @click="fullshow()"
+      v-if="nowvideoid"
+      style="margin-left: 90px"
+    >
+      <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
+    </div>
+    <!-- <div
+      class="a1"
+      @click="fullshow()"
+      v-if="nowvideoid"
+      style="margin-left: 130px"
+    >
+      <FullscreenExitOutlined class="touch2" :style="{ fontSize: '15px' }" />
+    </div> -->
 
     <div><ask v-show="askshow" /></div>
 
@@ -38,7 +54,7 @@
       }"
     >
       <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
-        <div
+        <!-- <div
           v-if="close1"
           style="
             position: absolute;
@@ -57,7 +73,7 @@
               style="font-size: 15px; font-weight: bold"
             />
           </span>
-        </div>
+        </div> -->
         <iframe
           sandbox="allow-same-origin allow-scripts"
           name="iframe_a"
@@ -85,21 +101,32 @@
                 >✕</span
               > -->
             </template>
-            <div>点击下面的“签到”按钮，等你10分钟，别错过了哦。</div>
+            <div>{{ textsignTitle }}</div>
             <div style="margin-top: 10px">
               <a-row>
                 <a-col :span="12">剩余时间{{ signshowtime }}秒</a-col>
                 <a-col :span="8" :offset="4">
-                  <a-button @click="signtimeclick()" type="primary"
-                    >签到</a-button
+                  <a-button
+                    @click="signtimeclick()"
+                    v-show="!userOffSignTable"
+                    type="primary"
                   >
+                    签 到
+                  </a-button>
+                  <a-button
+                    @click="userCloseSign()"
+                    v-show="userOffSignTable"
+                    type="primary"
+                  >
+                    关 闭
+                  </a-button>
                 </a-col>
               </a-row>
             </div>
           </a-card>
         </div>
         <div
-          v-if="nowvideoid"
+          v-if="nowvideoid && fulloff"
           id="sc2"
           :class="chatmclass ? 'c3m' : 'c3'"
           :style="{
@@ -192,51 +219,55 @@
       "
       :style="{ width: xiaoxiwidth }"
     >
-      <a-row>
-        <a-col :xs="24" :md="14">
-          <div style="padding: 5px 0px 2px 10px">
-            <a-input-search
-              v-model:value="value"
-              placeholder="说点什么吧..."
-              enter-button="发送"
-              @search="onSearch"
-              style="
-                border-radius: 5px;
-                opacity: 0.7;
-                position: relative;
-                z-index: 8888;
-              "
-            />
-          </div>
-        </a-col>
-        <a-col :xs="18" :md="6">
-          <div style="padding: 10px 20px">
-            <a-radio-group name="radioGroup" v-model:value="radiovalue">
-              <a-radio value="1" style="font-size: 12px; color: #efca48"
-                >给所有人</a-radio
-              >
-              <a-radio value="2" style="font-size: 12px; color: #efca48"
-                >给老师和导播</a-radio
-              >
-            </a-radio-group>
-          </div>
-        </a-col>
-        <a-col :xs="6" :md="4">
-          <heart />
-        </a-col>
-      </a-row>
+      <div v-show="fulloff" :class="chatmclass ? 'c3m' : 'a'">
+        <a-row>
+          <a-col :xs="5" :md="14">
+            <div style="padding: 5px 0px 2px 10px">
+              <a-input-search
+                v-model:value="value"
+                placeholder="说点什么吧..."
+                enter-button="发送"
+                @search="onSearch"
+                style="
+                  border-radius: 5px;
+                  opacity: 0.7;
+                  position: relative;
+                  z-index: 8888;
+                "
+              />
+            </div>
+          </a-col>
+          <a-col :xs="8" :md="6">
+            <div style="padding: 10px 20px">
+              <a-radio-group name="radioGroup" v-model:value="radiovalue">
+                <a-radio value="1" style="font-size: 12px; color: #efca48"
+                  >给所有人</a-radio
+                >
+                <a-radio value="2" style="font-size: 12px; color: #efca48"
+                  >给老师和导播</a-radio
+                >
+              </a-radio-group>
+            </div>
+          </a-col>
+          <a-col :xs="6" :md="4">
+            <heart />
+          </a-col>
+        </a-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, toRefs, watch } from 'vue';
+import screenfull from 'screenfull'; //引入依赖
 import {
   SettingFilled,
   CloseOutlined,
   FullscreenOutlined,
   MinusSquareOutlined,
   QuestionCircleOutlined,
+  FullscreenExitOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
 import { message } from 'ant-design-vue';
@@ -441,7 +472,7 @@ export default defineComponent({
 
     let cabg = await Mpost(url, mydata);
 
-    const adminarr = ['硬件网络维护部', '行政管理总部领导', '教育培训部'];
+    const adminarr = ['硬件网络维护部', '教育培训部'];
 
     if (adminarr.includes(cabg?.data?.data?.departmentchild)) {
       data.admin = true;
@@ -634,7 +665,7 @@ export default defineComponent({
           //上次打卡时间
 
           //如果没有锁或者，锁开那么就可以，否则需要等待解锁
-          console.log(localStorage.getItem('lock'));
+          // console.log(localStorage.getItem('lock'));
 
           if (
             localStorage.getItem('lock') == 'off' ||
@@ -646,7 +677,25 @@ export default defineComponent({
 
           break;
         } else {
-          need = false;
+          //用户没有关闭签到窗口前
+
+          if (localStorage.getItem('lock') == 'on') {
+            console.log(data.userOffSignTable);
+
+            if (data.userOffSignTable) {
+              //窗口还是显示，并且文字更改
+              //   console.log(localStorage.getItem('lock'));
+              //这个虽然显示，但不能打卡，所以交换按钮
+              need = true;
+              data.textsignTitle =
+                '你已经成功签到啦，🎉，是否点击下面的关闭窗口。';
+            }
+          } else {
+            need = false;
+            data.textsignTitle =
+              '点击下面的“签到”按钮，等你10分钟，别错过了哦。';
+          }
+
           //这里是去匹配第二个时间了，弃用
           // letmesee++;
         }
@@ -675,7 +724,7 @@ export default defineComponent({
         let time2 = localStorage.getItem('pretime');
         let end_date2 = moment(time1, 'YYYY-MM-DD HH:mm:ss');
         let dftime = end_date2.diff(time2, 'seconds');
-        console.log('监督授权localStorage pretime');
+        // console.log('监督授权localStorage pretime');
 
         console.log(
           time1,
@@ -726,6 +775,8 @@ export default defineComponent({
       if (!data.signtime) {
         return;
       }
+      //签到之后关闭按钮可以显示
+      data.userOffSignTable = true;
       //1css部分
       //签到窗口显示控制
       data.signtime = false;
@@ -768,6 +819,11 @@ export default defineComponent({
         },
       };
       await Mpost(savesign, mydata2);
+    };
+    //签到关闭按钮点击后
+    const userCloseSign = () => {
+      need = false;
+      data.userOffSignTable = false;
     };
 
     //6通过观察 data.nowvideoid ，来判断和增加累计时长
@@ -857,11 +913,37 @@ export default defineComponent({
         data.cssheight2 = 300;
       }
     };
+    //
+    let toggleFull = true;
+    const fullshow = () => {
+      if (toggleFull) {
+        //视频放到最大
+        data.ifrawidth = '100%';
+        //发给老师和导播的聊天框隐藏
+        data.fulloff = false;
+        //聊天框高度拉低
+        data.cssheight = 55;
+        screenfull.toggle();
+        toggleFull = false;
+      } else {
+        //如同上面
+        data.ifrawidth = '80%';
+        //发给老师和导播的聊天框隐藏
+        data.fulloff = true;
+        //聊天框高度拉低
+        data.cssheight = 250;
+        toggleFull = true;
+        screenfull.toggle();
+      }
+    };
+    // const fullshowexit = () => {};
+
     // const signtimeclick2 = () => {
     //   data.signtime = false;
     //   clearInterval(timec);
     // };
     return {
+      userCloseSign,
       showModal,
       handleOk,
       onSearch,
@@ -872,6 +954,8 @@ export default defineComponent({
       getmessage,
       cssheightclick2,
       askshowclick,
+      fullshow,
+
       ...toRefs(data),
     };
   },
@@ -884,6 +968,7 @@ export default defineComponent({
     FullscreenOutlined,
     MinusSquareOutlined,
     QuestionCircleOutlined,
+    FullscreenExitOutlined,
     heart,
     ask,
   },
@@ -942,13 +1027,14 @@ export default defineComponent({
   position: relative;
   position: fixed;
   z-index: 11;
-  top: 0px;
+  top: 10px;
   width: 20%;
   background: #349793;
   border-radius: 5px;
   padding: 10px;
   overflow-y: scroll;
   font-size: 13px;
+  opacity: 0.9;
 }
 
 .c3 {
@@ -979,7 +1065,8 @@ export default defineComponent({
   margin: auto;
 }
 
-.c3m {
+.c3m,
+.c1m {
   display: none;
 }
 
