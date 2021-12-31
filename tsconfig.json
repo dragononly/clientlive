@@ -17,7 +17,8 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/plugins/io.js"
   ],
   "ts-node": {
     "compilerOptions": {

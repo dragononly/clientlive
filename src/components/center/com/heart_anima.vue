@@ -12,7 +12,7 @@
         padding-left: 5px;
       "
     >
-      {{ nowmessage.name }}的点赞
+      {{ nowmessage?.msg?.name }}的点赞
     </div>
     <img
       @click="hclick"
