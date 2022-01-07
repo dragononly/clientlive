@@ -17,8 +17,7 @@
 </template>
 
 <script>
-import login from '../../components/home/login.vue';
-import { Rpost } from '../../../config/http/index';
+import login from '@components/home/login.vue';
 export default {
   name: 'home',
   async setup() {},

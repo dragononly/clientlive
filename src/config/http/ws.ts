@@ -1,16 +1,28 @@
 
 import { wsUrl } from './env';
 import { wsdata } from './wsdata'
-import { data } from '../../src/components/center/store/live'
+import { data } from '../../components/center/store/live'
 
 import { io } from 'socket.io-client';
 const socket = io(wsUrl, { transports: ['websocket'] });
+
+
+//这里是等待连接成功后计算在线人数
+let timec: NodeJS.Timeout | any = null
+clearInterval(timec)
+timec = setInterval(() => {
+	if (socket.connected) {
+		socket.emit('chat message', 'test');
+		clearInterval(timec)
+	}
+}, 300)
 
 export const connectSocket = async () => {
 
 	socket.on('connect', () => {
 		// Won't be executed
 		console.log(`connect ${socket.id}`);
+
 	});
 	socket.on('disconnect', () => {
 		console.log('disconnect');
@@ -23,6 +35,10 @@ export const connectSocket = async () => {
 	socket.on('chat message', function (msg) {
 		let mydata: any
 		mydata = msg
+		//在线人数
+		console.log(msg);
+
+		wsdata.people = msg?.people
 		const heart = () => {
 			wsdata.nowmessage = mydata
 			if (wsdata.off == "0") { wsdata.off = "1" } else {
@@ -158,8 +174,12 @@ export const connectSocket = async () => {
 };
 
 export const sendWsMessage = msg => {
-	// if (1 === socket.readyState) socket.send(JSON.stringify(msg));
-	socket.emit('chat message', msg);
+
+	//连接上了才能发送
+	if (socket.connected) {
+		socket.emit('chat message', msg);
+	}
+
 };
 
 

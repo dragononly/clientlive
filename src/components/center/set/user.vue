@@ -9,7 +9,6 @@
 <script lang="ts">
 import { toRefs, defineComponent } from 'vue';
 import { data } from '../store/tuiliu';
-import { Mpost } from '../../../../config/http/index';
 import { useRouter } from 'vue-router';
 export default defineComponent({
   data() {

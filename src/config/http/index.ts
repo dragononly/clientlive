@@ -46,6 +46,8 @@ export const Rget = async (url: string, data: any) => {
 		}
 		mydata += `${off}${key}=${data[key]}`
 	}
+
+
 	let cab = await axios.get(robotUrl + url + mydata)
 		.then(function (res) {
 			return res
@@ -53,6 +55,8 @@ export const Rget = async (url: string, data: any) => {
 		.catch(function (error) {
 			return error
 		});
+
+
 	return cab
 }
 

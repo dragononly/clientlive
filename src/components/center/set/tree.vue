@@ -32,7 +32,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, toRefs } from 'vue';
-import { Mpost } from '../../../../config/http/index';
+import { Mpost } from '@config/http/index';
 import { tree } from '../store/tree';
 import { message } from 'ant-design-vue';
 export default defineComponent({

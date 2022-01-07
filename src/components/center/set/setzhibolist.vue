@@ -172,7 +172,7 @@ import {
   CloseOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons-vue';
-import { sendWsMessage } from '../../../../config/http/ws';
+import { sendWsMessage } from '@config/http/ws';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
@@ -180,7 +180,7 @@ import { message } from 'ant-design-vue';
 import { reactive, toRefs, defineComponent } from 'vue';
 import XLSX, { WorkSheet } from 'xlsx';
 
-import { Mpost } from '../../../../config/http/index';
+import { Mpost } from '@config/http/index';
 export default defineComponent({
   data() {
     return {};
@@ -225,12 +225,14 @@ export default defineComponent({
 
       let need_punch_number: any = cab.data.data.signtime.length;
       let ourname: any = {};
+      console.log(cab.data.data.usersign);
 
       for (let i = 0; i < cab.data.data.usersign.length; i++) {
         if (!ourname[cab.data.data.usersign[i].name]) {
           ourname[cab.data.data.usersign[i].name] = {
             eid: cab.data.data.usersign[i].eid,
             cishu: 1,
+            departmentchild: cab?.data?.data?.usersign[i]?.departmentchild,
           };
         } else {
           ourname[cab.data.data.usersign[i].name].cishu++;
@@ -241,13 +243,14 @@ export default defineComponent({
 
       let aoa = [
         titlearr,
-        ['姓名', '员工号', '打卡次数', '需要打卡次数', '得分'],
+        ['姓名', '员工号', '部门', '打卡次数', '需要打卡次数', '得分'],
       ];
       for (const key in ourname) {
         let arr = [
           key,
-          ourname[key].eid,
-          ourname[key].cishu,
+          ourname[key]?.eid,
+          ourname[key]?.departmentchild,
+          ourname[key]?.cishu,
           need_punch_number,
           parseInt(((ourname[key].cishu / need_punch_number) * 100).toString()),
         ];

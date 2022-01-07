@@ -22,7 +22,7 @@
 import { message } from 'ant-design-vue';
 import { toRefs, defineComponent } from 'vue';
 import { data } from '../store/tuiliu';
-import { Mpost } from '../../../../config/http/index';
+import { Mpost } from '@config/http/index';
 export default defineComponent({
   data() {
     return {

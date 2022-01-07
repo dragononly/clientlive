@@ -25,7 +25,7 @@
 <script>
 import { TeamOutlined } from '@ant-design/icons-vue';
 import { toRefs, defineComponent, getCurrentInstance } from 'vue';
-import { Mpost } from '../../../../config/http/index';
+import { Mpost } from '@config/http/index';
 export default defineComponent({
   async setup() {
     const { proxy } = getCurrentInstance();

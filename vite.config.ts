@@ -8,7 +8,10 @@ export default defineConfig({
   base: "./",//打包路径
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')//设置别名
+      '@': path.join(__dirname, './src'),
+      '@components': path.join(__dirname, './src/components'),
+      '@utils': path.join(__dirname, './src/utils'),
+      '@config': path.join(__dirname, './src/config')
     }
   },
   // server: {

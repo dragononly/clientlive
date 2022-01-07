@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Rpost, Mpost, Rget } from '../../../config/http/index';
+import { Rpost, Mpost, Rget } from '@config/http/index';
 import { defineComponent, reactive, toRefs } from 'vue';
 import { message } from 'ant-design-vue';
 import moment from 'moment';

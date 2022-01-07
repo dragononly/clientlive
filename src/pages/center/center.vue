@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import me from "../../components/center/center.vue";
+import me from '@components/center/center.vue';
 export default {
-  name: "center",
+  name: 'center',
   components: {
     me,
   },

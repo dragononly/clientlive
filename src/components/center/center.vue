@@ -23,6 +23,14 @@
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
     <!-- <div
+      v-show="nowvideoid"
+      class="a1"
+      style="margin-left: 130px; color: #fff; font-weight: bold"
+    >
+      <team-outlined />
+      在线{{ parseInt(people * 1.5) }}
+    </div> -->
+    <!-- <div
       class="a1"
       @click="fullshow()"
       v-if="nowvideoid"
@@ -268,29 +276,32 @@ import {
   MinusSquareOutlined,
   QuestionCircleOutlined,
   FullscreenExitOutlined,
+  TeamOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
 import { message } from 'ant-design-vue';
 import Cookies from 'js-cookie';
-import Zhibolist from '../center/user/zhibolist.vue';
+import Zhibolist from '@/components/center/user/zhibolist.vue';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 import { data } from './store/live';
-import { htmlurl } from '../../../config/http/env';
-import { Rput, Rget, Rpost, Mpost } from '../../../config/http/index';
-import heart from './com/heart_anima.vue';
-import ask from './com/ask.vue';
-import { sendWsMessage } from '../../../config/http/ws';
-import { wsdata } from '../../../config/http/wsdata';
+import { htmlurl } from '@config/http/env';
+import { Rput, Rget, Rpost, Mpost } from '@config/http/index';
+import heart from '@components/center/com/heart_anima.vue';
+import ask from '@components/center/com/ask.vue';
+import { sendWsMessage } from '@config/http/ws';
+import { wsdata } from '@config/http/wsdata';
 import { useRouter, useRoute } from 'vue-router';
-import { router } from '../../router';
+import { global } from '../../store/app';
 import axios from 'axios';
+import { signContinueTime } from './event/center/signContinueTime';
 export default defineComponent({
   data() {
     return {
       ...toRefs(data),
       ...toRefs(wsdata),
+      ...toRefs(global),
     };
   },
   async setup(myself) {
@@ -395,19 +406,6 @@ export default defineComponent({
         return;
       }
       sessionStorage.eid = cab?.data?.data?.eid;
-      // //通过md5zhiboid去获取真实的直播id
-      // const c1 = await Rget('/zhibolist', {
-      //   md5id: route.query.zhiboid,
-      //   back: '_id',
-      // });
-
-      // //这里做一个鉴权，看下视频的地址正不正确
-      // if (c1?.data?.data?.length <= 0) {
-      //   message.info('你好，暗号不对，送您一张飞机票～～');
-      //   router.push('404');
-      // }
-      //全局赋值直播id
-      // data.nowvideoid = c1.data.data[0]._id;
 
       let datax1 = {
         _id: cab?.data?.data?.zhiboid,
@@ -501,24 +499,6 @@ export default defineComponent({
           let data = {
             groupname: ii,
           };
-          //这里注释的话，就去除了组判断
-          // grouplist.push(ii)
-          // let cab2 = await Mpost(url2, data);
-
-          // if (!cab2.data.data) {
-          //   continue;
-          // }
-          // if (cab2.data.data.branch.includes(cabg.data.data.branch)) {
-          //   can_list_id.push(i._id);
-          // } else if (cab2.data.department.includes(cabg.data.department)) {
-          //   can_list_id.push(i._id);
-          // } else if (
-          //   cab2.data.departmentchild.includes(cabg.data.departmentchild)
-          // ) {
-          //   can_list_id.push(i._id);
-          // } else if (cab2.data.name.includes(cabg.data.name)) {
-          //   can_list_id.push(i._id);
-          // }
         }
       }
       //去重复
@@ -607,6 +587,9 @@ export default defineComponent({
       getmessage();
       //启动签到程序
       getsigndata();
+
+      //去获取数据库签到时间
+      data.signContinueTime = await signContinueTime(da);
       //去根据id获取直播视频的url
       let mydata2 = { id: data.nowvideoid };
       let cab: any = await Mpost('/live/gainvideourl', mydata2);
@@ -640,27 +623,28 @@ export default defineComponent({
       },
     );
     //这里约定签到的时长
-    let signTime = 600;
+
     const timethis = async () => {
       //所有的操作都是在进入直播以后干的事情
       if (!data.nowvideoid) {
         return;
       }
+
       myscroll();
       data.nowtime = new Date();
       let time = moment(data.nowtime, 'YYYY-MM-DD HH:mm:ss');
-      let letmesee = 0;
 
-      for (const i of data.signdata.signtime) {
+      for (const i of data?.signdata?.signtime) {
         let end_date = moment(time, 'YYYY-MM-DD HH:mm:ss');
         //记录下当前的时间
         data.timeRecord = i;
 
-        if (end_date.diff(i, 'seconds') < signTime) {
+        if (end_date.diff(i, 'seconds') < Number(data.signContinueTime)) {
           //显示的倒计时时间
           // console.log(i);
 
-          data.signshowtime = signTime - end_date.diff(i, 'seconds');
+          data.signshowtime =
+            Number(data.signContinueTime) - end_date.diff(i, 'seconds');
           localStorage.setItem('relativetime', i);
           //上次打卡时间
 
@@ -680,7 +664,7 @@ export default defineComponent({
           //用户没有关闭签到窗口前
 
           if (localStorage.getItem('lock') == 'on') {
-            console.log(data.userOffSignTable);
+            //   console.log(data.userOffSignTable);
 
             if (data.userOffSignTable) {
               //窗口还是显示，并且文字更改
@@ -695,19 +679,9 @@ export default defineComponent({
             data.textsignTitle =
               '点击下面的“签到”按钮，等你10分钟，别错过了哦。';
           }
-
-          //这里是去匹配第二个时间了，弃用
-          // letmesee++;
         }
       }
-      //都没有匹配到说明数组中不存在
-      // if (letmesee == data.signdata.signtime.length) {
-      //   //但防止这分钟的尾声巧合二立马关闭，所以我们给予一个30s的延迟
 
-      //   setTimeout(() => {
-      //     need = false;
-      //   }, 30 * 1000);
-      // }
       if (data.liveoff < 1000) {
         data.liveoff++;
       } else {
@@ -726,16 +700,12 @@ export default defineComponent({
         let dftime = end_date2.diff(time2, 'seconds');
         // console.log('监督授权localStorage pretime');
 
-        console.log(
-          time1,
-          time2,
-          dftime,
-          signTime - Number(localStorage.getItem('passedtime')),
-          Number(localStorage.getItem('passedtime')),
-        );
-
         //上一个打卡时间范围内,见到用户过了很久才签到的那个时间
-        if (dftime < signTime - Number(localStorage.getItem('passedtime'))) {
+        if (
+          dftime <
+          Number(data.signContinueTime) -
+            Number(localStorage.getItem('passedtime'))
+        ) {
           //说明打卡过上个锁
           localStorage.setItem('lock', 'on');
         } else {
@@ -809,12 +779,26 @@ export default defineComponent({
 
       //2事件部分
       //2.1把这次点击的时间添加到数据库
+      //2.1.1先去查询到部门
+      let searchDepartmentchild = '/live/eid';
+      let searchDepartmentchildData = {
+        eid: sessionStorage.eid,
+      };
+      let cabDepartmentchild = await Mpost(
+        searchDepartmentchild,
+        searchDepartmentchildData,
+      );
+      if (!cabDepartmentchild?.data?.data?.departmentchild) {
+        return;
+      }
+
       let savesign = '/live/savesign';
       let mydata2 = {
         zhiboid: data.nowvideoid,
         sign: {
           name: sessionStorage.user,
           eid: sessionStorage.eid,
+          departmentchild: cabDepartmentchild?.data?.data?.departmentchild,
           signtime: moment().format('YYYY-MM-DD HH:mm:ss'),
         },
       };
@@ -938,6 +922,11 @@ export default defineComponent({
     };
     // const fullshowexit = () => {};
 
+    //如果在线人数是0，那么发送一个出发一下更新
+    setTimeout(() => {
+      sendWsMessage('online');
+    }, 2000);
+
     // const signtimeclick2 = () => {
     //   data.signtime = false;
     //   clearInterval(timec);
@@ -969,6 +958,7 @@ export default defineComponent({
     MinusSquareOutlined,
     QuestionCircleOutlined,
     FullscreenExitOutlined,
+    TeamOutlined,
     heart,
     ask,
   },

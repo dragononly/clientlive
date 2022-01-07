@@ -43,10 +43,10 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, watch } from 'vue';
-import { Rget, Rput } from '../../../../config/http/index';
+import { Rget, Rput } from '@config/http/index';
 import { data } from '../store/live';
-import { connectSocket, sendWsMessage } from '../../../../config/http/ws';
-import { wsdata } from '../../../../config/http/wsdata';
+import { connectSocket, sendWsMessage } from '@config/http/ws';
+import { wsdata } from '@config/http/wsdata';
 export default defineComponent({
   data() {
     return {

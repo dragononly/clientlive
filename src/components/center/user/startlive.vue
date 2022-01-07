@@ -130,7 +130,7 @@ import moment, { Moment } from 'moment';
 import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 import { message } from 'ant-design-vue';
-import { Mpost } from '../../../../config/http/index';
+import { Mpost } from '@config/http/index';
 import { data } from './store/startlive';
 export default defineComponent({
   data() {

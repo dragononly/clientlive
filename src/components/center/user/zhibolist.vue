@@ -87,7 +87,9 @@
             <span style="font-weight: 600; font-size: 1rem"
               >开始时间:14:00
             </span>
+
             <TeamOutlined style="font-size: 1.2rem; margin-left: 3px" />
+
             <div style="display: inline-block">
               <a-badge
                 count="0"
@@ -96,6 +98,9 @@
                 :number-style="{ backgroundColor: '#fff', color: '#888' }"
               />
             </div>
+            <!-- <span style="font-size: 18px; font-weight: bold">{{
+              parseInt(people * 1.5)
+            }}</span> -->
           </div>
         </div>
       </a-col>
@@ -112,17 +117,18 @@ import {
   CheckOutlined,
   CloseOutlined,
 } from '@ant-design/icons-vue';
-
+import { wsdata } from '@config/http/wsdata';
 import { toRefs, defineComponent } from 'vue';
 import { useStore } from 'vuex';
 import { zhibolist } from './store/zhibolist';
 import { data } from '../store/live';
-import img1 from '../../../assets/1.jpg';
+import img1 from '@/assets/1.jpg';
 export default defineComponent({
   data() {
     return {
       ...toRefs(zhibolist),
       ...toRefs(data),
+      ...toRefs(wsdata),
       img1: img1,
     };
   },

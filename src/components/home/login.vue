@@ -139,11 +139,10 @@
 <script lang="ts">
 import { TeamOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-import { Mpost } from '../../../config/http/index';
+import { Mpost } from '@config/http/index';
 import { useRouter } from 'vue-router';
-import { settime, isouttime, eid, user } from '../../tools/time';
+import { settime, isouttime, eid, user } from '@utils/time';
 import { defineComponent, reactive, toRefs, watch } from 'vue';
-import { tree } from '../center/store/tree';
 
 export default defineComponent({
   data() {

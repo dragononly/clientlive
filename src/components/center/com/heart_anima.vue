@@ -25,9 +25,9 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, watch } from 'vue';
 import Bg2 from '@/assets/web_heart_animation.png';
-import { data } from '../store/live';
-import { wsdata } from '../../../../config/http/wsdata';
-import { sendWsMessage } from '../../../../config/http/ws';
+import { data } from '@components/center/store/live';
+import { wsdata } from '@config/http/wsdata';
+import { sendWsMessage } from '@config/http/ws';
 export default defineComponent({
   data() {
     return {
