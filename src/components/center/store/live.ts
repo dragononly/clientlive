@@ -67,5 +67,6 @@ export const data = reactive({
     containerRef2,
     containerRef,
     eid: sessionStorage.eid,
+    user: sessionStorage.user,
     groupname: "",
 });

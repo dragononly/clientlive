@@ -180,7 +180,7 @@ import { message } from 'ant-design-vue';
 import { reactive, toRefs, defineComponent } from 'vue';
 import XLSX, { WorkSheet } from 'xlsx';
 
-import { Mpost } from '@config/http/index';
+import { Mpost, Rget } from '@config/http/index';
 export default defineComponent({
   data() {
     return {};
@@ -225,7 +225,6 @@ export default defineComponent({
 
       let need_punch_number: any = cab.data.data.signtime.length;
       let ourname: any = {};
-      console.log(cab.data.data.usersign);
 
       for (let i = 0; i < cab.data.data.usersign.length; i++) {
         if (!ourname[cab.data.data.usersign[i].name]) {
@@ -241,16 +240,54 @@ export default defineComponent({
 
       let titlearr = [cab.data.data.name, cab.data.data.starttime.toString()];
 
+      //去拉取在线时长
+
+      const zhibolist_longtimeCab = await Rget('/zhibolist_longtime', {
+        zhiboid: id,
+      });
+
+      let Arr = zhibolist_longtimeCab?.data?.data;
+
+      let mapZLMap = new Map();
+      for (const i of Arr) {
+        mapZLMap.set(i.eid, i.time);
+      }
+
+      //转换为map
+
       let aoa = [
         titlearr,
-        ['姓名', '员工号', '部门', '打卡次数', '需要打卡次数', '得分'],
+        [
+          '姓名',
+          '员工号',
+          '分所',
+          '部门',
+          '观看时长/分钟',
+          '打卡次数',
+          '需要打卡次数',
+          '得分',
+        ],
       ];
+      //把skyuser拿过来存到内存中
+      const skyuserMap = new Map();
+      const getSkyuser = async () => {
+        const cab: any = await Rget('/skyuser', {
+          back: 'branch,eid',
+        });
+        return cab?.data?.data;
+      };
+      for (const i of await getSkyuser()) {
+        skyuserMap.set(i.eid, i.branch);
+      }
+
       for (const key in ourname) {
         let arr = [
           key,
           ourname[key]?.eid,
+          skyuserMap.get(ourname[key]?.eid),
           ourname[key]?.departmentchild,
           ourname[key]?.cishu,
+          mapZLMap.get(ourname[key]?.eid),
           need_punch_number,
           parseInt(((ourname[key].cishu / need_punch_number) * 100).toString()),
         ];

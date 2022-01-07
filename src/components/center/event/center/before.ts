@@ -24,9 +24,8 @@ export const myscroll = async () => {
 
 
 export const getmessage = async () => {
-    let url = '/live/getmessage';
     //管理员
-    let type: any;
+    let type: number;
     if (data?.admin) {
         type = 2;
     } else {
@@ -34,9 +33,9 @@ export const getmessage = async () => {
     }
     let mydata = {
         zhiboid: data.nowvideoid,
-        type: type,
     };
-    const cab: any = await Mpost(url, mydata);
+    const cab: any = await Rget('/message', mydata);
+
     data.arr1.length = 0;
     data.arr2.length = 0;
 
@@ -44,12 +43,21 @@ export const getmessage = async () => {
         if (cab.data.data[x].type == 1) {
             data.arr1.push(cab.data.data[x]);
         } else {
-            data.arr2.push(cab.data.data[x]);
+            if (data.admin) {
+                data.arr2.push(cab.data.data[x]);
+            } else if (cab.data.data[x].eid == sessionStorage.eid) {
+                data.arr2.push(cab.data.data[x]);
+
+            }
         }
     }
     //渲染滚动条
     await myscroll();
 };
+
+
+
+
 //Get sign time
 export const getsigndata = async () => {
     const urlsigntime = '/live/searchidzhibo';
@@ -99,6 +107,7 @@ export const onSearch = async (searchValue: string) => {
         type: data.radiovalue,
         zhiboid: data.nowvideoid,
     };
+
     await Mpost(url, mydata);
     let pdata = {
         command: 'message',

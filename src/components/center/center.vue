@@ -22,6 +22,9 @@
     >
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
+    <div v-show="nowvideoid" class="a1" style="margin-left: 135px; color: #fff">
+      {{ eid }}&nbsp;{{ user }}
+    </div>
     <!-- <div
       v-show="nowvideoid"
       class="a1"
@@ -320,6 +323,8 @@ export default defineComponent({
     if (!sessionStorage.eid && !route.query.accesstoken) {
       router.push('/');
     }
+    //拉取聊天记录
+    await getmessage();
 
     //4拉取聊天消息
     watch(
