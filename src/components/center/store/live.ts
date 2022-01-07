@@ -44,7 +44,6 @@ export const data = reactive({
     videoplay: false,
     close1: false,
     nowvideoid: "",
-    need: false,
     liveoff: 0,
     signdata,
     cssheight: 250,

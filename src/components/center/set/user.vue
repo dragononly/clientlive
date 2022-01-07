@@ -8,12 +8,12 @@
 
 <script lang="ts">
 import { toRefs, defineComponent } from 'vue';
-import { data } from '../store/tuiliu';
+import { tuiliudata } from '../store/tuiliu';
 import { useRouter } from 'vue-router';
 export default defineComponent({
   data() {
     return {
-      ...toRefs(data),
+      ...toRefs(tuiliudata),
     };
   },
   async setup() {

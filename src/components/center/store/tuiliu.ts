@@ -1,6 +1,5 @@
 import { reactive } from "vue";
-
-export const data = reactive({
+export const tuiliudata = reactive({
     valueinput: "",
     liveid: "",
     sevalue: "默认",
@@ -13,5 +12,6 @@ export const data = reactive({
             value: "lucy",
             label: "Lucy (101)",
         },
-    ],
+    ]
+
 });
