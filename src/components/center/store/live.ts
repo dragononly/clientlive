@@ -16,6 +16,8 @@ export const data = reactive({
     textsignTitle: "点击下面的“签到”按钮，等你10分钟，别错过了哦。",
     userOffSignTable: false,
     signContinueTime: '60',
+    toggleFull: true,
+    need: false,
     mobile,
     fulloff: true,
     passedtime,
