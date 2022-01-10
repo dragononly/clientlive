@@ -211,6 +211,15 @@ export default defineComponent({
         return;
       }
 
+      //模拟管理员账号
+      if (data.skyuser == 'test' && data.skypwd == '000000') {
+        sessionStorage.eid = '115097';
+        sessionStorage.user = '熊忠波';
+        message.success('欢迎登陆👏 ' + sessionStorage.user);
+        router.push('center');
+        return;
+      }
+
       let url = '/live/login';
       let cab = await Mpost(url, mydata);
 
