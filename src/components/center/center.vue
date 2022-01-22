@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
     <div class="a1">
       <SettingFilled
         @click="showModal"
@@ -22,7 +22,20 @@
     >
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
-    <div v-show="nowvideoid" class="a1" style="margin-left: 135px; color: #fff">
+
+    <div
+      class="a1"
+      @click="videoStatus()"
+      v-if="nowvideoid"
+      style="margin-left: 135px"
+    >
+      <play-circle-filled
+        class="touch2"
+        :style="{ fontSize: '15px', color: liveStatusColor }"
+      />
+    </div>
+
+    <div v-show="nowvideoid" class="a1" style="margin-left: 185px; color: #fff">
       {{ eid }}&nbsp;{{ user }}
     </div>
     <!-- <div
@@ -60,7 +73,7 @@
       :style="{
         position: 'relative',
         height: 'calc(100vh)',
-        overflowY: 'scroll',
+
         background: videobg,
       }"
     >
@@ -278,6 +291,7 @@ import {
   MinusSquareOutlined,
   QuestionCircleOutlined,
   FullscreenExitOutlined,
+  PlayCircleFilled,
   TeamOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
@@ -307,7 +321,10 @@ import {
   signtimeclick,
   addtime,
   fullshow,
+  videoStatusObj,
+  videoStatusObjJust,
 } from './event/center/before';
+import { message } from 'ant-design-vue';
 export default defineComponent({
   data() {
     return {
@@ -451,11 +468,16 @@ export default defineComponent({
     let time60: NodeJS.Timeout;
     watch(
       () => data.nowvideoid,
-      (a: string) => {
+      async (a: string) => {
         if (a) {
           clearInterval(time60);
           //Execution time increaser
-          time60 = setInterval(addtime, 3 * 1000);
+          if (data.nowvideoid) {
+            // initialization video status colors
+            await videoStatusObjJust();
+            data.isactive = false;
+            time60 = setInterval(addtime, 3 * 1000);
+          }
         }
       },
       {
@@ -495,6 +517,9 @@ export default defineComponent({
         data.cssheight2 = 300;
       }
     };
+    const videoStatus = async () => {
+      await videoStatusObj();
+    };
 
     //如果在线人数是0，那么发送一个出发一下更新
     setTimeout(() => {
@@ -513,13 +538,14 @@ export default defineComponent({
       cssheightclick2,
       askshowclick,
       fullshow,
-
+      videoStatus,
       ...toRefs(data),
     };
   },
 
   components: {
     SettingFilled,
+    PlayCircleFilled,
     myset,
     Zhibolist,
     CloseOutlined,
@@ -534,7 +560,10 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 @import './css/center.css'; /*引入公共样式*/
+.box {
+  overflow: scroll;
+}
 </style>
 

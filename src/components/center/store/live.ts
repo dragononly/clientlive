@@ -12,7 +12,11 @@ if (device.mobile()) {
         mobile = true
 }
 let showzhibolist: any = [], signdata: any
+export const live = reactive({
+    mobile
+})
 export const data = reactive({
+    liveStatusColor: 'red',
     textsignTitle: "点击下面的“签到”按钮，等你10分钟，别错过了哦。",
     userOffSignTable: false,
     signContinueTime: '60',
@@ -48,7 +52,7 @@ export const data = reactive({
     signdata,
     cssheight: 250,
     cssheight2: 250,
-
+    isactive: true,
     sayColor: ['#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81'],
     saybgcolor: ['#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2'],
     arr1: [

@@ -17,6 +17,7 @@
           box-shadow: 2px 2px 2px #719abb;
           background: rgb(4, 146, 189);
           height: 16rem;
+          margin-bottom: 1rem;
         "
         class="touch"
         v-for="(item, index) in showarr"
@@ -68,7 +69,7 @@
                 {{ item.name }}
               </div>
               <div class="a2" style="font-size: 1.6rem; margin-top: 0.5rem">
-                2022年1月3日
+                {{ item.starttime[0].split(" ")[0] }}
               </div>
             </div>
             <a-button block style="text-align: left; border: none"> </a-button>
@@ -81,11 +82,8 @@
               text-align: center;
             "
           >
-            <!-- <span style="font-weight: 600; font-size: 1rem"
-              >开始时间:{{ item.starttime[0].split(' ')[1] }}
-            </span> -->
             <span style="font-weight: 600; font-size: 1rem"
-              >开始时间:14:00
+              >开始时间:{{ item.starttime[0].split(" ")[1] }}
             </span>
 
             <TeamOutlined style="font-size: 1.2rem; margin-left: 3px" />
@@ -116,13 +114,13 @@ import {
   FormOutlined,
   CheckOutlined,
   CloseOutlined,
-} from '@ant-design/icons-vue';
-import { wsdata } from '@config/http/wsdata';
-import { toRefs, defineComponent } from 'vue';
-import { useStore } from 'vuex';
-import { zhibolist } from './store/zhibolist';
-import { data } from '../store/live';
-import img1 from '@/assets/1.jpg';
+} from "@ant-design/icons-vue";
+import { wsdata } from "@config/http/wsdata";
+import { toRefs, defineComponent } from "vue";
+import { useStore } from "vuex";
+import { zhibolist } from "./store/zhibolist";
+import { data } from "../store/live";
+import img1 from "@/assets/1.jpg";
 export default defineComponent({
   data() {
     return {
@@ -146,11 +144,11 @@ export default defineComponent({
     }
 
     const sendF = (id) => {
-      ctx.emit('sendF', id);
+      ctx.emit("sendF", id);
     };
 
     const tigerfun = () => {
-      zhibolist.tiger = '获得生肖祝福,幸运指数大幅度提升';
+      zhibolist.tiger = "获得生肖祝福,幸运指数大幅度提升";
     };
 
     return {

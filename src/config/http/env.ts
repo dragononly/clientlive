@@ -1,19 +1,21 @@
 // let e = "测试环境"
-let e = "测试环境222"
-let a: string, b: string, c: string
+let e = "测试环境"
+let a: string, b: string, c: string, d: string
 
-if (e == "测试环境") {
-    a = "http://127.0.0.1:9000/public/live/index.html?a="
+if (e == "测试环境22") {
+    a = "http://cdn.pccpa.cn/live/?a="
     b = "http://127.0.0.1:9000"
     c = "http://localhost:9000"
+    d = "https://zxy1.pccpa.cn/api/v1/tj-adapter/front/callback"
 } else {
     a = "http://cdn.pccpa.cn/live/?a="
     b = "http://cdn.pccpa.cn:9000"
     c = "http://ws.pccpa.cn:9000"
+    d = "https://zxy1.pccpa.cn/api/v1/tj-adapter/front/callback"
 }
 
 export const htmlurl = a
 export const baseURL = b
 export const robotUrl = b
 export const wsUrl = c
-
+export const zhixueyun = d

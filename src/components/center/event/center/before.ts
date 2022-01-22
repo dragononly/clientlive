@@ -10,6 +10,8 @@ import moment from 'moment';
 import screenfull from 'screenfull';
 import { useRouter } from 'vue-router';
 import { signContinueTime } from './signContinueTime';
+import { live } from '@components/center/store/live'
+import { zhixueyun } from '@/config/http/env';
 export const myscroll = async () => {
     //为了让钉子生效所以我们做一个细微的scrool动作
     let div1: any = document.getElementById('sc');
@@ -70,6 +72,78 @@ export const getsigndata = async () => {
     }
 };
 
+//just get videoStatusObj
+export const videoStatusObjJust = async () => {
+    const mydata2 = {
+        _id: data.nowvideoid,
+        limit: '1',
+        back: 'status'
+    }
+
+    const cabStatus = await Rget('/zhibolist', mydata2)
+
+
+    if (!cabStatus?.data?.data[0]?.status) {
+        data.liveStatusColor = 'green'
+    }
+
+    if (cabStatus?.data?.data[0]?.status === "直播开始") {
+        data.liveStatusColor = 'green'
+    }
+    if (cabStatus?.data?.data[0]?.status === "直播结束") {
+        data.liveStatusColor = 'red'
+    }
+    if (cabStatus?.data?.data[0]?.status === "直播回放") {
+        data.liveStatusColor = 'blue'
+    }
+}
+
+//change video status
+export const videoStatusObj = async () => {
+    let shoulStatus: String = '', operateType: number = 1;
+    const mydata2 = {
+        _id: data.nowvideoid,
+        limit: '1',
+        back: 'status'
+    }
+
+    const cabStatus = await Rget('/zhibolist', mydata2)
+
+    if (!cabStatus?.data?.data[0]?.status) {
+        shoulStatus = "直播开始"
+        data.liveStatusColor = 'green'
+        operateType = 1
+    }
+
+    if (cabStatus?.data?.data[0]?.status === "直播开始") {
+        shoulStatus = "直播回放"
+        data.liveStatusColor = 'blue'
+        operateType = 2
+    }
+    if (cabStatus?.data?.data[0]?.status === "直播结束") {
+        shoulStatus = "直播开始"
+        data.liveStatusColor = 'green'
+        operateType = 3
+    }
+    if (cabStatus?.data?.data[0]?.status === "直播回放") {
+        shoulStatus = "直播结束"
+        data.liveStatusColor = 'red'
+        operateType = 1
+    }
+
+    //notice zhixueyun api
+    const mydata3 = {
+        id: data.nowvideoid,
+        operateType: operateType
+    }
+    await Mpost(zhixueyun, mydata3)
+    //1.change live status
+    const mydata = {
+        status: shoulStatus
+    }
+    await Rput('/zhibolist', data.nowvideoid, mydata)
+}
+
 //由外部公开链接跳转到直播逻辑
 export const autosendSonData = async (da: any) => {
     //子页面点击进入后list隐藏
@@ -123,6 +197,7 @@ export const useAccesstokenGetEid = async () => {
         return;
     }
     sessionStorage.eid = cab?.data?.data?.eid;
+    data.nowvideoid = cab?.data?.data?.zhiboid
 
     let datax1 = {
         _id: cab?.data?.data?.zhiboid,
@@ -164,7 +239,7 @@ export const adminUser = async () => {
 
     let cabg = await Mpost(url, mydata);
 
-    const adminarr = ['硬件网络维护部', '教育培训部'];
+    const adminarr = ['运营维护部', '教育培训部'];
 
     if (adminarr.includes(cabg?.data?.data?.departmentchild)) {
         data.admin = true;
@@ -419,44 +494,78 @@ export const signtimeclick = async () => {
     await Mpost(savesign, mydata2);
 };
 
+
+
 export const addtime = async () => {
-    let sesstime = moment().format('X');
-    let cha = Number(sesstime) - Number(Cookies.get('longtime'));
+
+    let sesstime1 = moment().format('X');
+    let cha = Number(sesstime1) - Number(Cookies.get('longtime'));
     if (!Cookies.get('longtime')) {
-        Cookies.set('longtime', sesstime);
-    } else if (cha > 60) {
-        Cookies.set('longtime', sesstime);
+        Cookies.set('longtime', sesstime1);
+    } else if (cha > 2) {
+        Cookies.set('longtime', sesstime1);
     } else {
         return;
     }
 
+
+    //1The first register information
+    //user infomation exchange this id
+    //schema like this
+
+    let terminalType = 0
+    if (live.mobile) {
+        terminalType = 1
+    }
+    let sesstime = moment().format('x');
+
     let mydata = {
         zhiboid: data.nowvideoid,
         eid: sessionStorage.eid,
-        name: sessionStorage.user,
         limit: '1',
     };
-    const a = await Rget('/zhibolist_longtime', mydata);
+    const a = await Rget('/zhibolist_longtimeback', mydata);
+    const cab1 = await Rget('/skyuser', { eid: sessionStorage.eid });
 
-    if (!a?.data?.data[0]?.time && data.nowvideoid) {
+
+    if (a?.data?.data?.length < 1) {
         let data4 = {
             zhiboid: data.nowvideoid,
             eid: sessionStorage.eid,
-            name: sessionStorage.user,
+            fullName: sessionStorage.user,
+            name: cab1?.data?.data[0]?.login_id,
+            organizationId: cab1?.data?.data[0]?.branch,
+            departmentId: cab1?.data?.data[0]?.departmentchild,
+            durationTime: '60',
+            entryTime: sesstime,
+            levelTime: '',
+            terminalType: terminalType,
             time: '1',
         };
-        await Rpost('/zhibolist_longtime', data4);
-    } else if (data.nowvideoid) {
+        await Rpost('/zhibolist_longtimeback', data4);
+
+
+
+    } else {
         let data5 = {
             zhiboid: data.nowvideoid,
             eid: sessionStorage.eid,
-            name: sessionStorage.user,
-            time: (parseInt(a.data.data[0].time) + 1).toString(),
+            fullName: sessionStorage.user,
+            name: cab1?.data?.data[0]?.login_id,
+            organizationId: cab1?.data?.data[0]?.branch,
+            departmentId: cab1?.data?.data[0]?.departmentchild,
+            durationTime: Number(a?.data?.data[0]?.durationTime) + 60,
+            levelTime: Number(sesstime) + 60 * 1000,
+            terminalType: terminalType,
+            time: '1',
         };
-        await Rput('/zhibolist_longtime', a.data.data[0]._id, data5);
-    }
-};
 
+        const cab3 = await Rput('/zhibolist_longtimeback', a?.data?.data[0]?._id, data5);
+        if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
+    }
+
+
+}
 
 export const fullshow = async () => {
     if (data.toggleFull) {

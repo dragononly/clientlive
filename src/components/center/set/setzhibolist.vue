@@ -158,6 +158,9 @@
           </a-popconfirm>
         </a-tooltip>
       </a-col>
+      <a-col :md="3" style="padding: 1px">
+        <upload />
+      </a-col>
     </a-row>
   </div>
 </template>
@@ -179,7 +182,7 @@ moment.locale('zh-cn');
 import { message } from 'ant-design-vue';
 import { reactive, toRefs, defineComponent } from 'vue';
 import XLSX, { WorkSheet } from 'xlsx';
-
+import upload from './minicom/upload.vue';
 import { Mpost, Rget } from '@config/http/index';
 export default defineComponent({
   data() {
@@ -399,6 +402,7 @@ export default defineComponent({
     };
   },
   components: {
+    upload,
     TeamOutlined,
     DeleteOutlined,
     DownloadOutlined,

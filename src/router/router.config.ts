@@ -16,6 +16,11 @@ export default [
 		name: 'sign',
 		component: () => import('../pages/home/sign.vue'),
 	},
+	{
+		path: '/backlook',
+		name: 'backlook',
+		component: () => import('../pages/center/backlook.vue'),
+	},
 
 	{
 		path: '/center',
