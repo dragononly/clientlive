@@ -12,6 +12,7 @@ import { useRouter } from 'vue-router';
 import { signContinueTime } from './signContinueTime';
 import { live } from '@components/center/store/live'
 import { zhixueyun } from '@/config/http/env';
+import axios from 'axios';
 export const myscroll = async () => {
     //为了让钉子生效所以我们做一个细微的scrool动作
     let div1: any = document.getElementById('sc');
@@ -85,17 +86,41 @@ export const videoStatusObjJust = async () => {
 
     if (!cabStatus?.data?.data[0]?.status) {
         data.liveStatusColor = 'green'
+    } else if (cabStatus?.data?.data[0]?.status === "直播开始") {
+        data.liveStatusColor = 'green'
+    } else if (cabStatus?.data?.data[0]?.status === "直播结束") {
+        data.videoOffColor = "red"
+        data.liveStatusColor = 'blue'
+    } else if (cabStatus?.data?.data[0]?.status === "直播等待") {
+        data.liveStatusColor = 'red'
+    } else if (cabStatus?.data?.data[0]?.status === "直播回放") {
+        data.liveStatusColor = 'gold'
+    } else {
+        message.info('可能直播状态错误')
     }
 
-    if (cabStatus?.data?.data[0]?.status === "直播开始") {
-        data.liveStatusColor = 'green'
+}
+
+//Stop the live broadcast
+export const isOffVideoEvent = async () => {
+    const mydata3 = {
+        id: data.nowvideoid,
+        operateType: '1'
     }
-    if (cabStatus?.data?.data[0]?.status === "直播结束") {
-        data.liveStatusColor = 'red'
+    //1.change live status
+    data.videoOffColor = "red"
+    data.liveStatusColor = 'blue'
+    const mydata = {
+        status: "直播结束"
     }
-    if (cabStatus?.data?.data[0]?.status === "直播回放") {
-        data.liveStatusColor = 'blue'
+    await Rput('/zhibolist', data.nowvideoid, mydata)
+
+    const cabZxyS = await Rget('/zxylive/changePlayType', mydata3)
+    if (cabZxyS.data.msg === "success") {
+        message.success('直播已经停止')
+
     }
+
 }
 
 //change video status
@@ -107,41 +132,45 @@ export const videoStatusObj = async () => {
         back: 'status'
     }
 
+    //1.change live status
+    let mydata = {
+        status: shoulStatus
+    }
     const cabStatus = await Rget('/zhibolist', mydata2)
-
     if (!cabStatus?.data?.data[0]?.status) {
-        shoulStatus = "直播开始"
+        mydata.status = "直播开始"
         data.liveStatusColor = 'green'
-        operateType = 1
+
+    }
+    if (cabStatus?.data?.data[0]?.status === "直播等待") {
+        mydata.status = "直播开始"
+        data.liveStatusColor = 'green'
+
+    } else {
+        return
     }
 
-    if (cabStatus?.data?.data[0]?.status === "直播开始") {
-        shoulStatus = "直播回放"
-        data.liveStatusColor = 'blue'
-        operateType = 2
-    }
-    if (cabStatus?.data?.data[0]?.status === "直播结束") {
-        shoulStatus = "直播开始"
-        data.liveStatusColor = 'green'
-        operateType = 3
-    }
-    if (cabStatus?.data?.data[0]?.status === "直播回放") {
-        shoulStatus = "直播结束"
-        data.liveStatusColor = 'red'
-        operateType = 1
-    }
+    await Rput('/zhibolist', data.nowvideoid, mydata)
+
 
     //notice zhixueyun api
     const mydata3 = {
         id: data.nowvideoid,
-        operateType: operateType
+        operateType: '1'
     }
-    await Mpost(zhixueyun, mydata3)
-    //1.change live status
-    const mydata = {
-        status: shoulStatus
+
+    const cabZxyS = await Rget('/zxylive/changePlayType', mydata3)
+    if (cabZxyS.data.msg === "success") {
+        message.success('直播开启')
+
     }
-    await Rput('/zhibolist', data.nowvideoid, mydata)
+
+
+
+
+
+
+
 }
 
 //由外部公开链接跳转到直播逻辑

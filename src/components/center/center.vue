@@ -23,21 +23,49 @@
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
 
-    <div
-      class="a1"
-      @click="videoStatus()"
-      v-if="nowvideoid"
-      style="margin-left: 135px"
-    >
-      <play-circle-filled
-        class="touch2"
-        :style="{ fontSize: '15px', color: liveStatusColor }"
-      />
+    <div class="a1" v-if="nowvideoid" style="margin-left: 135px">
+      <a-popconfirm
+        title="是否开启直播"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="confirm2"
+        @cancel="cancel2"
+      >
+        <a href="#">
+          <play-circle-filled
+            class="touch2"
+            :style="{ fontSize: '15px', color: liveStatusColor }"
+          />
+        </a>
+      </a-popconfirm>
     </div>
 
-    <div v-show="nowvideoid" class="a1" style="margin-left: 185px; color: #fff">
-      {{ eid }}&nbsp;{{ user }}
+    <div class="a1" v-if="nowvideoid" style="margin-left: 175px">
+      <a-popconfirm
+        title="是否关闭直播"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="confirm"
+        @cancel="cancel"
+      >
+        <a href="#">
+          <poweroff-outlined
+            class="touch2"
+            :style="{ fontSize: '15px', color: videoOffColor }"
+          />
+        </a>
+      </a-popconfirm>
     </div>
+    <div v-if="!admin">
+      <div
+        v-show="nowvideoid"
+        class="a1"
+        style="margin-left: 185px; color: #fff"
+      >
+        {{ eid }}&nbsp;{{ user }}
+      </div>
+    </div>
+
     <!-- <div
       v-show="nowvideoid"
       class="a1"
@@ -292,6 +320,7 @@ import {
   QuestionCircleOutlined,
   FullscreenExitOutlined,
   PlayCircleFilled,
+  PoweroffOutlined,
   TeamOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
@@ -323,6 +352,7 @@ import {
   fullshow,
   videoStatusObj,
   videoStatusObjJust,
+  isOffVideoEvent,
 } from './event/center/before';
 import { message } from 'ant-design-vue';
 export default defineComponent({
@@ -517,8 +547,21 @@ export default defineComponent({
         data.cssheight2 = 300;
       }
     };
-    const videoStatus = async () => {
+
+    const confirm = async (e: MouseEvent) => {
+      await isOffVideoEvent();
+    };
+
+    const cancel = (e: MouseEvent) => {
+      message.info('取消操作');
+    };
+
+    const confirm2 = async (e: MouseEvent) => {
       await videoStatusObj();
+    };
+
+    const cancel2 = (e: MouseEvent) => {
+      message.info('取消操作');
     };
 
     //如果在线人数是0，那么发送一个出发一下更新
@@ -527,6 +570,10 @@ export default defineComponent({
     }, 2000);
 
     return {
+      confirm2,
+      cancel2,
+      confirm,
+      cancel,
       userCloseSign,
       showModal,
       handleOk,
@@ -538,7 +585,6 @@ export default defineComponent({
       cssheightclick2,
       askshowclick,
       fullshow,
-      videoStatus,
       ...toRefs(data),
     };
   },
@@ -554,6 +600,7 @@ export default defineComponent({
     QuestionCircleOutlined,
     FullscreenExitOutlined,
     TeamOutlined,
+    PoweroffOutlined,
     heart,
     ask,
   },

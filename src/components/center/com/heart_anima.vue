@@ -101,6 +101,6 @@ export default defineComponent({
   height: 100px;
   width: 100px;
   z-index: 777;
-  overflow: hidden;
+  overflow: hidden !important;
 }
 </style>

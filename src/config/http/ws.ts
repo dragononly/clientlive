@@ -4,18 +4,8 @@ import { wsdata } from './wsdata'
 import { data } from '../../components/center/store/live'
 
 import { io } from 'socket.io-client';
-const socket = io(wsUrl, { transports: ['websocket'] });
+const socket = io(wsUrl, { transports: ['websocket'], secure: true });
 
-
-//这里是等待连接成功后计算在线人数
-let timec: NodeJS.Timeout | any = null
-clearInterval(timec)
-timec = setInterval(() => {
-	if (socket.connected) {
-		socket.emit('chat message', 'test');
-		clearInterval(timec)
-	}
-}, 300)
 
 export const connectSocket = async () => {
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { baseURL, robotUrl } from './env';
-axios.defaults.headers.common['authorization'] = "defaults.headers.";
+
 
 export const Mpost = async (url: string, data: any) => {
 	let cab = await axios.post(baseURL + url, data)
@@ -12,6 +12,22 @@ export const Mpost = async (url: string, data: any) => {
 		});
 	return cab
 }
+
+
+// export const MpostOut = async (url: string, data: any) => {
+
+
+// 	let cab = await axios.post("http://cdn.pccpa.cn:9000/openapi/accesstoken", { appid: '"tj73325e554f56eb05"', appkey: "f778ae2021e0f8e98e5ac76fe00e28b0" })
+// 		.then(function (res) {
+
+// 			return res
+// 		})
+// 		.catch(function (error) {
+// 			return error
+// 		});
+// 	return cab
+// }
+
 
 export const Rgetid = async (url: string, id: string) => {
 	let cab = await axios.get(robotUrl + url + '/' + id)
