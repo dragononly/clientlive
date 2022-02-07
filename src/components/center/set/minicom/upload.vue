@@ -1,59 +1,41 @@
 <template>
-  <a-upload
-    v-model:file-list="fileList"
-    :preview-file="previewFile"
-    :before-upload="beforeUpload"
-  >
-    <a-button>
-      <upload-outlined></upload-outlined>
-      Upload
-    </a-button>
-  </a-upload>
+  <div>
+    <a-button type="primary">{{ uploadStatus }}</a-button>
+    <a-modal v-model:visible="visible" title="输入文件地址" @ok="handleOk">
+      <p>
+        <a href="http://skycloud.moono.vip/" target="_blank">
+          跳转到文件管理后台</a
+        >
+      </p>
+      <p><a-input v-model:value="value" placeholder="文件url" /></p>
+    </a-modal>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
-import type { UploadProps } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
-// import { Minio } from 'minio';
-// var Minio = require('minio');
+import { defineComponent, ref, toRefs } from 'vue';
+import { uploadUrl } from './event';
+import { uploaddata } from './upload';
+
 export default defineComponent({
+  data() {
+    return { ...toRefs(uploaddata) };
+  },
   setup() {
-    // const fileList = ref<UploadProps['fileList']>([]);
-    // const beforeUpload: UploadProps['beforeUpload'] = (file: any) => {
-    //   console.log(file);
+    const handleOk = async (e: MouseEvent) => {
+      const cab = await uploadUrl(uploaddata.nowid, uploaddata.value);
 
-    //   fileList.value = [...fileList.value, file];
-    //   return false;
-    // };
+      if (cab) {
+        uploaddata.visible = false;
+        message.success('成功');
+      } else {
+        message.warn('失败');
+      }
+    };
 
-    // var minioClient = new Minio.Client({
-    //   endPoint: 'live.pccpa.cn',
-    //   port: 9000,
-    //   useSSL: false,
-    //   accessKey: '123456789',
-    //   secretKey: '123456789',
-    // });
-    let url = 'zbr/';
-    let objectkey = url + uuidv4() + 'op.file.name';
-    let fr = new FileReader(); //用FileReader 读取文件流
-    // fr.readAsArrayBuffer(op.file);
-    // fr.onload = function (ex: any) {
-    //   minioClient.putObject(
-    //     'mynumber1',
-    //     objectkey,
-    //     Buffer.from(ex.target.result),
-    //     op.file.size,
-    //     function (err) {
-    //       if (err) {
-    //         return console.log(err); // err should be null
-    //       }
-    //       let last = 'https://wx.moono.vip:8999/mynumber1/' + objectkey;
-    //       // console.log("Success", objInfo);
-    //     },
-    //   );
-    // };
+    return { handleOk };
   },
   components: {},
 });

@@ -471,13 +471,7 @@ export const signtimeclick = async () => {
     if (!data.signtime) {
         return;
     }
-    //签到之后关闭按钮可以显示
-    data.userOffSignTable = true;
-    //1css部分
-    //签到窗口显示控制
-    data.signtime = false;
-    //需要签到控制
-    data.need = false;
+
     //防止时间函数再一次开启签到页面
     // clearInterval(timec);
 
@@ -490,10 +484,7 @@ export const signtimeclick = async () => {
     let dftime = time_moment.diff(data.timeRecord, 'seconds');
     localStorage.setItem('passedtime', String(dftime));
 
-    //干完事后再启动
-    localStorage.setItem('lock', 'on');
 
-    localStorage.setItem('pretime', time);
 
     //2事件部分
     //2.1把这次点击的时间添加到数据库
@@ -506,9 +497,7 @@ export const signtimeclick = async () => {
         searchDepartmentchild,
         searchDepartmentchildData,
     );
-    if (!cabDepartmentchild?.data?.data?.departmentchild) {
-        return;
-    }
+
 
     let savesign = '/live/savesign';
     let mydata2 = {
@@ -520,7 +509,28 @@ export const signtimeclick = async () => {
             signtime: moment().format('YYYY-MM-DD HH:mm:ss'),
         },
     };
-    await Mpost(savesign, mydata2);
+
+    if (sessionStorage.eid) {
+        await Mpost(savesign, mydata2);
+        //签到之后关闭按钮可以显示
+        data.userOffSignTable = true;
+        //1css部分
+        //签到窗口显示控制
+        data.signtime = false;
+        //需要签到控制
+        data.need = false;
+        //干完事后再启动
+        localStorage.setItem('lock', 'on');
+
+        localStorage.setItem('pretime', time);
+    } else {
+        sessionStorage.info('打卡异常请重新登录')
+    }
+
+
+
+
+
 };
 
 

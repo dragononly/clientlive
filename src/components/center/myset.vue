@@ -35,7 +35,8 @@
             </template>
             <a-menu-item key="2">开启直播</a-menu-item>
             <a-menu-item key="3">直播列表</a-menu-item>
-            <a-menu-item key="4">推流地址</a-menu-item>
+            <a-menu-item key="4">历史列表</a-menu-item>
+            <a-menu-item key="5">推流地址</a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub3" @titleClick="titleClick">
             <template #title>
@@ -44,7 +45,7 @@
                 <span>用户设置</span>
               </span>
             </template>
-            <a-menu-item key="5">退出登陆</a-menu-item>
+            <a-menu-item key="6">退出登陆</a-menu-item>
           </a-sub-menu>
         </a-menu>
       </a-col>
@@ -60,10 +61,12 @@
 
         <!-- 直播列表 -->
         <zhibolist v-if="vif[3]" />
+        <!-- 直播列表 -->
+        <setzhibolistHistory v-if="vif[4]" />
         <!-- 推流地址 -->
-        <tuiliu v-if="vif[4]" />
+        <tuiliu v-if="vif[5]" />
         <!-- 用户设置 -->
-        <user v-if="vif[5]" />
+        <user v-if="vif[6]" />
       </a-col>
     </a-row>
   </div>
@@ -80,8 +83,10 @@ import user from './set/user.vue';
 import group from './set/group.vue';
 import livetelecast from './user/startlive.vue';
 import Zhibolist from './set/setzhibolist.vue';
+import setzhibolistHistory from './set/setzhibolistHistory.vue';
 import tuiliu from './set/tuiliu.vue';
 import { data } from './store/live';
+import { message } from 'ant-design-vue';
 export default defineComponent({
   data() {
     return { ...toRefs(data) };
@@ -90,11 +95,11 @@ export default defineComponent({
     let data = reactive({
       selectedKeys: ['5'],
       openKeys: ['sub3'],
-      vif: [false, false, false, false, false, true],
+      vif: [false, false, false, false, false, true, false],
     });
 
     const handleClick = (e: any) => {
-      data.vif = [false, false, false, false, false, false];
+      data.vif = [false, false, false, false, false, false, false];
       data.vif[e.key] = true;
     };
 
@@ -115,6 +120,7 @@ export default defineComponent({
     QqOutlined,
     ToolOutlined,
     SettingOutlined,
+    setzhibolistHistory,
     group,
     Zhibolist,
     tuiliu,

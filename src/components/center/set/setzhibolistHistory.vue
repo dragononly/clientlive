@@ -9,7 +9,7 @@
   >
     <div v-for="(item, index) in showarr" :key="index">
       <a-row
-        v-if="item.backurl == '等待回传'"
+        v-if="item.backurl != '等待回传'"
         style="
           margin-bottom: 15px;
           font-size: 10px;
@@ -228,10 +228,9 @@ export default defineComponent({
       for (let i = 0; i < cab.data.data.usersign.length; i++) {
         let jian =
           cab.data.data.usersign[i].signtime + cab.data.data.usersign[i].eid;
-        if (!obj[jian] && cab.data.data.usersign[i].eid) {
+        if (!obj[jian]) {
           newarr2.push(cab.data.data.usersign[i]);
           obj[jian] = true;
-        } else {
         }
       }
 
@@ -245,7 +244,7 @@ export default defineComponent({
           ourname[cab.data.data.usersign[i].name] = {
             eid: cab.data.data.usersign[i].eid,
             cishu: 1,
-            // departmentchild: cab?.data?.data?.usersign[i]?.departmentchild,
+            departmentchild: cab?.data?.data?.usersign[i]?.departmentchild,
           };
         } else {
           ourname[cab.data.data.usersign[i].name].cishu++;
@@ -286,46 +285,27 @@ export default defineComponent({
       const skyuserMap = new Map();
       const getSkyuser = async () => {
         const cab: any = await Rget('/skyuser', {
-          back: 'branch,eid,departmentchild',
+          back: 'branch,eid',
         });
         return cab?.data?.data;
       };
       for (const i of await getSkyuser()) {
-        skyuserMap.set(i.eid, i);
+        skyuserMap.set(i.eid, i.branch);
       }
+      console.log(skyuserMap);
 
       for (const key in ourname) {
-        //说明在职
-        if (skyuserMap.get(ourname[key]?.eid)) {
-          let arr = [
-            key,
-            ourname[key]?.eid,
-            skyuserMap.get(ourname[key]?.eid).branch,
-            skyuserMap.get(ourname[key]?.eid).departmentchild,
-            ourname[key]?.cishu,
-            mapZLMap.get(ourname[key]?.eid),
-            need_punch_number,
-            parseInt(
-              ((ourname[key].cishu / need_punch_number) * 100).toString(),
-            ),
-          ];
-          aoa.push(arr);
-        } else {
-          //说明离职了
-          let arr = [
-            key,
-            ourname[key]?.eid,
-            '离职',
-            '离职',
-            ourname[key]?.cishu,
-            mapZLMap.get(ourname[key]?.eid),
-            need_punch_number,
-            parseInt(
-              ((ourname[key].cishu / need_punch_number) * 100).toString(),
-            ),
-          ];
-          aoa.push(arr);
-        }
+        let arr = [
+          key,
+          ourname[key]?.eid,
+          skyuserMap.get(ourname[key]?.eid.branch),
+          skyuserMap.get(ourname[key]?.eid.departmentchild),
+          ourname[key]?.cishu,
+          mapZLMap.get(ourname[key]?.eid),
+          need_punch_number,
+          parseInt(((ourname[key].cishu / need_punch_number) * 100).toString()),
+        ];
+        aoa.push(arr);
       }
 
       let worksheet: WorkSheet = XLSX.utils.aoa_to_sheet(aoa);
@@ -427,6 +407,7 @@ export default defineComponent({
       uploaddata.nowid = id;
       //模态框显示
       uploaddata.visible = true;
+      console.log(backurl);
     };
 
     return {

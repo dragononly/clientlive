@@ -1,9 +1,6 @@
 <template>
   <video controls>
-    <source
-      src="https://minioserver.moono.vip/sky/uploads/1/cdn/%E5%8D%83%E5%8F%A4%E7%8E%A6%E5%B0%98%20%E7%AC%AC01%E9%9B%86_1080P%E5%9C%A8%E7%BA%BF%E8%A7%82%E7%9C%8B%E5%B9%B3%E5%8F%B0_%E8%85%BE%E8%AE%AF%E8%A7%86%E9%A2%91.mp4"
-      type="video/mp4"
-    />
+    <source :src="backUrl" type="video/mp4" />
   </video>
 </template> 
 <script lang="ts">
@@ -14,9 +11,10 @@ import { addtime, useAccesstokenGetEid } from './event/center/before';
 import { data } from './store/live';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
+import { Rget } from '@/config/http';
 export default defineComponent({
   data() {
-    return {};
+    return { ...toRefs(data) };
   },
 
   async setup(myself) {
@@ -27,8 +25,16 @@ export default defineComponent({
       //设置全局accesstoken
       axios.defaults.headers.common['authorization'] = route.query.accesstoken;
       await useAccesstokenGetEid();
+      //console.log(data.nowvideoid, data.eid);
+
+      //通过直播id去获取直播的backurl
+      const reqData = { _id: data.nowvideoid, limit: 1, back: 'backurl' };
+      const cab = await Rget('/zhibolist', reqData);
+
+      data.backUrl = cab?.data?.data[0]?.backurl;
     }
     if (data.nowvideoid && sessionStorage.user && sessionStorage.eid) {
+      message.info('计时记分服务器启动');
       time60 = setInterval(addtime, 3 * 1000);
     } else {
       message.info('登录失败，不计入观看时间');
