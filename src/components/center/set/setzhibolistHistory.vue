@@ -228,7 +228,7 @@ export default defineComponent({
       for (let i = 0; i < cab.data.data.usersign.length; i++) {
         let jian =
           cab.data.data.usersign[i].signtime + cab.data.data.usersign[i].eid;
-        if (!obj[jian]) {
+        if (!obj[jian] && cab.data.data.usersign[i].eid) {
           newarr2.push(cab.data.data.usersign[i]);
           obj[jian] = true;
         }
@@ -244,7 +244,6 @@ export default defineComponent({
           ourname[cab.data.data.usersign[i].name] = {
             eid: cab.data.data.usersign[i].eid,
             cishu: 1,
-            departmentchild: cab?.data?.data?.usersign[i]?.departmentchild,
           };
         } else {
           ourname[cab.data.data.usersign[i].name].cishu++;
@@ -285,27 +284,46 @@ export default defineComponent({
       const skyuserMap = new Map();
       const getSkyuser = async () => {
         const cab: any = await Rget('/skyuser', {
-          back: 'branch,eid',
+          back: 'branch,eid,departmentchild',
         });
         return cab?.data?.data;
       };
       for (const i of await getSkyuser()) {
-        skyuserMap.set(i.eid, i.branch);
+        skyuserMap.set(i.eid, i);
       }
       console.log(skyuserMap);
 
       for (const key in ourname) {
-        let arr = [
-          key,
-          ourname[key]?.eid,
-          skyuserMap.get(ourname[key]?.eid.branch),
-          skyuserMap.get(ourname[key]?.eid.departmentchild),
-          ourname[key]?.cishu,
-          mapZLMap.get(ourname[key]?.eid),
-          need_punch_number,
-          parseInt(((ourname[key].cishu / need_punch_number) * 100).toString()),
-        ];
-        aoa.push(arr);
+        if (skyuserMap.get(ourname[key]?.eid)) {
+          let arr = [
+            key,
+            ourname[key]?.eid,
+            skyuserMap.get(ourname[key]?.eid).branch,
+            skyuserMap.get(ourname[key]?.eid).departmentchild,
+            ourname[key]?.cishu,
+            mapZLMap.get(ourname[key]?.eid),
+            need_punch_number,
+            parseInt(
+              ((ourname[key].cishu / need_punch_number) * 100).toString(),
+            ),
+          ];
+          aoa.push(arr);
+        } else {
+          //说明离职了
+          let arr = [
+            key,
+            ourname[key]?.eid,
+            '离职',
+            '离职',
+            ourname[key]?.cishu,
+            mapZLMap.get(ourname[key]?.eid),
+            need_punch_number,
+            parseInt(
+              ((ourname[key].cishu / need_punch_number) * 100).toString(),
+            ),
+          ];
+          aoa.push(arr);
+        }
       }
 
       let worksheet: WorkSheet = XLSX.utils.aoa_to_sheet(aoa);

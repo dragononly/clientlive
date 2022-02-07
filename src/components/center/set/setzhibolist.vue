@@ -245,7 +245,6 @@ export default defineComponent({
           ourname[cab.data.data.usersign[i].name] = {
             eid: cab.data.data.usersign[i].eid,
             cishu: 1,
-            // departmentchild: cab?.data?.data?.usersign[i]?.departmentchild,
           };
         } else {
           ourname[cab.data.data.usersign[i].name].cishu++;

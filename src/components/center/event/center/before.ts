@@ -488,15 +488,15 @@ export const signtimeclick = async () => {
 
     //2事件部分
     //2.1把这次点击的时间添加到数据库
-    //2.1.1先去查询到部门
-    let searchDepartmentchild = '/live/eid';
-    let searchDepartmentchildData = {
-        eid: sessionStorage.eid,
-    };
-    let cabDepartmentchild = await Mpost(
-        searchDepartmentchild,
-        searchDepartmentchildData,
-    );
+    // //2.1.1先去查询到部门
+    // let searchDepartmentchild = '/live/eid';
+    // let searchDepartmentchildData = {
+    //     eid: sessionStorage.eid,
+    // };
+    // let cabDepartmentchild = await Mpost(
+    //     searchDepartmentchild,
+    //     searchDepartmentchildData,
+    // );
 
 
     let savesign = '/live/savesign';
@@ -505,7 +505,7 @@ export const signtimeclick = async () => {
         sign: {
             name: sessionStorage.user,
             eid: sessionStorage.eid,
-            departmentchild: cabDepartmentchild?.data?.data?.departmentchild,
+            // departmentchild: cabDepartmentchild?.data?.data?.departmentchild,
             signtime: moment().format('YYYY-MM-DD HH:mm:ss'),
         },
     };
