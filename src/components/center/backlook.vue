@@ -7,7 +7,11 @@
 import { user } from '@/utils/time';
 import { defineComponent, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { addtime, useAccesstokenGetEid } from './event/center/before';
+import {
+  addtime,
+  addtimeBack,
+  useAccesstokenGetEid,
+} from './event/center/before';
 import { data } from './store/live';
 import axios from 'axios';
 import { message } from 'ant-design-vue';
@@ -35,7 +39,7 @@ export default defineComponent({
     }
     if (data.nowvideoid && sessionStorage.user && sessionStorage.eid) {
       message.info('计时记分服务器启动');
-      time60 = setInterval(addtime, 3 * 1000);
+      time60 = setInterval(addtimeBack, 3 * 1000);
     } else {
       message.info('登录失败，不计入观看时间');
     }

@@ -163,7 +163,7 @@
         </a-col>
         <a-col :md="3" style="padding: 1px">
           <upload
-            v-if="item.backurl == '等待回传'"
+            v-if="item.backurl == '等待回传' ? (uploadStatus = '上传') : '上传'"
             @click="getNowid(item._id)"
           />
           <a-button v-else type="dashed" disabled>已经上传</a-button>
@@ -425,7 +425,7 @@ export default defineComponent({
       //授权父子变量
       uploaddata.nowid = id;
       //模态框显示
-      uploaddata.visible = true;
+      uploaddata.visible2 = true;
     };
 
     return {

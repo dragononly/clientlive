@@ -7,102 +7,103 @@
         src="../../../assets/no.jpg"
       />
     </div>
-    <a-row style="margin-top: 3.2rem">
-      <a-col
-        :md="{ span: '20', offset: '1' }"
-        :xs="{ span: '24', offset: '2' }"
-        style="
-          font-size: 10px;
-          padding: 1rem 1rem 0px 1rem;
-          box-shadow: 2px 2px 2px #719abb;
-          background: rgb(4, 146, 189);
-          height: 16rem;
-          margin-bottom: 1rem;
-        "
-        class="touch"
-        v-for="(item, index) in showarr"
-        :key="index"
-      >
-        <div
-          style="margin-bottom: 5px; position: relative; text-align: left"
-          @click="sendF(item._id)"
+    <div v-for="(item, index) in showarr" :key="index">
+      <a-row v-if="item.backurl == '等待回传'" style="margin-top: 3.2rem">
+        <a-col
+          :md="{ span: '20', offset: '1' }"
+          :xs="{ span: '24', offset: '2' }"
+          style="
+            font-size: 10px;
+            padding: 1rem 1rem 0px 1rem;
+            box-shadow: 2px 2px 2px #719abb;
+            background: #638866;
+            height: 16rem;
+            margin-bottom: 1rem;
+          "
+          class="touch"
         >
-          <!-- <a-popover
+          <div
+            style="margin-bottom: 5px; position: relative; text-align: left"
+            @click="sendF(item._id)"
+          >
+            <!-- <a-popover
             :title="item.starttime[0] + '-' + item.starttime[1]"
             placement="bottom"
           > -->
-          <a-popover placement="top">
-            <template #content>
-              <div style="height: 1.1rem" @click="tigerfun" class="touch">
-                <span style="color: #bc1f09; font-weight: bold; float: left"
-                  >天健虎年</span
-                >
-                <img :src="img1" style="width: 2rem; float: left" />
-                <span
-                  style="
-                    color: #bc1f09;
-                    font-weight: bold;
-                    float: left;
-                    font-size: 0.5rem;
-                  "
-                  >{{ tiger }}</span
-                >
-              </div>
-            </template>
-            <div
-              style="
-                background: #fff;
-                border-radius: 5px;
-                padding: 5px;
-                height: 8rem;
-              "
-            >
+            <a-popover placement="bottom">
+              <template #content>
+                <div style="height: 1.1rem" @click="tigerfun" class="touch">
+                  <span style="color: #bc1f09; font-weight: bold; float: left"
+                    >天健虎年</span
+                  >
+                  <img :src="img1" style="width: 2rem; float: left" />
+                  <span
+                    style="
+                      color: #bc1f09;
+                      font-weight: bold;
+                      float: left;
+                      font-size: 0.5rem;
+                    "
+                    >{{ tiger }}</span
+                  >
+                </div>
+              </template>
               <div
-                class="a2"
                 style="
-                  font-size: 2.5rem;
-                  text-align: center;
-                  height: 4rem;
-                  padding-top: 0.3rem;
+                  background: #fff;
+                  border-radius: 5px;
+                  padding: 5px;
+                  height: 8rem;
                 "
               >
-                {{ item.name }}
+                <div
+                  class="a2"
+                  style="
+                    font-size: 2.5rem;
+                    text-align: center;
+                    height: 4rem;
+                    padding-top: 0.3rem;
+                  "
+                >
+                  {{ item.name }}
+                </div>
+                <div class="a2" style="font-size: 1.6rem; margin-top: 0.5rem">
+                  {{ item.starttime[0].split(' ')[0] }}
+                </div>
               </div>
-              <div class="a2" style="font-size: 1.6rem; margin-top: 0.5rem">
-                {{ item.starttime[0].split(" ")[0] }}
+              <a-button block style="text-align: left; border: none">
+              </a-button>
+            </a-popover>
+            <div
+              style="
+                padding-left: 5px;
+                margin-top: 10px;
+                color: #fff;
+                text-align: center;
+              "
+            >
+              <span style="font-weight: 600; font-size: 1rem"
+                >开始时间:{{ item.starttime[0].split(' ')[1] }}
+              </span>
+
+              <TeamOutlined style="font-size: 1.2rem; margin-left: 3px" />
+
+              <div style="display: inline-block">
+                <a-badge
+                  count="0"
+                  :overflow-count="999"
+                  class="a3"
+                  :number-style="{ backgroundColor: '#fff', color: '#888' }"
+                />
               </div>
-            </div>
-            <a-button block style="text-align: left; border: none"> </a-button>
-          </a-popover>
-          <div
-            style="
-              padding-left: 5px;
-              margin-top: 10px;
-              color: #fff;
-              text-align: center;
-            "
-          >
-            <span style="font-weight: 600; font-size: 1rem"
-              >开始时间:{{ item.starttime[0].split(" ")[1] }}
-            </span>
-
-            <TeamOutlined style="font-size: 1.2rem; margin-left: 3px" />
-
-            <div style="display: inline-block">
-              <a-badge
-                count="0"
-                :overflow-count="999"
-                class="a3"
-                :number-style="{ backgroundColor: '#fff', color: '#888' }"
-              />
-            </div>
-            <!-- <span style="font-size: 18px; font-weight: bold">{{
+              <!-- <span style="font-size: 18px; font-weight: bold">{{
               parseInt(people * 1.5)
             }}</span> -->
+            </div>
           </div>
-        </div>
-      </a-col>
-    </a-row>
+        </a-col>
+      </a-row>
+    </div>
   </div>
 </template>
 
@@ -114,13 +115,13 @@ import {
   FormOutlined,
   CheckOutlined,
   CloseOutlined,
-} from "@ant-design/icons-vue";
-import { wsdata } from "@config/http/wsdata";
-import { toRefs, defineComponent } from "vue";
-import { useStore } from "vuex";
-import { zhibolist } from "./store/zhibolist";
-import { data } from "../store/live";
-import img1 from "@/assets/1.jpg";
+} from '@ant-design/icons-vue';
+import { wsdata } from '@config/http/wsdata';
+import { toRefs, defineComponent } from 'vue';
+import { useStore } from 'vuex';
+import { zhibolist } from './store/zhibolist';
+import { data } from '../store/live';
+import img1 from '@/assets/1.jpg';
 export default defineComponent({
   data() {
     return {
@@ -136,6 +137,7 @@ export default defineComponent({
   },
   async setup(props, ctx) {
     const store = useStore();
+
     zhibolist.showarr = data.showzhibolist;
 
     if (props.arr.length == 0) {
@@ -144,11 +146,11 @@ export default defineComponent({
     }
 
     const sendF = (id) => {
-      ctx.emit("sendF", id);
+      ctx.emit('sendF', id);
     };
 
     const tigerfun = () => {
-      zhibolist.tiger = "获得生肖祝福,幸运指数大幅度提升";
+      zhibolist.tiger = '获得生肖祝福,幸运指数大幅度提升';
     };
 
     return {

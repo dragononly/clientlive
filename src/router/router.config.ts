@@ -21,6 +21,11 @@ export default [
 		name: 'backlook',
 		component: () => import('../pages/center/backlook.vue'),
 	},
+	{
+		path: '/backlist',
+		name: 'backlist',
+		component: () => import('../components/center/backlist.vue'),
+	},
 
 	{
 		path: '/center',

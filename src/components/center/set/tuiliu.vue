@@ -49,7 +49,9 @@ export default defineComponent({
         value: i._id,
         label: i.name,
       };
-      tuiliudata.options.push(op);
+      if (i.backurl == '等待回传') {
+        tuiliudata.options.push(op);
+      }
     }
     const handleChange = (value: any) => {
       tuiliudata.liveid = value.value;

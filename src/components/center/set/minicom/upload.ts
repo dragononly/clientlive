@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 
 export const uploaddata = reactive({
-    visible: false,
+    visible2: false,
     value: "",
     nowid: "",
     uploadStatus: "上传",

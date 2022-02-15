@@ -2,6 +2,13 @@
   margin: 0;
   padding: 0;
 }
+.nav{
+    height: 65px;
+    position: fixed;
+    z-index: 5;
+    width: 100%;
+    background:red
+}
 .css2 {
   border-radius: 5px;
   font-size: 13px;
@@ -10,16 +17,16 @@
 }
 .a1 {
   margin-top: 18px;
-  position: absolute;
+  position: fixed;
   top: 0px;
-  left: 30px;
+  left: 20px;
   z-index: 10;
   border: 1px solid #616161;
   border-radius: 3px;
   padding: 2px 5px;
 }
 .a11 {
-  left: 65px;
+  left: 60px;
 }
 .c5 {
   position: absolute;
@@ -47,7 +54,7 @@
 .c3,
 .c1 {
   position: relative;
-  position: fixed;
+  position: absolute;
   z-index: 11;
   top: 10px;
   width: 20%;
@@ -56,7 +63,7 @@
   padding: 10px;
   overflow-y: scroll;
   font-size: 13px;
-  opacity: 0.9;
+  opacity: 0.9 ;
 }
 
 .c3 {

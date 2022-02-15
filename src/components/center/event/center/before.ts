@@ -114,8 +114,15 @@ export const isOffVideoEvent = async () => {
         status: "直播结束"
     }
     await Rput('/zhibolist', data.nowvideoid, mydata)
-
+    //奇怪的知学云去更新直播状态
     const cabZxyS = await Rget('/zxylive/changePlayType', mydata3)
+
+    //奇怪的还要通知他记录可以拿到
+    await Rget('/zxylive/changePlayType', {
+        id: data.nowvideoid,
+        operateType: '2'
+    })
+
     if (cabZxyS.data.msg === "success") {
         message.success('直播已经停止')
 
@@ -216,6 +223,7 @@ export const onSearch = async (searchValue: string) => {
         command: 'message',
     };
     sendWsMessage(pdata);
+    data.value = " "
 };
 
 export const useAccesstokenGetEid = async () => {
@@ -533,15 +541,13 @@ export const signtimeclick = async () => {
 
 };
 
-
-
-export const addtime = async () => {
+export const addtimeBack = async () => {
 
     let sesstime1 = moment().format('X');
     let cha = Number(sesstime1) - Number(Cookies.get('longtime'));
     if (!Cookies.get('longtime')) {
         Cookies.set('longtime', sesstime1);
-    } else if (cha > 2) {
+    } else if (cha > 60) {
         Cookies.set('longtime', sesstime1);
     } else {
         return;
@@ -566,6 +572,7 @@ export const addtime = async () => {
     const a = await Rget('/zhibolist_longtimeback', mydata);
     const cab1 = await Rget('/skyuser', { eid: sessionStorage.eid });
 
+    console.log(a?.data?.data);
 
     if (a?.data?.data?.length < 1) {
         let data4 = {
@@ -600,6 +607,81 @@ export const addtime = async () => {
         };
 
         const cab3 = await Rput('/zhibolist_longtimeback', a?.data?.data[0]?._id, data5);
+        if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
+    }
+
+
+}
+
+
+export const addtime = async () => {
+
+    let sesstime1 = moment().format('X');
+    let cha = Number(sesstime1) - Number(Cookies.get('longtime'));
+
+
+    if (!Cookies.get('longtime')) {
+        Cookies.set('longtime', sesstime1);
+    } else if (cha > 60) {
+        Cookies.set('longtime', sesstime1);
+    } else {
+        return;
+    }
+
+
+    //1The first register information
+    //user infomation exchange this id
+    //schema like this
+
+    let terminalType = 0
+    if (live.mobile) {
+        terminalType = 1
+    }
+    let sesstime = moment().format('x');
+
+    let mydata = {
+        zhiboid: data.nowvideoid,
+        eid: sessionStorage.eid,
+        limit: '1',
+    };
+    const a = await Rget('/zhibolist_longtime', mydata);
+    const cab1 = await Rget('/skyuser', { eid: sessionStorage.eid });
+
+
+
+    if (a?.data?.data?.length < 1) {
+        let data4 = {
+            zhiboid: data.nowvideoid,
+            eid: sessionStorage.eid,
+            fullName: sessionStorage.user,
+            name: cab1?.data?.data[0]?.login_id,
+            organizationId: cab1?.data?.data[0]?.branch,
+            departmentId: cab1?.data?.data[0]?.departmentchild,
+            durationTime: '60',
+            entryTime: sesstime,
+            levelTime: '',
+            terminalType: terminalType,
+            time: '1',
+        };
+        await Rpost('/zhibolist_longtime', data4);
+
+
+
+    } else {
+        let data5 = {
+            zhiboid: data.nowvideoid,
+            eid: sessionStorage.eid,
+            fullName: sessionStorage.user,
+            name: cab1?.data?.data[0]?.login_id,
+            organizationId: cab1?.data?.data[0]?.branch,
+            departmentId: cab1?.data?.data[0]?.departmentchild,
+            durationTime: Number(a?.data?.data[0]?.durationTime) + 60,
+            levelTime: Number(sesstime) + 60 * 1000,
+            terminalType: terminalType,
+            time: '1',
+        };
+
+        const cab3 = await Rput('/zhibolist_longtime', a?.data?.data[0]?._id, data5);
         if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
     }
 

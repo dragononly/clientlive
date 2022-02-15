@@ -163,10 +163,11 @@
         </a-col>
         <a-col :md="3" style="padding: 1px">
           <upload
-            v-if="item.backurl == '等待回传'"
+            v-if="
+              item.backurl != '等待回传' ? (uploadStatus = '已经上传') : '上传'
+            "
             @click="getNowid(item._id)"
           />
-          <a-button v-else type="dashed" disabled>已经上传</a-button>
         </a-col>
       </a-row>
     </div>
@@ -191,6 +192,7 @@ import { message } from 'ant-design-vue';
 import { reactive, toRefs, defineComponent } from 'vue';
 import XLSX, { WorkSheet } from 'xlsx';
 import upload from './minicom/upload.vue';
+
 import { Mpost, Rget } from '@config/http/index';
 import { uploaddata } from './minicom/upload';
 
@@ -424,8 +426,7 @@ export default defineComponent({
       //授权父子变量
       uploaddata.nowid = id;
       //模态框显示
-      uploaddata.visible = true;
-      console.log(backurl);
+      uploaddata.visible2 = true;
     };
 
     return {

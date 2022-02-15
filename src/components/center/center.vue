@@ -7,6 +7,13 @@
         :style="{ fontSize: '15px' }"
       />
     </div>
+    <div v-if="!nowvideoid" class="a1" style="margin-left: 45px">
+      <router-link to="/center" style="color: #63696a">正在直播</router-link>
+    </div>
+    <div v-if="!nowvideoid" class="a1" style="margin-left: 135px">
+      <router-link to="/backlist" style="color: #63696a">直播回看</router-link>
+    </div>
+
     <div v-if="admin && nowvideoid" class="a1 a11" style="color: #fff">
       <QuestionCircleOutlined
         class="touch2"
@@ -18,12 +25,21 @@
       class="a1"
       @click="fullshow()"
       v-if="nowvideoid"
-      style="margin-left: 90px"
+      style="margin-left: 97px"
     >
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
+    <div>
+      <div
+        v-show="nowvideoid"
+        class="a1"
+        style="margin-left: 135px; color: #fff"
+      >
+        {{ eid }}&nbsp;{{ user }}
+      </div>
+    </div>
 
-    <div class="a1" v-if="nowvideoid" style="margin-left: 135px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 245px">
       <a-popconfirm
         title="是否开启直播"
         ok-text="确认"
@@ -40,7 +56,7 @@
       </a-popconfirm>
     </div>
 
-    <div class="a1" v-if="nowvideoid" style="margin-left: 175px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 277px">
       <a-popconfirm
         title="是否关闭直播"
         ok-text="确认"
@@ -55,15 +71,6 @@
           />
         </a>
       </a-popconfirm>
-    </div>
-    <div v-if="!admin">
-      <div
-        v-show="nowvideoid"
-        class="a1"
-        style="margin-left: 185px; color: #fff"
-      >
-        {{ eid }}&nbsp;{{ user }}
-      </div>
     </div>
 
     <!-- <div
@@ -106,7 +113,7 @@
       }"
     >
       <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
-        <!-- <div
+        <div
           v-if="close1"
           style="
             position: absolute;
@@ -125,7 +132,7 @@
               style="font-size: 15px; font-weight: bold"
             />
           </span>
-        </div> -->
+        </div>
         <iframe
           sandbox="allow-same-origin allow-scripts"
           name="iframe_a"
@@ -136,7 +143,7 @@
           id="childFrame"
           scrolling="no"
           allowfullscreen
-          style="position: absolute"
+          style="position: absolute; left: 0"
         ></iframe>
 
         <div style="position: absolute; right: 0; top: 0; z-index: 12">
@@ -157,11 +164,12 @@
             <div style="margin-top: 10px">
               <a-row>
                 <a-col :span="12">剩余时间{{ signshowtime }}秒</a-col>
-                <a-col :span="8" :offset="4">
+                <a-col :span="8" :offset="4" style="padding: 0 10px">
                   <a-button
                     @click="signtimeclick()"
                     v-show="!userOffSignTable"
                     type="primary"
+                    style="width: 100%"
                   >
                     签 到
                   </a-button>
@@ -169,6 +177,7 @@
                     @click="userCloseSign()"
                     v-show="userOffSignTable"
                     type="primary"
+                    style="width: 100%"
                   >
                     关 闭
                   </a-button>
@@ -177,80 +186,103 @@
             </div>
           </a-card>
         </div>
-        <div
-          v-if="nowvideoid && fulloff"
-          id="sc2"
-          :class="chatmclass ? 'c3m' : 'c3'"
-          :style="{
-            height: cssheight2 + 'px',
-            scrollTop: cssheight2,
-          }"
-          ref="containerRef2"
-        >
-          <div class="touch">
-            <div id="components-affix-demo-target" class="scrollable-container">
-              <div class="background">
-                <a-affix
-                  :target="() => containerRef2"
-                  :style="{ position: 'absolute', top: 0, right: 0 }"
-                >
-                  <MinusSquareOutlined @click="cssheightclick2()" class="c4" />
-                </a-affix>
-              </div>
-            </div>
-
-            <div v-for="(i, key) in arr2" :key="key" style="margin-bottom: 5px">
+        <div class="scAll">
+          <div
+            v-if="nowvideoid && fulloff"
+            id="sc2"
+            :class="chatmclass ? 'c3m' : 'c3'"
+            :style="{
+              height: cssheight2 + 'px',
+              scrollTop: cssheight2,
+              overflowY: isactive ? 'scroll' : 'hidden',
+            }"
+            ref="containerRef2"
+          >
+            <div class="touch">
               <div
-                :style="{
-                  color: sayColor[String(key).charAt(String(key).length - 1)],
-                  backgroundColor:
-                    saybgcolor[String(key).charAt(String(key).length - 1)],
-                }"
-                class="line2 css2"
+                id="components-affix-demo-target"
+                class="scrollable-container"
               >
-                {{ i.user }}说:
-                <span style="color: #fff"> {{ i.message }}</span>
+                <div class="background">
+                  <a-affix
+                    :target="() => containerRef2"
+                    :style="{ position: 'absolute', top: 0, right: 0 }"
+                  >
+                    <MinusSquareOutlined
+                      @click="cssheightclick2()"
+                      class="c4"
+                    />
+                  </a-affix>
+                </div>
+              </div>
+
+              <div
+                v-for="(i, key) in arr2"
+                :key="key"
+                style="margin-bottom: 5px"
+              >
+                <div
+                  :style="{
+                    color: sayColor[String(key).charAt(String(key).length - 1)],
+                    backgroundColor:
+                      saybgcolor[String(key).charAt(String(key).length - 1)],
+                  }"
+                  class="line2 css2"
+                >
+                  {{ i.user }}说:
+                  <span style="color: #fff"> {{ i.message }}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          v-if="nowvideoid"
-          id="sc"
-          :class="chatmclass ? 'c1m' : 'c1'"
-          :style="{ height: cssheight + 'px' }"
-          ref="containerRef"
-        >
-          <div class="touch">
-            <div id="components-affix-demo-target" class="scrollable-container">
-              <div class="background">
-                <a-affix
-                  :target="() => containerRef"
-                  :style="{ position: 'absolute', top: 0, right: 0 }"
-                >
-                  <MinusSquareOutlined @click="cssheightclick()" class="c2" />
-                </a-affix>
-              </div>
-            </div>
-
-            <div v-for="(i, key) in arr1" :key="key" style="margin-bottom: 5px">
+          <div
+            v-if="nowvideoid"
+            id="sc"
+            :class="chatmclass ? 'c1m' : 'c1'"
+            :style="{
+              height: cssheight + 'px',
+              overflowY: isactive ? 'scroll' : 'hidden',
+            }"
+            ref="containerRef"
+          >
+            <div class="touch">
               <div
-                :style="{
-                  color: sayColor[String(key).charAt(String(key).length - 1)],
-                  backgroundColor:
-                    saybgcolor[String(key).charAt(String(key).length - 1)],
-                }"
-                class="line2 css2"
+                id="components-affix-demo-target"
+                class="scrollable-container"
               >
-                {{ i.user }}说:
-                <span style="color: #fff"> {{ i.message }}</span>
+                <div class="background">
+                  <a-affix
+                    :target="() => containerRef"
+                    :style="{ position: 'absolute', top: 0, right: 0 }"
+                  >
+                    <MinusSquareOutlined @click="cssheightclick()" class="c2" />
+                  </a-affix>
+                </div>
+              </div>
+
+              <div
+                v-for="(i, key) in arr1"
+                :key="key"
+                style="margin-bottom: 5px"
+              >
+                <div
+                  :style="{
+                    color: sayColor[String(key).charAt(String(key).length - 1)],
+                    backgroundColor:
+                      saybgcolor[String(key).charAt(String(key).length - 1)],
+                  }"
+                  class="line2 css2"
+                >
+                  {{ i.user }}说:
+                  <span style="color: #fff"> {{ i.message }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <a-row style="position: relative; z-index: 3">
+      <a-row style="position: relative; z-index: 3; margin-top: 10px">
         <!-- 进入直播间页面 -->
         <a-col :md="24">
           <div v-if="zhibolistshow">
@@ -412,6 +444,8 @@ export default defineComponent({
       data.nowvideoid = '';
       data.videobg = '#fff';
       wsdata.askshow = false;
+      //滚动条控制
+      data.isactive = true;
     };
 
     //2授权系统游客权限
@@ -534,17 +568,17 @@ export default defineComponent({
     };
     //设置宽高样式事件
     const cssheightclick = () => {
-      if (data.cssheight == 300) {
+      if (data.cssheight == 250) {
         data.cssheight = 50;
       } else {
-        data.cssheight = 300;
+        data.cssheight = 250;
       }
     };
     const cssheightclick2 = () => {
-      if (data.cssheight2 == 300) {
+      if (data.cssheight2 == 250) {
         data.cssheight2 = 50;
       } else {
-        data.cssheight2 = 300;
+        data.cssheight2 = 250;
       }
     };
 
@@ -609,8 +643,5 @@ export default defineComponent({
 
 <style scoped>
 @import './css/center.css'; /*引入公共样式*/
-.box {
-  overflow: scroll;
-}
 </style>
 
