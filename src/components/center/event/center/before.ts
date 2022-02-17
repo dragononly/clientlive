@@ -96,15 +96,13 @@ export const videoStatusObjJust = async () => {
     const cabStatus = await Rget('/zhibolist', mydata2)
 
 
-    if (!cabStatus?.data?.data[0]?.status) {
-        data.liveStatusColor = 'green'
-    } else if (cabStatus?.data?.data[0]?.status === "直播开始") {
+    if (cabStatus?.data?.data[0]?.status === "直播开始") {
         data.liveStatusColor = 'green'
     } else if (cabStatus?.data?.data[0]?.status === "直播结束") {
         data.videoOffColor = "red"
-        data.liveStatusColor = 'blue'
-    } else if (cabStatus?.data?.data[0]?.status === "直播等待") {
         data.liveStatusColor = 'red'
+    } else if (cabStatus?.data?.data[0]?.status === "直播等待") {
+        data.liveStatusColor = 'blue'
     } else if (cabStatus?.data?.data[0]?.status === "直播回放") {
         data.liveStatusColor = 'gold'
     } else {
@@ -121,9 +119,10 @@ export const isOffVideoEvent = async () => {
     }
     //1.change live status
     data.videoOffColor = "red"
-    data.liveStatusColor = 'blue'
+    data.liveStatusColor = 'red'
     const mydata = {
-        status: "直播结束"
+        status: "直播结束",
+        realEndTime: moment().format('x')
     }
     await Rput('/zhibolist', data.nowvideoid, mydata)
     //奇怪的知学云去更新直播状态
@@ -151,16 +150,15 @@ export const videoStatusObj = async () => {
         back: 'status'
     }
 
+
+
     //1.change live status
     let mydata = {
-        status: shoulStatus
+        status: shoulStatus,
+        realStartTime: moment().format('x')
     }
     const cabStatus = await Rget('/zhibolist', mydata2)
-    if (!cabStatus?.data?.data[0]?.status) {
-        mydata.status = "直播开始"
-        data.liveStatusColor = 'green'
 
-    }
     if (cabStatus?.data?.data[0]?.status === "直播等待") {
         mydata.status = "直播开始"
         data.liveStatusColor = 'green'
