@@ -2,13 +2,7 @@
   margin: 0;
   padding: 0;
 }
-.nav{
-    height: 65px;
-    position: fixed;
-    z-index: 5;
-    width: 100%;
-    background:red
-}
+
 .css2 {
   border-radius: 5px;
   font-size: 13px;
@@ -16,9 +10,8 @@
   font-weight: bold;
 }
 .a1 {
-  margin-top: 18px;
-  position: fixed;
-  top: 0px;
+  position: absolute;
+  top: 18px;
   left: 20px;
   z-index: 10;
   border: 1px solid #616161;

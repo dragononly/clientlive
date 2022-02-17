@@ -1,5 +1,6 @@
 //第一队执行函数
 //滚动条函数
+
 import { Mpost, Rget, Rpost, Rput } from '@/config/http';
 import { htmlurl } from '@/config/http/env';
 import { sendWsMessage } from '@/config/http/ws';
@@ -24,6 +25,17 @@ export const myscroll = async () => {
         div2.scrollTop = div2.scrollHeight;
     } catch (error) { }
 };
+export const boxScroll = async () => {
+    //为了让钉子生效所以我们做一个细微的scrool动作
+    let div1: any = document.getElementById('box');
+
+    try {
+        div1.scrollTop = 0;
+
+
+    } catch (error) { }
+};
+
 
 
 export const getmessage = async () => {
@@ -587,6 +599,7 @@ export const addtimeBack = async () => {
             levelTime: '',
             terminalType: terminalType,
             time: '1',
+            visitIp: localStorage.outIp
         };
         await Rpost('/zhibolist_longtimeback', data4);
 
@@ -604,6 +617,7 @@ export const addtimeBack = async () => {
             levelTime: Number(sesstime) + 60 * 1000,
             terminalType: terminalType,
             time: '1',
+            visitIp: localStorage.outIp
         };
 
         const cab3 = await Rput('/zhibolist_longtimeback', a?.data?.data[0]?._id, data5);
@@ -662,11 +676,9 @@ export const addtime = async () => {
             levelTime: '',
             terminalType: terminalType,
             time: '1',
+            visitIp: localStorage.outIp
         };
         await Rpost('/zhibolist_longtime', data4);
-
-
-
     } else {
         let data5 = {
             zhiboid: data.nowvideoid,
@@ -679,6 +691,7 @@ export const addtime = async () => {
             levelTime: Number(sesstime) + 60 * 1000,
             terminalType: terminalType,
             time: '1',
+            visitIp: localStorage.outIp
         };
 
         const cab3 = await Rput('/zhibolist_longtime', a?.data?.data[0]?._id, data5);
@@ -688,10 +701,37 @@ export const addtime = async () => {
 
 }
 
+//收缩聊天框
+export const shrink = () => {
+    data.ifrawidth = '100%';
+    data.shrinkOff = false;
+    data.shrinkRight = "120%"
+    data.shrinkLeft = "99%"
+    //关闭按钮
+    data.closeOff = "0%"
+    //最下面聊天输入
+    data.fulloff = false
+
+}
+//展开聊天框
+export const shrinkLeftEvent = () => {
+    data.ifrawidth = '80%';
+    data.shrinkOff = true;
+    data.shrinkRight = "80%"
+    data.shrinkLeft = "-99%"
+
+    data.closeOff = "20%"
+    data.fulloff = true
+
+}
+
+
+
 export const fullshow = async () => {
-    if (data.toggleFull) {
+    if (!screenfull.isFullscreen) {
         //视频放到最大
         data.ifrawidth = '100%';
+
         //发给老师和导播的聊天框隐藏
         data.fulloff = false;
         //聊天框高度拉低
@@ -699,8 +739,15 @@ export const fullshow = async () => {
         screenfull.toggle();
         data.toggleFull = false;
     } else {
-        //如同上面
-        data.ifrawidth = '80%';
+        //如果聊天框收缩状态
+        // alert(data.shrinkOff)
+        // if (data.shrinkOff == false) {
+        //     data.ifrawidth = '100%';
+        // } else {
+        //     data.ifrawidth = '80%';
+        // }
+
+
         //发给老师和导播的聊天框隐藏
         data.fulloff = true;
         //聊天框高度拉低

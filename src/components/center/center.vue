@@ -1,5 +1,20 @@
 <template>
-  <div :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
+  <div id="box" :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
+    <div
+      v-if="nowvideoid"
+      @dblclick="fullshow()"
+      class="mask"
+      style="
+        position: fixed;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 20%;
+        width: 50%;
+        height: 50%;
+        z-index: 5;
+      "
+    ></div>
     <div class="a1">
       <SettingFilled
         @click="showModal"
@@ -92,17 +107,15 @@
 
     <div><ask v-show="askshow" /></div>
 
-    <div>
-      <a-modal
-        :footer="null"
-        v-model:visible="visible"
-        title="设置"
-        :width="width"
-        @ok="handleOk"
-      >
-        <myset />
-      </a-modal>
-    </div>
+    <a-modal
+      :footer="null"
+      v-model:visible="visibleCenter"
+      title="设置"
+      :width="width"
+      @ok="handleOk"
+    >
+      <myset />
+    </a-modal>
 
     <div
       :style="{
@@ -115,16 +128,16 @@
       <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
         <div
           v-if="close1"
-          style="
-            position: absolute;
-            right: 10px;
-            top: 20px;
-            z-index: 5;
-            border: 1px solid #616161;
-            border-radius: 5px;
-            padding: 2px 5px;
-            margin-right: 20%;
-          "
+          :style="{
+            position: 'absolute',
+            right: '10px',
+            top: '20px',
+            border: '1px solid #616161',
+            borderRadius: '5px',
+            padding: '2px 5px',
+            zIndex: '5',
+            marginRight: closeOff,
+          }"
         >
           <span @click="tohome()">
             <CloseOutlined
@@ -143,9 +156,39 @@
           id="childFrame"
           scrolling="no"
           allowfullscreen
-          style="position: absolute; left: 0"
         ></iframe>
+        <div
+          @click="shrink()"
+          class="touch"
+          :style="{
+            position: 'fixed',
+            top: '248px',
+            left: shrinkRight,
+            width: '30px',
+            height: '30px',
+            zIndex: '999',
+            marginLeft: '-10px',
+          }"
+        >
+          <caret-right-outlined style="font-size: 30px; color: #fff" />
+        </div>
+        <div
+          @click="shrinkLeftEvent()"
+          class="touch"
+          :style="{
+            position: 'fixed',
+            top: '248px',
+            left: shrinkLeft,
+            width: '30px',
+            height: '30px',
+            zIndex: '999',
+            marginLeft: '-10px',
+          }"
+        >
+          <caret-left-outlined style="font-size: 30px; color: #fff" />
+        </div>
 
+        <caret-right-outlined />
         <div style="position: absolute; right: 0; top: 0; z-index: 12">
           <a-card
             v-show="signtime"
@@ -186,7 +229,8 @@
             </div>
           </a-card>
         </div>
-        <div class="scAll">
+
+        <div class="scAll" v-if="shrinkOff">
           <div
             v-if="nowvideoid && fulloff"
             id="sc2"
@@ -235,6 +279,7 @@
               </div>
             </div>
           </div>
+
           <div
             v-if="nowvideoid"
             id="sc"
@@ -341,7 +386,6 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, toRefs, watch } from 'vue';
 import {
@@ -354,6 +398,8 @@ import {
   PlayCircleFilled,
   PoweroffOutlined,
   TeamOutlined,
+  CaretRightOutlined,
+  CaretLeftOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
 import Zhibolist from '@/components/center/user/zhibolist.vue';
@@ -385,8 +431,12 @@ import {
   videoStatusObj,
   videoStatusObjJust,
   isOffVideoEvent,
+  boxScroll,
+  shrink,
+  shrinkLeftEvent,
 } from './event/center/before';
 import { message } from 'ant-design-vue';
+import screenfull from 'screenfull';
 export default defineComponent({
   data() {
     return {
@@ -397,11 +447,51 @@ export default defineComponent({
   },
   async setup(myself) {
     //初始化事件**************************************************************************//
+    window.onresize = () => {
+      if (screenfull.isFullscreen) {
+        data.ifrawidth = '100%';
+
+        //发给老师和导播的聊天框隐藏
+        data.fulloff = false;
+        //聊天框高度拉低
+        data.cssheight = 55;
+
+        data.shrinkOff = false;
+        //120超出屏幕消失
+        data.shrinkRight = '120%';
+        data.shrinkLeft = '-99%';
+
+        //那个关闭按钮的位置控制
+        data.closeOff = '0%';
+      } else {
+        //如同上面
+        //观察聊天框是否关闭
+        if (data.shrinkOff == false) {
+          data.ifrawidth = '100%';
+        } else {
+          data.ifrawidth = '80%';
+        }
+
+        data.shrinkRight = '120%';
+        data.shrinkLeft = '99%';
+
+        //发给老师和导播的聊天框隐藏
+        data.fulloff = true;
+        //聊天框高度拉低
+        data.cssheight = 250;
+        //data.toggleFull = true;
+      }
+    };
+
+    //收缩一次聊天框
+    shrink();
+
     const router = useRouter();
     const route = useRoute();
     if (!sessionStorage.eid && !route.query.accesstoken) {
       router.push('/');
     }
+
     //拉取聊天记录
     await getmessage();
 
@@ -542,6 +632,9 @@ export default defineComponent({
             data.isactive = false;
             time60 = setInterval(addtime, 3 * 1000);
           }
+
+          //点击进入到直播页面后，把滚动条初始化到0，不然会继承列表的滚动条
+          boxScroll();
         }
       },
       {
@@ -560,11 +653,15 @@ export default defineComponent({
       wsdata.askshow = true;
     };
 
+    setTimeout(() => {
+      data.visibleCenter = false;
+    }, 1);
+
     const showModal = () => {
-      data.visible = true;
+      data.visibleCenter = true;
     };
     const handleOk = (e: MouseEvent) => {
-      data.visible = false;
+      data.visibleCenter = false;
     };
     //设置宽高样式事件
     const cssheightclick = () => {
@@ -619,6 +716,8 @@ export default defineComponent({
       cssheightclick2,
       askshowclick,
       fullshow,
+      shrink,
+      shrinkLeftEvent,
       ...toRefs(data),
     };
   },
@@ -637,6 +736,8 @@ export default defineComponent({
     PoweroffOutlined,
     heart,
     ask,
+    CaretRightOutlined,
+    CaretLeftOutlined,
   },
 });
 </script>

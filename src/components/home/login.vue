@@ -207,6 +207,8 @@ export default defineComponent({
         sessionStorage.eid = '100698';
         sessionStorage.user = '叶怀敏';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
+        //记录个时间点
+        sessionStorage.time = 'ok';
         router.push('center');
         return;
       }
@@ -216,6 +218,8 @@ export default defineComponent({
         sessionStorage.eid = '115097';
         sessionStorage.user = '熊忠波';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
+        //记录个时间点
+        sessionStorage.time = 'ok';
         router.push('center');
         return;
       }
@@ -237,6 +241,8 @@ export default defineComponent({
 
         settime(cab.data.data.eid, cab2.data.data.name);
         sessionStorage.user = cab2.data.data.name;
+        //记录个时间点
+        sessionStorage.time = 'ok';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
         router.push('center');
       } else {

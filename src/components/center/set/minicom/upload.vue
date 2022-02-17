@@ -7,7 +7,7 @@
           跳转到文件管理后台</a
         >
       </p>
-      <p><a-input v-model:value="value" placeholder="文件url" /></p>
+      <p><a-input v-model:value="value2" placeholder="文件url" /></p>
     </a-modal>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   setup() {
     const handleOk = async (e: MouseEvent) => {
-      const cab = await uploadUrl(uploaddata.nowid, uploaddata.value);
+      const cab = await uploadUrl(uploaddata.nowid, uploaddata.value2);
 
       if (cab) {
         uploaddata.visible2 = false;
