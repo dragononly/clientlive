@@ -6,9 +6,16 @@
   <link rel="icon" href="/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>天健直播</title>
-  <script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+  <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
   <script>
-    localStorage.outIp = returnCitySN['cip']
+    try {
+      localStorage.outIp = returnCitySN['cip']
+    } catch (error) {
+      localStorage.outIp = "搜狐服务器故障"
+      console.log('搜狐服务器不稳定，获取IP失败');
+    }
+
+
   </script>
 </head>
 

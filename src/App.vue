@@ -9,12 +9,10 @@
 <script lang="ts">
 import zhCN from 'ant-design-vue/es/locale/zh_CN';
 import { defineComponent, toRefs } from 'vue';
-import { global } from './store/app';
 export default defineComponent({
   data() {
     return {
       locale: zhCN,
-      ...toRefs(global),
     };
   },
   name: 'App',

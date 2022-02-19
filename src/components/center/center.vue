@@ -48,9 +48,10 @@
       <div
         v-show="nowvideoid"
         class="a1"
-        style="margin-left: 135px; color: #fff"
+        :style="{ marginLeft: '135px', color: '#fff' }"
       >
-        {{ eid }}&nbsp;{{ user }}
+        <div v-if="Eid">{{ Eid }}&nbsp;{{ User }}</div>
+        <div v-else>{{ eid }}&nbsp;{{ user }}</div>
       </div>
     </div>
 
@@ -412,7 +413,7 @@ import ask from '@components/center/com/ask.vue';
 import { sendWsMessage } from '@config/http/ws';
 import { wsdata } from '@config/http/wsdata';
 import { useRouter, useRoute } from 'vue-router';
-import { global } from '../../store/app';
+
 import axios from 'axios';
 import {
   getmessage,
@@ -437,12 +438,13 @@ import {
 } from './event/center/before';
 import { message } from 'ant-design-vue';
 import screenfull from 'screenfull';
+import { myGlobal } from '@/store/app';
 export default defineComponent({
   data() {
     return {
       ...toRefs(data),
       ...toRefs(wsdata),
-      ...toRefs(global),
+      ...toRefs(myGlobal),
     };
   },
   async setup(myself) {

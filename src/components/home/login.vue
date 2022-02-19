@@ -143,6 +143,8 @@ import { Mpost } from '@config/http/index';
 import { useRouter } from 'vue-router';
 import { settime, isouttime, eid, user } from '@utils/time';
 import { defineComponent, reactive, toRefs, watch } from 'vue';
+import Cookies from 'js-cookie';
+import { myGlobal } from '@/store/app';
 
 export default defineComponent({
   data() {
@@ -207,8 +209,8 @@ export default defineComponent({
         sessionStorage.eid = '100698';
         sessionStorage.user = '叶怀敏';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
-        //记录个时间点
-        sessionStorage.time = 'ok';
+        // Cookies.set('eid', '100698');
+        // Cookies.set('user', '叶怀敏');
         router.push('center');
         return;
       }
@@ -218,8 +220,9 @@ export default defineComponent({
         sessionStorage.eid = '115097';
         sessionStorage.user = '熊忠波';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
-        //记录个时间点
-        sessionStorage.time = 'ok';
+        // Cookies.set('eid', '115097');
+        // Cookies.set('user', '熊忠波');
+
         router.push('center');
         return;
       }
@@ -231,7 +234,8 @@ export default defineComponent({
         //1.1拿到eid以后去查询自己的名字
 
         sessionStorage.eid = String(cab.data.data.eid);
-
+        myGlobal.Eid = String(cab.data.data.eid);
+        // Cookies.set('eid', String(cab.data.data.eid));
         let url = '/live/eid';
         let mydata: any = {
           eid: sessionStorage.eid,
@@ -241,8 +245,8 @@ export default defineComponent({
 
         settime(cab.data.data.eid, cab2.data.data.name);
         sessionStorage.user = cab2.data.data.name;
-        //记录个时间点
-        sessionStorage.time = 'ok';
+        myGlobal.User = cab2.data.data.name;
+        // Cookies.set('user', cab2.data.data.name);
         message.success('欢迎登陆👏 ' + sessionStorage.user);
         router.push('center');
       } else {

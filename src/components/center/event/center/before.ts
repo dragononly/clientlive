@@ -14,6 +14,8 @@ import { signContinueTime } from './signContinueTime';
 import { live } from '@components/center/store/live'
 import { zhixueyun } from '@/config/http/env';
 import axios from 'axios';
+import { myGlobal } from '@/store/app';
+
 export const myscroll = async () => {
     //为了让钉子生效所以我们做一个细微的scrool动作
     let div1: any = document.getElementById('sc');
@@ -53,14 +55,21 @@ export const getmessage = async () => {
 
     data.arr1.length = 0;
     data.arr2.length = 0;
-
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
     for (const x in cab.data.data) {
         if (cab.data.data[x].type == 1) {
             data.arr1.push(cab.data.data[x]);
         } else {
             if (data.admin) {
                 data.arr2.push(cab.data.data[x]);
-            } else if (cab.data.data[x].eid == sessionStorage.eid) {
+            } else if (cab.data.data[x].eid == realEid) {
                 data.arr2.push(cab.data.data[x]);
 
             }
@@ -210,19 +219,27 @@ export const autosendSonData = async (da: any) => {
 };
 
 export const onSearch = async (searchValue: string) => {
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
     //不允许游客发送消息
-    if (sessionStorage.eid == '999999') {
+    if (realEid == '999999') {
         message.info('你好游客，为了网络安全，您还不能发送消息～～');
     }
     // data.radiovalue==>1 代表所有人 2代表老师和导播
 
-    let lval = sessionStorage.user + '说：' + searchValue;
+
 
     //提交到数据库
     let url = '/live/message';
     let mydata = {
-        user: sessionStorage.user,
-        eid: sessionStorage.eid,
+        user: realName,
+        eid: realEid,
         message: searchValue,
         type: data.radiovalue,
         zhiboid: data.nowvideoid,
@@ -243,7 +260,15 @@ export const useAccesstokenGetEid = async () => {
     if (!cab?.data?.data?.eid) {
         return;
     }
-    sessionStorage.eid = cab?.data?.data?.eid;
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
+    realEid = cab?.data?.data?.eid;
     data.nowvideoid = cab?.data?.data?.zhiboid
 
     let datax1 = {
@@ -256,14 +281,14 @@ export const useAccesstokenGetEid = async () => {
     //下面进行跳转
     if (a.data.data) {
         let data1 = {
-            eid: sessionStorage.eid,
+            eid: realEid,
             limit: '1',
             back: 'name',
         };
         //通过eid去获取从而赋值sessionStorage.user
         const cab1 = await Rget('/skyuser', data1);
         try {
-            sessionStorage.user = cab1.data.data[0].name;
+            realName = cab1.data.data[0].name;
         } catch (error) {
             console.log('通过eid去获取从而赋值sessionStorage.user');
         }
@@ -279,9 +304,17 @@ export const useAccesstokenGetEid = async () => {
 //授权系统天健用户
 //1.1通过eid去数据库查询自己组是否属于管理原来决定是否开启设置
 export const adminUser = async () => {
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
     let url = '/live/eid';
     let mydata = {
-        eid: sessionStorage.eid,
+        eid: realEid,
     };
 
     let cabg = await Mpost(url, mydata);
@@ -351,7 +384,14 @@ export const GetLiveGroup = async () => {
 export const pulicLive = async () => {
     let urlfindzhibo = '/live/findzhibo';
     let caburlfindzhibo: any = await Mpost(urlfindzhibo, '');
-
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
     for (let i = 0; i < caburlfindzhibo.data.data.length; i++) {
         if (!caburlfindzhibo.data.data[i].power) {
             continue;
@@ -359,14 +399,14 @@ export const pulicLive = async () => {
 
         if (
             caburlfindzhibo.data.data[i].power[0] &&
-            sessionStorage.eid != '999999'
+            realEid != '999999'
         ) {
             //这个是用户添加逻辑
             data.showzhibolist.push(caburlfindzhibo.data.data[i]);
         } else if (
             //这个是游客添加逻辑
             caburlfindzhibo.data.data[i].power[1] &&
-            sessionStorage.eid == '999999'
+            realEid == '999999'
         ) {
             data.showzhibolist.push(caburlfindzhibo.data.data[i]);
         }
@@ -515,35 +555,40 @@ export const signtimeclick = async () => {
     //     searchDepartmentchild,
     //     searchDepartmentchildData,
     // );
-
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
 
     let savesign = '/live/savesign';
     let mydata2 = {
         zhiboid: data.nowvideoid,
         sign: {
-            name: sessionStorage.user,
-            eid: sessionStorage.eid,
+            name: realName,
+            eid: realEid,
             // departmentchild: cabDepartmentchild?.data?.data?.departmentchild,
             signtime: moment().format('YYYY-MM-DD HH:mm:ss'),
         },
     };
 
-    if (sessionStorage.eid) {
-        await Mpost(savesign, mydata2);
-        //签到之后关闭按钮可以显示
-        data.userOffSignTable = true;
-        //1css部分
-        //签到窗口显示控制
-        data.signtime = false;
-        //需要签到控制
-        data.need = false;
-        //干完事后再启动
-        localStorage.setItem('lock', 'on');
 
-        localStorage.setItem('pretime', time);
-    } else {
-        sessionStorage.info('打卡异常请重新登录')
-    }
+    await Mpost(savesign, mydata2);
+    //签到之后关闭按钮可以显示
+    data.userOffSignTable = true;
+    //1css部分
+    //签到窗口显示控制
+    data.signtime = false;
+    //需要签到控制
+    data.need = false;
+    //干完事后再启动
+    localStorage.setItem('lock', 'on');
+
+    localStorage.setItem('pretime', time);
+
 
 
 
@@ -562,11 +607,20 @@ export const addtimeBack = async () => {
     } else {
         return;
     }
-
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
 
     //1The first register information
     //user infomation exchange this id
     //schema like this
+
+
 
     let terminalType = 0
     if (live.mobile) {
@@ -576,19 +630,19 @@ export const addtimeBack = async () => {
 
     let mydata = {
         zhiboid: data.nowvideoid,
-        eid: sessionStorage.eid,
+        eid: realEid,
         limit: '1',
     };
     const a = await Rget('/zhibolist_longtimeback', mydata);
-    const cab1 = await Rget('/skyuser', { eid: sessionStorage.eid });
+    const cab1 = await Rget('/skyuser', { eid: realEid });
 
-    console.log(a?.data?.data);
+
 
     if (a?.data?.data?.length < 1) {
         let data4 = {
             zhiboid: data.nowvideoid,
-            eid: sessionStorage.eid,
-            fullName: sessionStorage.user,
+            eid: realEid,
+            fullName: realName,
             name: cab1?.data?.data[0]?.login_id,
             organizationId: cab1?.data?.data[0]?.branch,
             departmentId: cab1?.data?.data[0]?.departmentchild,
@@ -606,8 +660,8 @@ export const addtimeBack = async () => {
     } else {
         let data5 = {
             zhiboid: data.nowvideoid,
-            eid: sessionStorage.eid,
-            fullName: sessionStorage.user,
+            eid: realEid,
+            fullName: realName,
             name: cab1?.data?.data[0]?.login_id,
             organizationId: cab1?.data?.data[0]?.branch,
             departmentId: cab1?.data?.data[0]?.departmentchild,
@@ -639,7 +693,14 @@ export const addtime = async () => {
     } else {
         return;
     }
-
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
 
     //1The first register information
     //user infomation exchange this id
@@ -653,19 +714,19 @@ export const addtime = async () => {
 
     let mydata = {
         zhiboid: data.nowvideoid,
-        eid: sessionStorage.eid,
+        eid: realEid,
         limit: '1',
     };
     const a = await Rget('/zhibolist_longtime', mydata);
-    const cab1 = await Rget('/skyuser', { eid: sessionStorage.eid });
+    const cab1 = await Rget('/skyuser', { eid: realEid });
 
 
 
     if (a?.data?.data?.length < 1) {
         let data4 = {
             zhiboid: data.nowvideoid,
-            eid: sessionStorage.eid,
-            fullName: sessionStorage.user,
+            eid: realEid,
+            fullName: realName,
             name: cab1?.data?.data[0]?.login_id,
             organizationId: cab1?.data?.data[0]?.branch,
             departmentId: cab1?.data?.data[0]?.departmentchild,
@@ -680,8 +741,8 @@ export const addtime = async () => {
     } else {
         let data5 = {
             zhiboid: data.nowvideoid,
-            eid: sessionStorage.eid,
-            fullName: sessionStorage.user,
+            eid: realEid,
+            fullName: realName,
             name: cab1?.data?.data[0]?.login_id,
             organizationId: cab1?.data?.data[0]?.branch,
             departmentId: cab1?.data?.data[0]?.departmentchild,

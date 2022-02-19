@@ -1,6 +1,8 @@
 import { reactive } from "vue";
 let containerRef2: any, containerRef: any, temog: any
 import device from "current-device";
+import Cookies from "js-cookie";
+import { myGlobal } from "@/store/app";
 // console.log("device.mobile() === %s", device.mobile());
 let width: string = "50%", chatmclass = false, xiaoxiwidth = "100%", ifrawidth = "100%", signshowtime: any = 0,
     timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false
