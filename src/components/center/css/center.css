@@ -43,15 +43,23 @@
   right: 0px;
   top: 0px;
 }
-
+.mask{
+   position: fixed;
+        left: 0;
+        top: 10%;
+        z-index: 5;
+        height:70%;
+        width: 85%;
+       
+}
 .c3,
 .c1 {
   position: relative;
   position: absolute;
   z-index: 11;
   top: 10px;
-  width: 20%;
-  background: #349793;
+  width: 15%;
+  background: #2D3034;
   border-radius: 5px;
   padding: 10px;
   overflow-y: scroll;
@@ -61,7 +69,7 @@
 
 .c3 {
   right: 0;
-  margin-top: 255px;
+  top:72%
 }
 
 .c1 {

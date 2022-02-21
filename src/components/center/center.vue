@@ -1,20 +1,6 @@
 <template>
   <div id="box" :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
-    <div
-      v-if="nowvideoid"
-      @dblclick="fullshow()"
-      class="mask"
-      style="
-        position: fixed;
-        left: 0;
-        right: 0;
-        margin: auto;
-        top: 20%;
-        width: 50%;
-        height: 50%;
-        z-index: 5;
-      "
-    ></div>
+    <div v-if="nowvideoid && !mobile" @dblclick="fullshow()" class="mask"></div>
     <div class="a1">
       <SettingFilled
         @click="showModal"
@@ -40,7 +26,7 @@
       class="a1"
       @click="fullshow()"
       v-if="nowvideoid"
-      style="margin-left: 97px"
+      style="margin-left: 6.1rem"
     >
       <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div>
@@ -231,13 +217,13 @@
           </a-card>
         </div>
 
-        <div class="scAll" v-if="shrinkOff">
+        <div v-if="shrinkOff">
           <div
             v-if="nowvideoid && fulloff"
             id="sc2"
             :class="chatmclass ? 'c3m' : 'c3'"
             :style="{
-              height: cssheight2 + 'px',
+              height: cssheight2 + '%',
               scrollTop: cssheight2,
               overflowY: isactive ? 'scroll' : 'hidden',
             }"
@@ -286,7 +272,7 @@
             id="sc"
             :class="chatmclass ? 'c1m' : 'c1'"
             :style="{
-              height: cssheight + 'px',
+              height: cssheight + '%',
               overflowY: isactive ? 'scroll' : 'hidden',
             }"
             ref="containerRef"
@@ -447,8 +433,11 @@ export default defineComponent({
       ...toRefs(myGlobal),
     };
   },
+
   async setup(myself) {
     //初始化事件**************************************************************************//
+
+    //观察屏幕放大缩小同步
     window.onresize = () => {
       if (screenfull.isFullscreen) {
         data.ifrawidth = '100%';
@@ -471,7 +460,7 @@ export default defineComponent({
         if (data.shrinkOff == false) {
           data.ifrawidth = '100%';
         } else {
-          data.ifrawidth = '80%';
+          data.ifrawidth = '85%';
         }
 
         data.shrinkRight = '120%';
@@ -480,13 +469,21 @@ export default defineComponent({
         //发给老师和导播的聊天框隐藏
         data.fulloff = true;
         //聊天框高度拉低
-        data.cssheight = 250;
+        data.cssheight = 70;
         //data.toggleFull = true;
       }
     };
 
-    //收缩一次聊天框
-    shrink();
+    // //禁用空格暂停
+    // window.onkeypress = (event: any) => {
+    //   alert();
+    //   if (event.keyCode == 32) event.returnValue = false;
+    // };
+
+    // //收缩一次聊天框
+    // shrink();
+    //展开一次
+    shrinkLeftEvent();
 
     const router = useRouter();
     const route = useRoute();
@@ -667,17 +664,17 @@ export default defineComponent({
     };
     //设置宽高样式事件
     const cssheightclick = () => {
-      if (data.cssheight == 250) {
-        data.cssheight = 50;
+      if (data.cssheight == 70) {
+        data.cssheight = 10;
       } else {
-        data.cssheight = 250;
+        data.cssheight = 70;
       }
     };
     const cssheightclick2 = () => {
-      if (data.cssheight2 == 250) {
-        data.cssheight2 = 50;
+      if (data.cssheight2 == 70) {
+        data.cssheight2 = 10;
       } else {
-        data.cssheight2 = 250;
+        data.cssheight2 = 70;
       }
     };
 

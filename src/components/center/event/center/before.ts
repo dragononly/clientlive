@@ -774,9 +774,9 @@ export const shrink = () => {
 }
 //展开聊天框
 export const shrinkLeftEvent = () => {
-    data.ifrawidth = '80%';
+    data.ifrawidth = '85%';
     data.shrinkOff = true;
-    data.shrinkRight = "80%"
+    data.shrinkRight = "85%"
     data.shrinkLeft = "-99%"
 
     data.closeOff = "20%"
@@ -798,15 +798,6 @@ export const fullshow = async () => {
         screenfull.toggle();
         data.toggleFull = false;
     } else {
-        //如果聊天框收缩状态
-        // alert(data.shrinkOff)
-        // if (data.shrinkOff == false) {
-        //     data.ifrawidth = '100%';
-        // } else {
-        //     data.ifrawidth = '80%';
-        // }
-
-
         //发给老师和导播的聊天框隐藏
         data.fulloff = true;
         //聊天框高度拉低
