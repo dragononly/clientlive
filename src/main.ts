@@ -9,6 +9,10 @@ import store from "./store";
 
 const app = createApp(App);
 
+import vue3videoPlay from 'vue3-video-play' // 引入组件
+
+import 'vue3-video-play/dist/style.css' // 引入css
+app.use(vue3videoPlay)
 app.use(Antd);
 app.use(store);
 app.use(router);

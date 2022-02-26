@@ -208,6 +208,8 @@ export default defineComponent({
       if (data.skyuser == 'test2' && data.skypwd == '000000') {
         sessionStorage.eid = '100698';
         sessionStorage.user = '叶怀敏';
+        myGlobal.User = '叶怀敏';
+        myGlobal.Eid = '100698';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
         // Cookies.set('eid', '100698');
         // Cookies.set('user', '叶怀敏');
@@ -219,6 +221,8 @@ export default defineComponent({
       if (data.skyuser == 'test' && data.skypwd == '000000') {
         sessionStorage.eid = '115097';
         sessionStorage.user = '熊忠波';
+        myGlobal.User = '熊忠波';
+        myGlobal.Eid = '115097';
         message.success('欢迎登陆👏 ' + sessionStorage.user);
         // Cookies.set('eid', '115097');
         // Cookies.set('user', '熊忠波');

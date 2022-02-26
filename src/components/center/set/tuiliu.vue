@@ -5,7 +5,7 @@
     <div style="padding: 5px">选择直播</div>
 
     <a-select
-      v-model:value="se_value"
+      v-model:value="sevalue"
       label-in-value
       style="width: 100%"
       :options="options"
@@ -49,7 +49,7 @@ export default defineComponent({
         value: i._id,
         label: i.name,
       };
-      if (i.backurl == '等待回传') {
+      if (i.backurl == '等待回传' && i.status != '直播结束') {
         tuiliudata.options.push(op);
       }
     }

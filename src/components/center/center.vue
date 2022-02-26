@@ -1,6 +1,6 @@
 <template>
   <div id="box" :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
-    <div v-if="nowvideoid && !mobile" @dblclick="fullshow()" class="mask"></div>
+    <!-- <div v-if="nowvideoid && !mobile" @dblclick="fullshow()" class="mask"></div> -->
     <div class="a1">
       <SettingFilled
         @click="showModal"
@@ -15,6 +15,22 @@
       <router-link to="/backlist" style="color: #63696a">直播回看</router-link>
     </div>
 
+    <div
+      @click="fullshow()"
+      v-if="nowvideoid"
+      :style="{
+        position: 'absolute',
+        right: '10px',
+        top: '20px',
+        border: '1px solid #616161',
+        borderRadius: '5px',
+        padding: '2px 5px',
+        zIndex: '5',
+        marginRight: closeOff,
+      }"
+    >
+      <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
+    </div>
     <div v-if="admin && nowvideoid" class="a1 a11" style="color: #fff">
       <QuestionCircleOutlined
         class="touch2"
@@ -22,26 +38,18 @@
         :style="{ fontSize: '15px' }"
       />
     </div>
-    <div
-      class="a1"
-      @click="fullshow()"
-      v-if="nowvideoid"
-      style="margin-left: 6.1rem"
-    >
-      <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
-    </div>
     <div>
       <div
         v-show="nowvideoid"
         class="a1"
-        :style="{ marginLeft: '135px', color: '#fff' }"
+        :style="{ marginLeft: watermark + 'px', color: '#fff' }"
       >
         <div v-if="Eid">{{ Eid }}&nbsp;{{ User }}</div>
         <div v-else>{{ eid }}&nbsp;{{ user }}</div>
       </div>
     </div>
 
-    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 245px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 203px">
       <a-popconfirm
         title="是否开启直播"
         ok-text="确认"
@@ -58,7 +66,7 @@
       </a-popconfirm>
     </div>
 
-    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 277px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 236px">
       <a-popconfirm
         title="是否关闭直播"
         ok-text="确认"
@@ -74,15 +82,15 @@
         </a>
       </a-popconfirm>
     </div>
-
-    <!-- <div
+    <div
       v-show="nowvideoid"
       class="a1"
-      style="margin-left: 130px; color: #fff; font-weight: bold"
+      style="margin-left: 270px; color: #fff; font-weight: bold"
     >
       <team-outlined />
-      在线{{ parseInt(people * 1.5) }}
-    </div> -->
+      在线{{ parseInt(people) + 1 }}
+    </div>
+
     <!-- <div
       class="a1"
       @click="fullshow()"
@@ -113,7 +121,7 @@
       }"
     >
       <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
-        <div
+        <!-- <div
           v-if="close1"
           :style="{
             position: 'absolute',
@@ -132,7 +140,7 @@
               style="font-size: 15px; font-weight: bold"
             />
           </span>
-        </div>
+        </div> -->
         <iframe
           sandbox="allow-same-origin allow-scripts"
           name="iframe_a"
@@ -218,7 +226,7 @@
         </div>
 
         <div v-if="shrinkOff">
-          <div
+          <!-- <div
             v-if="nowvideoid && fulloff"
             id="sc2"
             :class="chatmclass ? 'c3m' : 'c3'"
@@ -265,7 +273,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div
             v-if="nowvideoid"
@@ -299,6 +307,7 @@
               >
                 <div
                   :style="{
+                    opacity: '0.8',
                     color: sayColor[String(key).charAt(String(key).length - 1)],
                     backgroundColor:
                       saybgcolor[String(key).charAt(String(key).length - 1)],
@@ -310,6 +319,30 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            style="
+              bottom: 1%;
+              position: absolute;
+              right: 0;
+              width: 15%;
+              padding: 5px;
+            "
+          >
+            <a-input-search
+              v-model:value="value"
+              placeholder="说点什么吧..."
+              enter-button="发送"
+              @search="onSearch"
+              size="small"
+              style="
+                border-radius: 5px;
+                opacity: 0.7;
+
+                font-size: 1rem;
+                z-index: 8888;
+              "
+            />
           </div>
         </div>
       </div>
@@ -323,7 +356,7 @@
         </a-col>
       </a-row>
     </div>
-    <div
+    <!-- <div
       v-if="nowvideoid"
       style="
         background: #349793;
@@ -332,12 +365,13 @@
         bottom: 0;
         left: 0;
         z-index: 10;
+        opacity: 0.9;
       "
       :style="{ width: xiaoxiwidth }"
     >
       <div v-show="fulloff" :class="chatmclass ? 'c3m' : 'a'">
         <a-row>
-          <a-col :xs="5" :md="14">
+          <a-col :xs="5" :md="10">
             <div style="padding: 5px 0px 2px 10px">
               <a-input-search
                 v-model:value="value"
@@ -353,7 +387,7 @@
               />
             </div>
           </a-col>
-          <a-col :xs="8" :md="6">
+          <a-col :xs="12" :md="10">
             <div style="padding: 10px 20px">
               <a-radio-group name="radioGroup" v-model:value="radiovalue">
                 <a-radio value="1" style="font-size: 12px; color: #efca48"
@@ -370,7 +404,7 @@
           </a-col>
         </a-row>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -425,6 +459,7 @@ import {
 import { message } from 'ant-design-vue';
 import screenfull from 'screenfull';
 import { myGlobal } from '@/store/app';
+import { log } from 'console';
 export default defineComponent({
   data() {
     return {
@@ -629,7 +664,7 @@ export default defineComponent({
             // initialization video status colors
             await videoStatusObjJust();
             data.isactive = false;
-            time60 = setInterval(addtime, 3 * 1000);
+            time60 = setInterval(addtime, 10 * 1000);
           }
 
           //点击进入到直播页面后，把滚动条初始化到0，不然会继承列表的滚动条
@@ -679,6 +714,7 @@ export default defineComponent({
     };
 
     const confirm = async (e: MouseEvent) => {
+      message.info(data.nowvideoid);
       await isOffVideoEvent();
     };
 
@@ -698,6 +734,14 @@ export default defineComponent({
     setTimeout(() => {
       sendWsMessage('online');
     }, 2000);
+
+    setInterval(() => {
+      if (data.watermark < 800) {
+        data.watermark++;
+      } else {
+        data.watermark = 58;
+      }
+    }, 100);
 
     return {
       confirm2,

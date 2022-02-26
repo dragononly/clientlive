@@ -38,6 +38,11 @@ export default [
 		component: () => import('../pages/btn.vue'),
 	},
 	{
+		path: '/test',
+		name: 'test',
+		component: () => import('../pages/test.vue'),
+	},
+	{
 		path: '/404',
 		name: '404',
 		component: () => import('../pages/404.vue'),

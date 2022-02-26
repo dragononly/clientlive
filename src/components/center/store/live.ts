@@ -4,7 +4,7 @@ import device from "current-device";
 import Cookies from "js-cookie";
 import { myGlobal } from "@/store/app";
 // console.log("device.mobile() === %s", device.mobile());
-let width: string = "50%", chatmclass = false, xiaoxiwidth = "100%", ifrawidth = "85%", signshowtime: any = 0,
+let width: string = "50%", chatmclass = false, xiaoxiwidth = "70%", ifrawidth = "85%", signshowtime: any = 0,
     timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false
 let shrinkOff = true
 if (device.mobile()) {
@@ -21,7 +21,8 @@ export const live = reactive({
     mobile
 })
 export const data = reactive({
-    closeOff: '20%',
+    watermark: 58,
+    closeOff: '2%',
     shrinkOff,
     shrinkLeft: '-99%',
     shrinkRight: '80%',
@@ -63,7 +64,7 @@ export const data = reactive({
     nowvideoid: "",
     liveoff: 0,
     signdata,
-    cssheight: 70,
+    cssheight: 90,
     cssheight2: 10,
     isactive: true,
     sayColor: ['#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81'],

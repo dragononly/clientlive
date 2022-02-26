@@ -6,7 +6,7 @@ import { data } from '../../components/center/store/live'
 import { io } from 'socket.io-client';
 const socket = io(wsUrl, { transports: ['websocket'], secure: true });
 
-
+socket.emit('chat message', '222');
 export const connectSocket = async () => {
 
 	socket.on('connect', () => {

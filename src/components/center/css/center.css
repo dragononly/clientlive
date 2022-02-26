@@ -19,7 +19,7 @@
   padding: 2px 5px;
 }
 .a11 {
-  left: 60px;
+  left:190px;
 }
 .c5 {
   position: absolute;
@@ -43,15 +43,15 @@
   right: 0px;
   top: 0px;
 }
-.mask{
+/* .mask{
    position: fixed;
-        left: 0;
-        top: 10%;
-        z-index: 5;
-        height:70%;
-        width: 85%;
-       
-}
+   left: 0;
+   top: 10%;
+   z-index: 5;
+   height:60%;
+  width: 85%;
+
+} */
 .c3,
 .c1 {
   position: relative;
@@ -81,11 +81,11 @@
   opacity: 0.7;
   color: #2490e9;
   position: relative;
-  position: fixed;
+  position: absolute;
   z-index: 11;
   bottom: 100px;
   width: 90%;
-  background: #ededed;
+  background: #e42727;
   border-radius: 5px;
   padding: 10px;
   overflow-y: scroll;

@@ -8,7 +8,10 @@
       />
     </div>
     <div v-for="(item, index) in showarr" :key="index">
-      <a-row v-if="item.backurl == '等待回传'" style="margin-top: 3.2rem">
+      <a-row
+        v-if="item.backurl == '等待回传' && item.status != '直播结束'"
+        style="margin-top: 3.2rem"
+      >
         <a-col
           :md="{ span: '20', offset: '1' }"
           :xs="{ span: '24', offset: '2' }"
@@ -146,6 +149,7 @@ export default defineComponent({
     }
 
     const sendF = (id) => {
+      data.nowvideoid = id;
       ctx.emit('sendF', id);
     };
 
