@@ -37,6 +37,7 @@
             <a-menu-item key="3">直播列表</a-menu-item>
             <a-menu-item key="4">历史列表</a-menu-item>
             <a-menu-item key="5">推流地址</a-menu-item>
+            <a-menu-item key="6">其它设置</a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="sub3" @titleClick="titleClick">
             <template #title>
@@ -45,7 +46,7 @@
                 <span>用户设置</span>
               </span>
             </template>
-            <a-menu-item key="6">退出登陆</a-menu-item>
+            <a-menu-item key="7">退出登陆</a-menu-item>
           </a-sub-menu>
         </a-menu>
       </a-col>
@@ -65,8 +66,10 @@
         <setzhibolistHistory v-if="vif[4]" />
         <!-- 推流地址 -->
         <tuiliu v-if="vif[5]" />
+        <!-- 其它设置 -->
+        <other v-if="vif[6]" />
         <!-- 用户设置 -->
-        <user v-if="vif[6]" />
+        <user v-if="vif[7]" />
       </a-col>
     </a-row>
   </div>
@@ -80,6 +83,7 @@ import {
 } from '@ant-design/icons-vue';
 import mysetc from './set/adduser.vue';
 import user from './set/user.vue';
+import other from './set/other.vue';
 import group from './set/group.vue';
 import livetelecast from './user/startlive.vue';
 import Zhibolist from './set/setzhibolist.vue';
@@ -87,6 +91,7 @@ import setzhibolistHistory from './set/setzhibolistHistory.vue';
 import tuiliu from './set/tuiliu.vue';
 import { data } from './store/live';
 import { message } from 'ant-design-vue';
+import { log } from 'console';
 export default defineComponent({
   data() {
     return { ...toRefs(data) };
@@ -95,11 +100,11 @@ export default defineComponent({
     let data = reactive({
       selectedKeys: ['5'],
       openKeys: ['sub3'],
-      vif: [false, false, false, false, false, false, true],
+      vif: [false, false, false, false, false, false, true, false],
     });
 
     const handleClick = (e: any) => {
-      data.vif = [false, false, false, false, false, false, false];
+      data.vif = [false, false, false, false, false, false, false, false];
       data.vif[e.key] = true;
     };
 
@@ -125,6 +130,7 @@ export default defineComponent({
     Zhibolist,
     tuiliu,
     user,
+    other,
   },
 });
 </script>

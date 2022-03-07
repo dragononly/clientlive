@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "work": "vue-tsc --noEmit && vite build",
