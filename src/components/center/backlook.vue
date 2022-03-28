@@ -1,7 +1,19 @@
 <template>
   <div style="position: relative">
-    <div style="position: absolute; z-index: 2; color: #fff">
-      {{ myGlobal.Eid }}{{ myGlobal.User }}
+    <div
+      :style="{
+        position: 'absolute',
+        zIndex: '2',
+        color: '#fff',
+        padding: '0 5px',
+        left: theData.watermark + 'px',
+        top: '5px',
+        fontFamily: '黑体',
+        border: '1px solid #fff',
+        opacity: '0.5',
+      }"
+    >
+      {{ myGlobal.Eid }}&nbsp{{ myGlobal.User }}
     </div>
     <div style="position: absolute; z-index: 1">
       <!-- <video controls controlsList="nodownload" oncontextmenu="return(false);">
@@ -14,7 +26,7 @@
 
 <script setup lang="ts">
 import { user } from '@/utils/time';
-import { defineComponent, toRefs, watch } from 'vue';
+import { defineComponent, reactive, toRefs, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   addtime,
@@ -27,6 +39,16 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { Rget } from '@/config/http';
 import { myGlobal } from '@/store/app';
+let theData = reactive({
+  watermark: 0,
+});
+setInterval(() => {
+  if (theData.watermark < 800) {
+    theData.watermark++;
+  } else {
+    theData.watermark = 50;
+  }
+}, 100);
 
 let time60: NodeJS.Timeout;
 const route = useRoute();

@@ -15,5 +15,6 @@ export const backlook = reactive({
     ligthOff: false, //关灯模式
     volume: 0.3, //默认音量大小
     control: true, //是否显示控制器
+    controlBtns: ['audioTrack', 'quality', 'speedRate', 'volume', 'fullScreen']
 });
 

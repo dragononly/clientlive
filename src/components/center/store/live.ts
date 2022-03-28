@@ -21,11 +21,12 @@ export const live = reactive({
     mobile
 })
 export const data = reactive({
-    watermark: 58,
+    branch: "",
+    watermark: 158,
     closeOff: '2%',
     shrinkOff,
     shrinkLeft: '-99%',
-    shrinkRight: '80%',
+    shrinkRight: '0%',
     myIsFull: false,
     liveStatusColor: 'red',
     backUrl: '',
@@ -73,6 +74,7 @@ export const data = reactive({
         {
             user: "",
             message: "",
+            branch: ""
         },
     ],
     arr2: [

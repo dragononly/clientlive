@@ -350,7 +350,7 @@ export default defineComponent({
     let url = '/live/findzhibo';
     let cabbranch = await Mpost(url, '');
 
-    data.showarr = cabbranch.data.data;
+    data.showarr = cabbranch.data.data.reverse();
 
     //删除确认
     let degzhiboid = '';

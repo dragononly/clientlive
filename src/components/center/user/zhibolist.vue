@@ -141,7 +141,7 @@ export default defineComponent({
   async setup(props, ctx) {
     const store = useStore();
 
-    zhibolist.showarr = data.showzhibolist;
+    zhibolist.showarr = data.showzhibolist.reverse();
 
     if (props.arr.length == 0) {
       zhibolist.show = true;

@@ -1,13 +1,7 @@
 <template>
   <div id="box" :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
     <!-- <div v-if="nowvideoid && !mobile" @dblclick="fullshow()" class="mask"></div> -->
-    <div class="a1">
-      <SettingFilled
-        @click="showModal"
-        class="touch2"
-        :style="{ fontSize: '15px' }"
-      />
-    </div>
+
     <div v-if="!nowvideoid" class="a1" style="margin-left: 45px">
       <router-link to="/center" style="color: #63696a">正在直播</router-link>
     </div>
@@ -15,22 +9,6 @@
       <router-link to="/backlist" style="color: #63696a">直播回看</router-link>
     </div>
 
-    <div
-      @click="fullshow()"
-      v-if="nowvideoid"
-      :style="{
-        position: 'absolute',
-        right: '10px',
-        top: '20px',
-        border: '1px solid #616161',
-        borderRadius: '5px',
-        padding: '2px 5px',
-        zIndex: '5',
-        marginRight: closeOff,
-      }"
-    >
-      <FullscreenOutlined class="touch2" :style="{ fontSize: '15px' }" />
-    </div>
     <div v-if="admin && nowvideoid" class="a1 a11" style="color: #fff">
       <QuestionCircleOutlined
         class="touch2"
@@ -38,18 +16,22 @@
         :style="{ fontSize: '15px' }"
       />
     </div>
-    <div>
-      <div
-        v-show="nowvideoid"
-        class="a1"
-        :style="{ marginLeft: watermark + 'px', color: '#fff' }"
-      >
-        <div v-if="Eid">{{ Eid }}&nbsp;{{ User }}</div>
-        <div v-else>{{ eid }}&nbsp;{{ user }}</div>
-      </div>
+
+    <div
+      v-show="nowvideoid"
+      class="a1"
+      :style="{
+        marginLeft: watermark + 'px',
+        color: '#fff',
+        border: '1px solid #4596F2',
+        opacity: '0.6',
+      }"
+    >
+      <div v-if="Eid">{{ Eid }}&nbsp;{{ User }}</div>
+      <div v-else>{{ eid }}&nbsp;{{ user }}</div>
     </div>
 
-    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 203px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 213px">
       <a-popconfirm
         title="是否开启直播"
         ok-text="确认"
@@ -66,7 +48,7 @@
       </a-popconfirm>
     </div>
 
-    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 236px">
+    <div class="a1" v-if="nowvideoid && admin" style="margin-left: 246px">
       <a-popconfirm
         title="是否关闭直播"
         ok-text="确认"
@@ -81,14 +63,6 @@
           />
         </a>
       </a-popconfirm>
-    </div>
-    <div
-      v-show="nowvideoid"
-      class="a1"
-      style="margin-left: 270px; color: #fff; font-weight: bold"
-    >
-      <team-outlined />
-      在线{{ parseInt(people) + 1 }}
     </div>
 
     <!-- <div
@@ -120,27 +94,11 @@
         background: videobg,
       }"
     >
-      <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
-        <!-- <div
-          v-if="close1"
-          :style="{
-            position: 'absolute',
-            right: '10px',
-            top: '20px',
-            border: '1px solid #616161',
-            borderRadius: '5px',
-            padding: '2px 5px',
-            zIndex: '5',
-            marginRight: closeOff,
-          }"
-        >
-          <span @click="tohome()">
-            <CloseOutlined
-              class="touch2"
-              style="font-size: 15px; font-weight: bold"
-            />
-          </span>
-        </div> -->
+      <div
+        class="c5"
+        v-if="videoplay"
+        style="width: 100%; position: relative; background: #f3f3f4"
+      >
         <iframe
           sandbox="allow-same-origin allow-scripts"
           name="iframe_a"
@@ -157,33 +115,34 @@
           class="touch"
           :style="{
             position: 'fixed',
-            top: '248px',
-            left: shrinkRight,
+            top: '120px',
+            right: '-10px',
             width: '30px',
             height: '30px',
             zIndex: '999',
             marginLeft: '-10px',
           }"
-        >
-          <caret-right-outlined style="font-size: 30px; color: #fff" />
-        </div>
+        ></div>
         <div
           @click="shrinkLeftEvent()"
           class="touch"
           :style="{
             position: 'fixed',
-            top: '248px',
-            left: shrinkLeft,
+            top: '120px',
+            right: '-10px',
             width: '30px',
             height: '30px',
             zIndex: '999',
             marginLeft: '-10px',
           }"
         >
-          <caret-left-outlined style="font-size: 30px; color: #fff" />
+          <img
+            v-if="!fulloff"
+            style="width: 20px"
+            src="../../assets/left.png"
+          />
         </div>
 
-        <caret-right-outlined />
         <div style="position: absolute; right: 0; top: 0; z-index: 12">
           <a-card
             v-show="signtime"
@@ -225,97 +184,101 @@
           </a-card>
         </div>
 
-        <div v-if="shrinkOff">
-          <!-- <div
-            v-if="nowvideoid && fulloff"
-            id="sc2"
-            :class="chatmclass ? 'c3m' : 'c3'"
-            :style="{
-              height: cssheight2 + '%',
-              scrollTop: cssheight2,
-              overflowY: isactive ? 'scroll' : 'hidden',
-            }"
-            ref="containerRef2"
-          >
-            <div class="touch">
-              <div
-                id="components-affix-demo-target"
-                class="scrollable-container"
-              >
-                <div class="background">
-                  <a-affix
-                    :target="() => containerRef2"
-                    :style="{ position: 'absolute', top: 0, right: 0 }"
-                  >
-                    <MinusSquareOutlined
-                      @click="cssheightclick2()"
-                      class="c4"
-                    />
-                  </a-affix>
-                </div>
-              </div>
-
-              <div
-                v-for="(i, key) in arr2"
-                :key="key"
-                style="margin-bottom: 5px"
-              >
-                <div
-                  :style="{
-                    color: sayColor[String(key).charAt(String(key).length - 1)],
-                    backgroundColor:
-                      saybgcolor[String(key).charAt(String(key).length - 1)],
-                  }"
-                  class="line2 css2"
-                >
-                  {{ i.user }}说:
-                  <span style="color: #fff"> {{ i.message }}</span>
-                </div>
-              </div>
+        <div
+          v-if="shrinkOff"
+          style="
+            position: relative;
+            position: fixed;
+            right: 3px;
+            top: 5px;
+            height: 99%;
+            width: 13.5%;
+            border-radius: 8px;
+            background: #fff;
+            padding-right: 10px;
+            border: 1px solid #ececec;
+          "
+        >
+          <div style="height: 38px; margin-top: 7px; position: relative">
+            <div class="a1">
+              <SettingFilled
+                @click="showModal"
+                class="touch2"
+                :style="{ fontSize: '11px' }"
+              />
             </div>
-          </div> -->
+            <div
+              v-show="nowvideoid"
+              class="a1"
+              style="
+                margin-left: 27px;
+                color: #418cd1;
+                font-weight: 400;
+                font-size: 12px;
+                border: 0.01rem solid #418cd1;
+                padding: 0px 3px 0px 3px;
+                line-height: 21.5px;
+              "
+            >
+              <team-outlined />
+              <span style="font-size: 13px">
+                在线{{ parseInt(people) + 1 }}人</span
+              >
+            </div>
+            <div
+              @click="fullshow()"
+              v-if="nowvideoid"
+              class="imghover touch"
+              :style="{
+                position: 'absolute',
+                top: '7px',
 
+                borderRadius: '3px',
+                padding: '0px 3px',
+                zIndex: '12',
+                right: '3px',
+              }"
+            >
+              <FullscreenOutlined
+                :style="{ fontSize: '14px', color: '#fff' }"
+              />
+            </div>
+          </div>
+
+          <div
+            style="
+              background: #fff;
+              height: 25px;
+              position: absolute;
+              top: 40px;
+              z-index: 100;
+              width: 100%;
+            "
+          ></div>
           <div
             v-if="nowvideoid"
             id="sc"
             :class="chatmclass ? 'c1m' : 'c1'"
             :style="{
-              height: cssheight + '%',
+              height: 83 + '%',
               overflowY: isactive ? 'scroll' : 'hidden',
+              marginLeft: '10px',
+              marginTop: '10px',
+              position: 'relative',
             }"
             ref="containerRef"
           >
             <div class="touch">
               <div
-                id="components-affix-demo-target"
-                class="scrollable-container"
-              >
-                <div class="background">
-                  <a-affix
-                    :target="() => containerRef"
-                    :style="{ position: 'absolute', top: 0, right: 0 }"
-                  >
-                    <MinusSquareOutlined @click="cssheightclick()" class="c2" />
-                  </a-affix>
-                </div>
-              </div>
-
-              <div
                 v-for="(i, key) in arr1"
                 :key="key"
-                style="margin-bottom: 5px"
+                style="margin-bottom: 0px"
               >
-                <div
-                  :style="{
-                    opacity: '0.8',
-                    color: sayColor[String(key).charAt(String(key).length - 1)],
-                    backgroundColor:
-                      saybgcolor[String(key).charAt(String(key).length - 1)],
-                  }"
-                  class="line2 css2"
-                >
+                <div class="line2 css2" style="line-height: 18px">
+                  <span style="color: #fff"></span>
+
                   {{ i.user }}说:
-                  <span style="color: #fff"> {{ i.message }}</span>
+                  <span style="color: #767574"> {{ i.message }}</span>
                 </div>
               </div>
             </div>
@@ -323,26 +286,51 @@
           <div
             style="
               bottom: 1%;
-              position: absolute;
+              position: fixed;
               right: 0;
-              width: 15%;
+              width: 14%;
               padding: 5px;
             "
+            class="touch"
           >
-            <a-input-search
+            <a-input
               v-model:value="value"
               placeholder="说点什么吧..."
-              enter-button="发送"
-              @search="onSearch"
               size="small"
               style="
-                border-radius: 5px;
-                opacity: 0.7;
-
-                font-size: 1rem;
+                border-radius: 5px 0 0 5px;
+                opacity: 0.9;
+                font-size: 0.9rem;
                 z-index: 8888;
+                width: 70%;
+                left: 10px;
+                padding-left: 2px;
+                background: #fff;
+                outline: none;
+                color: #3d81cd;
+                float: left;
+                display: block;
               "
             />
+            <div
+              @click="onSearch(value)"
+              style="
+                display: block;
+                background-color: #3d81cd;
+                border-radius: 0 5px 5px 0;
+                height: 25px;
+                width: 40px;
+                font-weight: bold;
+                text-align: center;
+                color: #fff;
+                font-size: 13px;
+                line-height: 25px;
+                float: left;
+                margin-left: 10px;
+              "
+            >
+              发送
+            </div>
           </div>
         </div>
       </div>
@@ -408,6 +396,9 @@
   </div>
 </template>
 <script lang="ts">
+document.addEventListener('contextmenu', function (e) {
+  e.preventDefault();
+});
 import { defineComponent, toRefs, watch } from 'vue';
 import {
   SettingFilled,
@@ -421,6 +412,9 @@ import {
   TeamOutlined,
   CaretRightOutlined,
   CaretLeftOutlined,
+  SendOutlined,
+  ArrowsAltOutlined,
+  ShrinkOutlined,
 } from '@ant-design/icons-vue';
 import myset from './myset.vue';
 import Zhibolist from '@/components/center/user/zhibolist.vue';
@@ -455,6 +449,7 @@ import {
   boxScroll,
   shrink,
   shrinkLeftEvent,
+  initialize,
 } from './event/center/before';
 import { message } from 'ant-design-vue';
 import screenfull from 'screenfull';
@@ -478,7 +473,7 @@ export default defineComponent({
         data.ifrawidth = '100%';
 
         //发给老师和导播的聊天框隐藏
-        data.fulloff = false;
+        data.fulloff = true;
         //聊天框高度拉低
         data.cssheight = 55;
 
@@ -495,11 +490,10 @@ export default defineComponent({
         if (data.shrinkOff == false) {
           data.ifrawidth = '100%';
         } else {
-          data.ifrawidth = '85%';
+          data.ifrawidth = '86%';
         }
 
-        data.shrinkRight = '120%';
-        data.shrinkLeft = '99%';
+        shrinkLeftEvent();
 
         //发给老师和导播的聊天框隐藏
         data.fulloff = true;
@@ -508,6 +502,7 @@ export default defineComponent({
         //data.toggleFull = true;
       }
     };
+    initialize();
 
     // //禁用空格暂停
     // window.onkeypress = (event: any) => {
@@ -520,6 +515,12 @@ export default defineComponent({
     //展开一次
     shrinkLeftEvent();
 
+    document.onkeydown = async function (e) {
+      let ev: any = document.all ? window.event : e;
+      if (ev.keyCode === 13) {
+        await onSearch(data.value);
+      }
+    };
     const router = useRouter();
     const route = useRoute();
     if (!sessionStorage.eid && !route.query.accesstoken) {
@@ -739,7 +740,7 @@ export default defineComponent({
       if (data.watermark < 800) {
         data.watermark++;
       } else {
-        data.watermark = 58;
+        data.watermark = 158;
       }
     }, 100);
 
@@ -760,6 +761,7 @@ export default defineComponent({
       askshowclick,
       fullshow,
       shrink,
+
       shrinkLeftEvent,
       ...toRefs(data),
     };
@@ -767,8 +769,10 @@ export default defineComponent({
 
   components: {
     SettingFilled,
+    ArrowsAltOutlined,
     PlayCircleFilled,
     myset,
+    SendOutlined,
     Zhibolist,
     CloseOutlined,
     FullscreenOutlined,
@@ -777,6 +781,7 @@ export default defineComponent({
     FullscreenExitOutlined,
     TeamOutlined,
     PoweroffOutlined,
+    ShrinkOutlined,
     heart,
     ask,
     CaretRightOutlined,

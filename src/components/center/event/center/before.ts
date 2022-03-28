@@ -17,6 +17,27 @@ import axios from 'axios';
 import { myGlobal } from '@/store/app';
 
 
+//
+export const initialize = async () => {
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
+    //获取部门
+    let data1 = {
+        eid: realEid,
+        limit: '1',
+        back: 'branch',
+    };
+    //通过eid去获取从而赋值sessionStorage.user
+    const cab1 = await Rget('/skyuser', data1);
+    data.branch = cab1.data.data[0].branch
+
+}
 
 
 export const myscroll = async () => {
@@ -69,6 +90,7 @@ export const getmessage = async () => {
     for (const x in cab.data.data) {
         if (cab.data.data[x].type == 1) {
             data.arr1.push(cab.data.data[x]);
+
         } else {
             if (data.admin) {
                 data.arr2.push(cab.data.data[x]);
@@ -240,9 +262,9 @@ export const onSearch = async (searchValue: string) => {
         realEid = sessionStorage.eid
     }
     //不允许游客发送消息
-    if (realEid == '999999') {
-        message.info('你好游客，为了网络安全，您还不能发送消息～～');
-    }
+    // if (realEid == '999999') {
+    //     message.info('你好游客，为了网络安全，您还不能发送消息～～');
+    // }
     // data.radiovalue==>1 代表所有人 2代表老师和导播
 
 
@@ -302,12 +324,12 @@ export const useAccesstokenGetEid = async () => {
         let data1 = {
             eid: realEid,
             limit: '1',
-            back: 'name',
+            back: 'name,branch',
         };
         //通过eid去获取从而赋值sessionStorage.user
         const cab1 = await Rget('/skyuser', data1);
-        console.log(realEid);
 
+        data.branch = cab1.data.data[0].branch
 
 
         try {
@@ -316,7 +338,7 @@ export const useAccesstokenGetEid = async () => {
             myGlobal.User = '佚名'
             console.log('error 通过eid去获取从而赋值sessionStorage.user');
         }
-        console.log(realName);
+
         myGlobal.User = realName
         myGlobal.Eid = realEid
         sessionStorage.eid = realEid
@@ -346,11 +368,11 @@ export const adminUser = async () => {
         eid: realEid,
     };
 
-    let cabg = await Mpost(url, mydata);
+    //  let cabg = await Mpost(url, mydata);
 
-    const adminarr = ['运营维护部', '教育培训部'];
+    const adminarr = ['100098', '101305', '115097'];
 
-    if (adminarr.includes(cabg?.data?.data?.departmentchild)) {
+    if (adminarr.includes(realEid)) {
         data.admin = true;
         message.info('管理员界面和权限已打开。');
     } else {
@@ -627,7 +649,6 @@ export const signtimeclick = async () => {
 };
 
 export const addtimeBack = async () => {
-    console.log(111);
 
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
@@ -646,6 +667,7 @@ export const addtimeBack = async () => {
     if (live.mobile) {
         terminalType = 1
     }
+
     //空代表第一次更新
     if (!search1?.data?.data[0]?.updateTime) {
         //把当前时间迹点添加进去
@@ -687,7 +709,7 @@ export const addtimeBack = async () => {
                 name: cab1?.data?.data[0]?.login_id,
                 organizationId: cab1?.data?.data[0]?.branch,
                 departmentId: cab1?.data?.data[0]?.departmentchild,
-                durationTime: Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000),
+                durationTime: Math.abs(Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000)),
                 levelTime: search1.data.data[0].updateTime,
                 terminalType: terminalType,
                 time: '1',
@@ -760,7 +782,9 @@ export const addtime = async () => {
     } else {
 
         //如果已经关闭网页长时间离开检测
-
+        // console.log(sesstime);
+        // console.log(search1.data.data[0].updateTime);
+        // console.log((sesstime - search1.data.data[0].updateTime) / 1000)
         if ((sesstime - search1.data.data[0].updateTime) / 1000 > 20) {
             console.log('修正模式');
 
@@ -771,6 +795,8 @@ export const addtime = async () => {
             const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
             if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
         } else {
+            let time = Math.abs(Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000))
+            // console.log(search1?.data?.data[0]?._id)
             let data5 = {
                 zhiboid: data.nowvideoid,
                 eid: realEid,
@@ -778,7 +804,7 @@ export const addtime = async () => {
                 name: cab1?.data?.data[0]?.login_id,
                 organizationId: cab1?.data?.data[0]?.branch,
                 departmentId: cab1?.data?.data[0]?.departmentchild,
-                durationTime: Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000),
+                durationTime: time,
                 levelTime: search1.data.data[0].updateTime,
                 terminalType: terminalType,
                 time: '1',
@@ -790,6 +816,8 @@ export const addtime = async () => {
 
 
             const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
+            //    console.log(cab3);
+
             if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
         }
 
@@ -804,7 +832,7 @@ export const addtime = async () => {
 export const shrink = () => {
     data.ifrawidth = '100%';
     data.shrinkOff = false;
-    data.shrinkRight = "120%"
+    data.shrinkRight = "10%"
     data.shrinkLeft = "99%"
     //关闭按钮
     data.closeOff = "0%"
@@ -814,10 +842,10 @@ export const shrink = () => {
 }
 //展开聊天框
 export const shrinkLeftEvent = () => {
-    data.ifrawidth = '85%';
+    data.ifrawidth = '86%';
     data.shrinkOff = true;
-    data.shrinkRight = "85%"
-    data.shrinkLeft = "-99%"
+
+    data.shrinkLeft = "0%"
 
     data.closeOff = "15%"
     data.fulloff = true

@@ -5,18 +5,32 @@
 
 .css2 {
   border-radius: 5px;
-  font-size: 13px;
-  padding: 3px 5px;
-  font-weight: bold;
+  
+  font-weight: 500;
+  color:#3C7CCD;
+  font-family: "黑体";
+  background:#fff;
+  font-size: 0.4rem;
+  margin-bottom: 8px;
+}
+.imghover{
+ border: 0.01rem solid #418cd1;
+ background:#418cd1;
+}
+.imghover:hover{
+   -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    
+
 }
 .a1 {
   position: absolute;
-  top: 18px;
-  left: 20px;
+  top: 7px;
+  left: 10px;
   z-index: 10;
-  border: 1px solid #616161;
-  border-radius: 3px;
-  padding: 2px 5px;
+  border: 0.01rem solid #616161;
+  border-radius: 6px;
+  padding: 0px 5.5px;
 }
 .a11 {
   left:190px;
@@ -37,7 +51,7 @@
   color: #ececec;
 }
 .c4 {
-  font-size: 20px;
+
   color: #2c3e50;
   position: absolute;
   right: 0px;
@@ -57,14 +71,14 @@
   position: relative;
   position: absolute;
   z-index: 11;
-  top: 10px;
-  width: 15%;
-  background: #2D3034;
+  top:5px;
+  left: 0;
+  width: 100%;
+  font-size:0.1rem;
   border-radius: 5px;
-  padding: 10px;
   overflow-y: scroll;
-  font-size: 13px;
   opacity: 0.9 ;
+  padding-right: 10px;
 }
 
 .c3 {
@@ -72,9 +86,7 @@
   top:72%
 }
 
-.c1 {
-  right: 0;
-}
+
 
 .c3m,
 .c1m {
@@ -85,7 +97,6 @@
   z-index: 11;
   bottom: 100px;
   width: 90%;
-  background: #e42727;
   border-radius: 5px;
   padding: 10px;
   overflow-y: scroll;

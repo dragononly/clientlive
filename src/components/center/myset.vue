@@ -100,7 +100,7 @@ export default defineComponent({
     let data = reactive({
       selectedKeys: ['5'],
       openKeys: ['sub3'],
-      vif: [false, false, false, false, false, false, true, false],
+      vif: [false, false, false, false, false, false, false, true],
     });
 
     const handleClick = (e: any) => {

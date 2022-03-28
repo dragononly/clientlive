@@ -81,6 +81,7 @@ export default defineComponent({
     for (const i of zhibolisCab?.data?.data) {
       if (i.backurl != '等待回传') {
         backlistData.zhiboDetails.push(i);
+        backlistData.zhiboDetails.reverse();
       }
     }
 
