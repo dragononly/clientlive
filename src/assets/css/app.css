@@ -7,17 +7,21 @@
   text-align: center;
   color: #2c3e50;
 }
+
 body {
   overflow-y: hidden;
 }
+
 .touch {
   cursor: pointer;
 }
+
 .line1 {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 .line2 {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -26,6 +30,7 @@ body {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)
@@ -119,6 +124,7 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -133,17 +139,21 @@ nav,
 section {
   display: block;
 }
+
 body {
   line-height: 1;
 }
+
 ol,
 ul {
   list-style: none;
 }
+
 blockquote,
 q {
   quotes: none;
 }
+
 blockquote:before,
 blockquote:after,
 q:before,
@@ -151,8 +161,10 @@ q:after {
   content: '';
   content: none;
 }
+
 table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
 /* body::-webkit-scrollbar{display: none;} */

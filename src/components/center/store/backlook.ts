@@ -2,7 +2,7 @@ import { reactive, toRefs } from "vue";
 
 export const backlook = reactive({
     width: '100%', //播放器高度
-    height: '450px', //播放器高度
+    height: 'auto', //播放器高度
     color: '#409eff', //主题色
     title: '视频名', //视频名称
     src: '', //视频源
@@ -15,6 +15,6 @@ export const backlook = reactive({
     ligthOff: false, //关灯模式
     volume: 0.3, //默认音量大小
     control: true, //是否显示控制器
-    controlBtns: ['audioTrack', 'quality', 'speedRate', 'volume', 'fullScreen']
+    controlBtns: ['audioTrack', 'quality', 'speedRate', 'volume']
 });
 

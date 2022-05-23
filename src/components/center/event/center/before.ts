@@ -838,18 +838,18 @@ export const shrink = () => {
     data.closeOff = "0%"
     //最下面聊天输入
     data.fulloff = false
-
 }
 //展开聊天框
 export const shrinkLeftEvent = () => {
     data.ifrawidth = '86%';
     data.shrinkOff = true;
-
     data.shrinkLeft = "0%"
-
     data.closeOff = "15%"
     data.fulloff = true
-
+    //手机端视频100%
+    if (data.mobile) {
+        data.ifrawidth = "100%";
+    }
 }
 
 

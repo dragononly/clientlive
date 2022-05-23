@@ -1,26 +1,40 @@
 <template>
-  <div
+  <!-- <div
     style="
       width: 100%;
-      height: calc(100vh - 10px);
+      height: auto;
       margin: auto;
       text-align: left;
       box-shadow: 5px 5px 5px #304455;
     "
   >
+   
+  </div> -->
+  <div
+    :class="{ test: data.isActive }"
+    style="text-align: left; box-shadow: 5px 5px 5px #304455"
+  >
     <me />
   </div>
 </template>
 
-<script>
-import me from '@components/center/center.vue';
-export default {
-  name: 'center',
-  components: {
-    me,
-  },
-};
+<script setup lang="ts">
+import me from "@components/center/center.vue";
+import { reactive } from "@vue/reactivity";
+import device from "current-device";
+
+const data = reactive({
+  isActive: false,
+});
+if (device.android()) {
+  data.isActive = true;
+}
 </script>
 
 <style scoped>
+.test {
+  width: calc(100vh);
+  height: calc(100wh);
+  transform: rotate(-90deg);
+}
 </style>

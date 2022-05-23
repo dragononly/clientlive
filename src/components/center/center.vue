@@ -68,8 +68,8 @@
     <!-- <div
       class="a1"
       @click="fullshow()"
-      v-if="nowvideoid"
-      style="margin-left: 130px"
+      v-if="nowvideoid && mobile"
+      style="margin-left: 147px"
     >
       <FullscreenExitOutlined class="touch2" :style="{ fontSize: '15px' }" />
     </div> -->
@@ -108,7 +108,11 @@
           frameborder="0"
           id="childFrame"
           scrolling="no"
-          allowfullscreen
+          allowfullscreen="allowfullscreen"
+          mozallowfullscreen="mozallowfullscreen"
+          msallowfullscreen="msallowfullscreen"
+          oallowfullscreen="oallowfullscreen"
+          webkitallowfullscreen="webkitallowfullscreen"
         ></iframe>
         <div
           @click="shrink()"
@@ -124,6 +128,7 @@
           }"
         ></div>
         <div
+          v-if="!mobile"
           @click="shrinkLeftEvent()"
           class="touch"
           :style="{
@@ -185,7 +190,7 @@
         </div>
 
         <div
-          v-if="shrinkOff"
+          v-if="shrinkOff && !mobile"
           style="
             position: relative;
             position: fixed;
@@ -396,10 +401,10 @@
   </div>
 </template>
 <script lang="ts">
-document.addEventListener('contextmenu', function (e) {
+document.addEventListener("contextmenu", function (e) {
   e.preventDefault();
 });
-import { defineComponent, toRefs, watch } from 'vue';
+import { defineComponent, toRefs, watch } from "vue";
 import {
   SettingFilled,
   CloseOutlined,
@@ -415,20 +420,20 @@ import {
   SendOutlined,
   ArrowsAltOutlined,
   ShrinkOutlined,
-} from '@ant-design/icons-vue';
-import myset from './myset.vue';
-import Zhibolist from '@/components/center/user/zhibolist.vue';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-moment.locale('zh-cn');
-import { data } from './store/live';
-import heart from '@components/center/com/heart_anima.vue';
-import ask from '@components/center/com/ask.vue';
-import { sendWsMessage } from '@config/http/ws';
-import { wsdata } from '@config/http/wsdata';
-import { useRouter, useRoute } from 'vue-router';
+} from "@ant-design/icons-vue";
+import myset from "./myset.vue";
+import Zhibolist from "@/components/center/user/zhibolist.vue";
+import moment from "moment";
+import "moment/locale/zh-cn";
+moment.locale("zh-cn");
+import { data } from "./store/live";
+import heart from "@components/center/com/heart_anima.vue";
+import ask from "@components/center/com/ask.vue";
+import { sendWsMessage } from "@config/http/ws";
+import { wsdata } from "@config/http/wsdata";
+import { useRouter, useRoute } from "vue-router";
 
-import axios from 'axios';
+import axios from "axios";
 import {
   getmessage,
   getsigndata,
@@ -450,11 +455,11 @@ import {
   shrink,
   shrinkLeftEvent,
   initialize,
-} from './event/center/before';
-import { message } from 'ant-design-vue';
-import screenfull from 'screenfull';
-import { myGlobal } from '@/store/app';
-import { log } from 'console';
+} from "./event/center/before";
+import { message } from "ant-design-vue";
+import screenfull from "screenfull";
+import { myGlobal } from "@/store/app";
+import { log } from "console";
 export default defineComponent({
   data() {
     return {
@@ -470,7 +475,7 @@ export default defineComponent({
     //观察屏幕放大缩小同步
     window.onresize = () => {
       if (screenfull.isFullscreen) {
-        data.ifrawidth = '100%';
+        data.ifrawidth = "100%";
 
         //发给老师和导播的聊天框隐藏
         data.fulloff = true;
@@ -479,18 +484,18 @@ export default defineComponent({
 
         data.shrinkOff = false;
         //120超出屏幕消失
-        data.shrinkRight = '120%';
-        data.shrinkLeft = '-99%';
+        data.shrinkRight = "120%";
+        data.shrinkLeft = "-99%";
 
         //那个关闭按钮的位置控制
-        data.closeOff = '0%';
+        data.closeOff = "0%";
       } else {
         //如同上面
         //观察聊天框是否关闭
         if (data.shrinkOff == false) {
-          data.ifrawidth = '100%';
+          data.ifrawidth = "100%";
         } else {
-          data.ifrawidth = '86%';
+          data.ifrawidth = "86%";
         }
 
         shrinkLeftEvent();
@@ -504,16 +509,15 @@ export default defineComponent({
     };
     initialize();
 
-    // //禁用空格暂停
-    // window.onkeypress = (event: any) => {
-    //   alert();
-    //   if (event.keyCode == 32) event.returnValue = false;
-    // };
-
     // //收缩一次聊天框
-    // shrink();
+    //手机端视频100%
+
+    //
     //展开一次
     shrinkLeftEvent();
+    if (data.mobile) {
+      shrink();
+    }
 
     document.onkeydown = async function (e) {
       let ev: any = document.all ? window.event : e;
@@ -524,7 +528,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     if (!sessionStorage.eid && !route.query.accesstoken) {
-      router.push('/');
+      router.push("/");
     }
 
     //拉取聊天记录
@@ -535,7 +539,7 @@ export default defineComponent({
       () => wsdata.messagestatus,
       async () => {
         await getmessage();
-      },
+      }
     );
 
     //5.签到逻辑
@@ -545,7 +549,7 @@ export default defineComponent({
     //判断accesstoken,进行操作
     if (route.query.accesstoken) {
       //设置全局accesstoken
-      axios.defaults.headers.common['authorization'] = route.query.accesstoken;
+      axios.defaults.headers.common["authorization"] = route.query.accesstoken;
       await useAccesstokenGetEid();
     }
 
@@ -566,15 +570,15 @@ export default defineComponent({
       data.zhibolistshow = true;
       data.videoplay = false;
       data.close1 = false;
-      data.nowvideoid = '';
-      data.videobg = '#fff';
+      data.nowvideoid = "";
+      data.videobg = "#fff";
       wsdata.askshow = false;
       //滚动条控制
       data.isactive = true;
     };
 
     //2授权系统游客权限
-    if (sessionStorage.eid == '999999') {
+    if (sessionStorage.eid == "999999") {
       data.signtime = false;
       data.admin = false;
     }
@@ -588,7 +592,7 @@ export default defineComponent({
       {
         immediate: true, // 这个属性是重点啦
         deep: true, // 深度监听的参数
-      },
+      }
     );
 
     //timeRecord是一个记录时间点， 改了说明进入了下一个打卡时间，当打卡进入下一个时间的时候，可以重新打卡
@@ -597,29 +601,29 @@ export default defineComponent({
     watch(
       () => data.timeRecord,
       () => {
-        let time1: any = localStorage.getItem('relativetime');
-        let time2 = localStorage.getItem('pretime');
-        let end_date2 = moment(time1, 'YYYY-MM-DD HH:mm:ss');
-        let dftime = end_date2.diff(time2, 'seconds');
+        let time1: any = localStorage.getItem("relativetime");
+        let time2 = localStorage.getItem("pretime");
+        let end_date2 = moment(time1, "YYYY-MM-DD HH:mm:ss");
+        let dftime = end_date2.diff(time2, "seconds");
         // console.log('监督授权localStorage pretime');
 
         //上一个打卡时间范围内,见到用户过了很久才签到的那个时间
         if (
           dftime <
           Number(data.signContinueTime) -
-            Number(localStorage.getItem('passedtime'))
+            Number(localStorage.getItem("passedtime"))
         ) {
           //说明打卡过上个锁
-          localStorage.setItem('lock', 'on');
+          localStorage.setItem("lock", "on");
         } else {
           //允许再一次签到，打开锁
-          localStorage.setItem('lock', 'off');
+          localStorage.setItem("lock", "off");
         }
       },
       {
         immediate: true, // 这个属性是重点啦
         deep: true, // 深度监听的参数
-      },
+      }
     );
 
     //timethis 定时器观看自己有没有需要打卡的
@@ -639,7 +643,7 @@ export default defineComponent({
       {
         immediate: true, // 这个属性是重点啦
         deep: true, // 深度监听的参数
-      },
+      }
     );
 
     //点击签到事件
@@ -675,13 +679,13 @@ export default defineComponent({
       {
         immediate: true, // 这个属性是重点啦
         deep: true, // 深度监听的参数
-      },
+      }
     );
 
     //7.显示隐藏askshow
     const askshowclick = () => {
       let pdata = {
-        command: 'showquestion',
+        command: "showquestion",
       };
       wsdata.question = { a: 0, b: 0, c: 0, d: 0 };
       sendWsMessage(pdata);
@@ -720,7 +724,7 @@ export default defineComponent({
     };
 
     const cancel = (e: MouseEvent) => {
-      message.info('取消操作');
+      message.info("取消操作");
     };
 
     const confirm2 = async (e: MouseEvent) => {
@@ -728,12 +732,12 @@ export default defineComponent({
     };
 
     const cancel2 = (e: MouseEvent) => {
-      message.info('取消操作');
+      message.info("取消操作");
     };
 
     //如果在线人数是0，那么发送一个出发一下更新
     setTimeout(() => {
-      sendWsMessage('online');
+      sendWsMessage("online");
     }, 2000);
 
     setInterval(() => {
@@ -791,6 +795,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import './css/center.css'; /*引入公共样式*/
+@import "./css/center.css"; /*引入公共样式*/
 </style>
 

@@ -15,11 +15,11 @@
     >
       {{ myGlobal.Eid }}&nbsp{{ myGlobal.User }}
     </div>
-    <div style="position: absolute; z-index: 1">
-      <!-- <video controls controlsList="nodownload" oncontextmenu="return(false);">
-        <source :src="backUrl" type="video/mp4" />
-      </video> -->
-      <vue3VideoPlay v-bind="backlook" />
+    <div style="position: absolute; z-index: 1;width: 100%;margin: auto;">
+      <video v-if="theData.mobile" preload="auto" width="auto" height="auto"  controls controlsList="nodownload">
+        <source :src="backlook.src" on type="video/mp4" />
+      </video>
+       <vue3VideoPlay v-if="!theData.mobile" v-bind="backlook" /> 
     </div>
   </div>
 </template> 
@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import { user } from '@/utils/time';
 import { defineComponent, reactive, toRefs, watch } from 'vue';
+import device from "current-device";
 import { useRoute } from 'vue-router';
 import {
   addtime,
@@ -39,9 +40,15 @@ import axios from 'axios';
 import { message } from 'ant-design-vue';
 import { Rget } from '@/config/http';
 import { myGlobal } from '@/store/app';
+
 let theData = reactive({
   watermark: 0,
+  mobile: false
 });
+
+if(device.mobile()){
+  theData.mobile=true
+}
 setInterval(() => {
   if (theData.watermark < 800) {
     theData.watermark++;
