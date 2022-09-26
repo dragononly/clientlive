@@ -8,13 +8,13 @@ if (e == "测试环境22") {
     c = "http://localhost:9001"
     d = "https://zxy1.pccpa.cn/api/v1/tj-adapter/front/callback"
 } else {
-    a = "https://cdn.pccpa.cn/live/?a="
-    b = "https://cdn.pccpa.cn:9000"
+    a = "http://cdn.pccpa.cn/live/?a="
+    b = "http://cdn.pccpa.cn:9002"
     c = "https://ws.pccpa.cn"
-    d = "https://zxy1.pccpa.cn/api/v1/tj-adapter/front/callback"
+    d = "http://zxy1.pccpa.cn/api/v1/tj-adapter/front/callback"
 }
 if (device.ios()) {
-    a = "https://cdn.pccpa.cn/liveiphone/?a="
+    a = "http://cdn.pccpa.cn/liveiphone/?a="
 }
 // if (device.android()) {
 //     a = "https://cdn.pccpa.cn/liveiphone/?a="

@@ -6,14 +6,11 @@ import { htmlurl } from '@/config/http/env';
 import { sendWsMessage } from '@/config/http/ws';
 import { data } from '@components/center/store/live';
 import { message } from 'ant-design-vue';
-import Cookies from 'js-cookie';
 import moment from 'moment';
 import screenfull from 'screenfull';
 import { useRouter } from 'vue-router';
 import { signContinueTime } from './signContinueTime';
 import { live } from '@components/center/store/live'
-import { zhixueyun } from '@/config/http/env';
-import axios from 'axios';
 import { myGlobal } from '@/store/app';
 
 
@@ -732,8 +729,6 @@ export const addtimeBack = async () => {
 
 
 export const addtime = async () => {
-
-
     //1去授权eid，和user
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
@@ -746,10 +741,10 @@ export const addtime = async () => {
 
     //2去验证直播有没有结束，如果结束了，就不在添加时间了
     //2.1去拉取直播状态
-    const cab0 = await Rget('/zhibolist', { _id: data.nowvideoid, limit: '1', back: 'status' })
-    if (cab0?.data?.data[0]?.status == '直播结束') {
-        return
-    }
+    // const cab0 = await Rget('/zhibolist', { _id: data.nowvideoid, limit: '1', back: 'status' })
+    // if (cab0?.data?.data[0]?.status == '直播结束') {
+    //     return
+    // }
 
 
     const cab1 = await Rget('/skyuser', { eid: realEid });
