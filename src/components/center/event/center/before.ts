@@ -30,6 +30,7 @@ export const initialize = async () => {
         limit: '1',
         back: 'branch',
     };
+
     //通过eid去获取从而赋值sessionStorage.user
     const cab1 = await Rget('/skyuser', data1);
     data.branch = cab1.data.data[0].branch
@@ -305,6 +306,9 @@ export const useAccesstokenGetEid = async () => {
     realEid = cab?.data?.data?.eid;
     myGlobal.Eid = realEid
     data.nowvideoid = cab?.data?.data?.zhiboid
+
+    //这里去获取下用户的观看时间
+    await gettimeBack()
 
     let datax1 = {
         _id: cab?.data?.data?.zhiboid,
@@ -728,6 +732,28 @@ export const addtimeBack = async () => {
 }
 
 
+//第一次进系统，先查看下自己时长多少
+export const gettimeBack = async () => {
+    //1去授权eid，和user
+    let realName = '', realEid = ''
+    if (myGlobal.Eid) {
+        realName = myGlobal.User
+        realEid = myGlobal.Eid
+    } else {
+        realName = sessionStorage.user
+        realEid = sessionStorage.eid
+    }
+
+
+    const search1 = await Rget('/zhibolist_longtime', { eid: realEid, zhiboid: data.nowvideoid, limit: '1' })
+    if (search1?.data?.data[0]?.durationTime) {
+        data.looktime = search1.data.data[0].durationTime
+    } else {
+        data.looktime = 0
+    }
+
+}
+
 export const addtime = async () => {
     //1去授权eid，和user
     let realName = '', realEid = ''
@@ -741,10 +767,10 @@ export const addtime = async () => {
 
     //2去验证直播有没有结束，如果结束了，就不在添加时间了
     //2.1去拉取直播状态
-    // const cab0 = await Rget('/zhibolist', { _id: data.nowvideoid, limit: '1', back: 'status' })
-    // if (cab0?.data?.data[0]?.status == '直播结束') {
-    //     return
-    // }
+    const cab0 = await Rget('/zhibolist', { _id: data.nowvideoid, limit: '1', back: 'status' })
+    if (cab0?.data?.data[0]?.status == '直播结束') {
+        return
+    }
 
 
     const cab1 = await Rget('/skyuser', { eid: realEid });
@@ -754,6 +780,7 @@ export const addtime = async () => {
     if (live.mobile) {
         terminalType = 1
     }
+
     //空代表第一次更新
     if (!search1?.data?.data[0]?.updateTime) {
         //把当前时间迹点添加进去
@@ -780,41 +807,44 @@ export const addtime = async () => {
         // console.log(sesstime);
         // console.log(search1.data.data[0].updateTime);
         // console.log((sesstime - search1.data.data[0].updateTime) / 1000)
-        if ((sesstime - search1.data.data[0].updateTime) / 1000 > 20) {
-            console.log('修正模式');
+        // if ((sesstime - search1.data.data[0].updateTime) / 1000 > 60) {
+        //     console.log('修正模式');
 
-            let data5 = {
-                updateTime: sesstime,
-                visitIp: localStorage.outIp
-            };
-            const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
-            if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
-        } else {
-            let time = Math.abs(Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000))
-            // console.log(search1?.data?.data[0]?._id)
-            let data5 = {
-                zhiboid: data.nowvideoid,
-                eid: realEid,
-                fullName: realName,
-                name: cab1?.data?.data[0]?.login_id,
-                organizationId: cab1?.data?.data[0]?.branch,
-                departmentId: cab1?.data?.data[0]?.departmentchild,
-                durationTime: time,
-                levelTime: search1.data.data[0].updateTime,
-                terminalType: terminalType,
-                time: '1',
-                updateTime: sesstime,
-                visitIp: localStorage.outIp
-            };
-            // console.log(search1.data.data[0].durationTime);
-            // console.log(Math.round((sesstime - search1.data.data[0].updateTime) / 1000));
+        //     let data5 = {
+        //         updateTime: sesstime,
+        //         visitIp: localStorage.outIp
+        //     };
+        //     const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
+        //     if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
+        // } else {
+        //  let time = Math.abs(Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000))
+        let time = Math.abs(Math.round((search1.data.data[0].updateTime - search1.data.data[0].entryTime) / 1000))
+        // console.log(search1?.data?.data[0]?._id)
+        console.log("search1.data.data[0].updateTime" + search1.data.data[0].updateTime)
+        data.looktime = search1.data.data[0].durationTime
+        let data5 = {
+            zhiboid: data.nowvideoid,
+            eid: realEid,
+            fullName: realName,
+            name: cab1?.data?.data[0]?.login_id,
+            organizationId: cab1?.data?.data[0]?.branch,
+            departmentId: cab1?.data?.data[0]?.departmentchild,
+            durationTime: time,
+            levelTime: search1.data.data[0].updateTime,
+            terminalType: terminalType,
+            time: '1',
+            updateTime: sesstime,
+            visitIp: localStorage.outIp
+        };
+        // console.log(search1.data.data[0].durationTime);
+        // console.log(Math.round((sesstime - search1.data.data[0].updateTime) / 1000));
 
 
-            const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
-            //    console.log(cab3);
+        const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
+        //    console.log(cab3);
 
-            if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
-        }
+        if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
+        //}
 
 
 

@@ -143,6 +143,7 @@
               <team-outlined />
               <span style="font-size: 13px">
                 在线{{ parseInt(people) + 1 }}人</span>
+              
             </div>
             <div @click="fullshow()" v-if="nowvideoid" class="imghover touch" :style="{
               position: 'absolute',
@@ -156,31 +157,57 @@
               <FullscreenOutlined :style="{ fontSize: '14px', color: '#fff' }" />
             </div>
           </div>
+         
 
           <div style="
-              background: #fff;
-              height: 25px;
+              background: red;
               position: absolute;
-              top: 40px;
+              top: 0px;
               z-index: 100;
               width: 100%;
             "></div>
           <div v-if="nowvideoid" id="sc" :class="chatmclass ? 'c1m' : 'c1'" :style="{
-            height: 83 + '%',
+            height: 85 + '%',
             overflowY: isactive ? 'scroll' : 'hidden',
             marginLeft: '10px',
-            marginTop: '10px',
+            marginTop: '-10px',
             position: 'relative',
           }" ref="containerRef">
             <div class="touch">
               <div v-for="(i, key) in arr1" :key="key" style="margin-bottom: 0px">
-                <div class="line2 css2" style="line-height: 18px">
+                <div class="line2 css2" style="line-height: 18px;font-size:12px;">
                   <span style="color: #fff"></span>
 
                   {{ i.user }}说:
                   <span style="color: #767574"> {{ i.message }}</span>
                 </div>
               </div>
+            </div>
+          </div>
+          <div style="position:relative;position:fixed;bottom: 60px;width: 200px;">
+            <div v-if="looktime/60<300" style="color:#109754;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;position:absolute">
+              累计有效观看时长{{Math.floor(looktime/60)}}分钟
+              <a-popover placement="leftTop">
+                <template #content>
+                  <div style="font-size:12px;color: #848382;">
+                  <p>(1)第一次进入，时间增加需要1-2分钟缓冲同步，不影响实际计时</p>
+                  <p>(2)如需技术支援，请联系运营维护部，或者开发作者熊忠波</p>
+                  <p>(3)联系方式，企业微信</p>
+                  </div>
+                </template>
+                <template #title>
+                  <span style="font-size:12px;color: #848382;">提示</span>
+                </template>
+                <span style="position:relative;">
+                  <question-circle-outlined class="touch"
+                    style="font-weight: bold;font-size:15px;margin-left:2px;color:#FF9800;position:absolute;top:-1px;" />
+                </span>
+              </a-popover>
+              <div>
+              </div>
+            </div>
+            <div v-else style="color:#109754;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;">
+              恭喜，该课程您已获得足够时长
             </div>
           </div>
           <div style="
@@ -339,6 +366,8 @@ import {
   shrink,
   shrinkLeftEvent,
   initialize,
+  gettimeBack
+
 } from "./event/center/before";
 import { message } from "ant-design-vue";
 import screenfull from "screenfull";
@@ -391,11 +420,29 @@ export default defineComponent({
         //data.toggleFull = true;
       }
     };
-    initialize();
+   //优先级函数
+   //URL跳转过来赋予sessionid优先级1
+    const router = useRouter();
+    const route = useRoute();
+    if (!sessionStorage.eid && !route.query.accesstoken) {
+      router.push("/");
+    }
+
+    //判断accesstoken,进行操作
+    if (route.query.accesstoken) {
+      //设置全局accesstoken
+      axios.defaults.headers.common["authorization"] = route.query.accesstoken;
+      await useAccesstokenGetEid();
+    }
+    //优先级2获取分组
+   await initialize();
+    
+  
+   
 
     // //收缩一次聊天框
     //手机端视频100%
-
+    gettimeBack()
     //
     //展开一次
     shrinkLeftEvent();
@@ -409,11 +456,7 @@ export default defineComponent({
         await onSearch(data.value);
       }
     };
-    const router = useRouter();
-    const route = useRoute();
-    if (!sessionStorage.eid && !route.query.accesstoken) {
-      router.push("/");
-    }
+   
 
     //拉取聊天记录
     await getmessage();
@@ -430,12 +473,7 @@ export default defineComponent({
     let timec: NodeJS.Timeout | any = null;
     clearInterval(timec);
 
-    //判断accesstoken,进行操作
-    if (route.query.accesstoken) {
-      //设置全局accesstoken
-      axios.defaults.headers.common["authorization"] = route.query.accesstoken;
-      await useAccesstokenGetEid();
-    }
+    
 
     //1是否管理员用户
     await adminUser();
@@ -547,6 +585,10 @@ export default defineComponent({
       () => data.nowvideoid,
       async (a: string) => {
         if (a) {
+          console.log("进入直播间-nowvideoid change");
+          // //优先级3 插入一次计时
+          await addtime();
+
           clearInterval(time60);
           //Execution time increaser
           if (data.nowvideoid) {
@@ -555,10 +597,14 @@ export default defineComponent({
             data.isactive = false;
 
             //Create a random number between 10-99
-            let randomNum = Math.floor(Math.random() * 90 + 10);
-            time60 = setInterval(addtime, randomNum * 1000);
+            await gettimeBack()
+            //创造一个0-40的随机数
+            let random = Math.floor(Math.random() * 40)+20;
+            console.log("时间频率", random);
+            // let randomNum = Math.floor(Math.random() * 90 + 10)+20;
+            time60 = setInterval(addtime, random * 1000);
           }
-
+        
           //点击进入到直播页面后，把滚动条初始化到0，不然会继承列表的滚动条
           boxScroll();
         }

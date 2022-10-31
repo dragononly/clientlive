@@ -7,10 +7,11 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 const options = reactive({
-  src: "http://live.pccpa.cn:7002/live/movie.m3u8", //视频源
+  src: "https://live.pccpa.cn:7002/live/movie.m3u8", //视频源
   type: "m3u8", //视频类型
 });
 </script>
 
 <style scoped>
+
 </style>

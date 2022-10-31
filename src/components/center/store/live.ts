@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { myGlobal } from "@/store/app";
 // console.log("device.mobile() === %s", device.mobile());
 let width: string = "50%", chatmclass = false, xiaoxiwidth = "70%", ifrawidth = "85%", signshowtime: any = 0,
-    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false
+    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false, looktime: any = "0"
 let shrinkOff = true
 if (device.mobile()) {
     width = '100%'
@@ -21,6 +21,7 @@ export const live = reactive({
     mobile
 })
 export const data = reactive({
+    looktime,
     branch: "",
     watermark: 158,
     closeOff: '2%',
@@ -45,8 +46,8 @@ export const data = reactive({
     signshowtime,
     lock2,
     timeI,
-    url: "http://live.pccpa.cn:7002/live/movie.m3u8",
-    backurl: "http://live.pccpa.cn:7002/live/movie.m3u8",
+    url: "https://live.pccpa.cn:7002/live/movie.m3u8",
+    backurl: "https://live.pccpa.cn:7002/live/movie.m3u8",
     temog,
     value: "",
     radiovalue: "1",

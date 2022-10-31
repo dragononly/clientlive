@@ -27,8 +27,13 @@ export const connectSocket = async () => {
 		mydata = msg
 		//在线人数
 		console.log(msg);
+		if (wsdata.people > msg?.people) {
+			console.log('已经获得了最大的人数')
+		} else {
+			console.log('人数增加了')
+			wsdata.people = msg?.people
+		}
 
-		wsdata.people = msg?.people
 		const heart = () => {
 			wsdata.nowmessage = mydata
 			if (wsdata.off == "0") { wsdata.off = "1" } else {
