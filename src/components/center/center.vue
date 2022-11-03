@@ -62,7 +62,7 @@
     
       background: videobg,
     }">
-      <div class="c5" v-if="videoplay" style="width: 100%; position: relative; background: #f3f3f4">
+      <div class="c5" v-if="videoplay" style="width: 100%; position: relative;">
         <iframe sandbox="allow-same-origin allow-scripts" name="iframe_a" :src="url" :width="ifrawidth" height="100%"
           frameborder="0" id="childFrame" scrolling="no" allowfullscreen="allowfullscreen"
           mozallowfullscreen="mozallowfullscreen" msallowfullscreen="msallowfullscreen"
@@ -123,9 +123,8 @@
             height: 99%;
             width: 13.5%;
             border-radius: 8px;
-            background: #fff;
+            background: #4D5256;
             padding-right: 10px;
-            border: 1px solid #ececec;
           ">
           <div style="height: 38px; margin-top: 7px; position: relative">
             <div class="a1">
@@ -133,31 +132,30 @@
             </div>
             <div v-show="nowvideoid" class="a1" style="
                 margin-left: 27px;
-                color: #418cd1;
+                color:#BBBEA7;
                 font-weight: 400;
                 font-size: 12px;
-                border: 0.01rem solid #418cd1;
+                border: 0.01rem solid #BBBEA7;
                 padding: 0px 3px 0px 3px;
                 line-height: 21.5px;
               ">
               <team-outlined />
               <span style="font-size: 13px">
-                在线{{ parseInt(people) + 1 }}人</span>
-              
+                在线{{ parseInt(people) }}人</span>
+
             </div>
             <div @click="fullshow()" v-if="nowvideoid" class="imghover touch" :style="{
               position: 'absolute',
               top: '7px',
-            
               borderRadius: '3px',
               padding: '0px 3px',
               zIndex: '12',
               right: '3px',
             }">
-              <FullscreenOutlined :style="{ fontSize: '14px', color: '#fff' }" />
+              <FullscreenOutlined class="touch2" :style="{ fontSize: '14px' }" />
             </div>
           </div>
-         
+
 
           <div style="
               background: red;
@@ -166,8 +164,12 @@
               z-index: 100;
               width: 100%;
             "></div>
+          <div
+            style="color:#fff;border: 1px solid #949CA2;width: 95%;margin: auto;border-radius: 4px;height: 60px;font-size: 13px;text-indent: 2px;overflow-y: scroll;">
+            {{adminSay}}
+          </div>
           <div v-if="nowvideoid" id="sc" :class="chatmclass ? 'c1m' : 'c1'" :style="{
-            height: 85 + '%',
+            height: 80 + '%',
             overflowY: isactive ? 'scroll' : 'hidden',
             marginLeft: '10px',
             marginTop: '-10px',
@@ -177,22 +179,22 @@
               <div v-for="(i, key) in arr1" :key="key" style="margin-bottom: 0px">
                 <div class="line2 css2" style="line-height: 18px;font-size:12px;">
                   <span style="color: #fff"></span>
-
                   {{ i.user }}说:
-                  <span style="color: #767574"> {{ i.message }}</span>
+                  <span style="color:#F1F3E9"> {{ i.message }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div style="position:relative;position:fixed;bottom: 60px;width: 200px;">
-            <div v-if="looktime/60<300" style="color:#109754;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;position:absolute">
+          <div style="position:relative;position:fixed;bottom: 60px;width: 200px;font-family: 宋体;">
+            <div v-if="looktime/60<300"
+              style="color:#f3f3f4;font-size: 12px;padding-left:10px;position:relative;position:absolute">
               累计有效观看时长{{Math.floor(looktime/60)}}分钟
               <a-popover placement="leftTop">
                 <template #content>
                   <div style="font-size:12px;color: #848382;">
-                  <p>(1)第一次进入，时间增加需要1-2分钟缓冲同步，不影响实际计时</p>
-                  <p>(2)如需技术支援，请联系运营维护部，或者开发作者熊忠波</p>
-                  <p>(3)联系方式，企业微信</p>
+                    <p>(1)第一次进入，时间增加需要1-2分钟缓冲同步，不影响实际计时</p>
+                    <p>(2)如需技术支援，请联系运营维护部，或者开发作者熊忠波</p>
+                    <p>(3)联系方式，企业微信</p>
                   </div>
                 </template>
                 <template #title>
@@ -225,25 +227,30 @@
                 width: 70%;
                 left: 10px;
                 padding-left: 2px;
-                background: #fff;
                 outline: none;
-                color: #3d81cd;
                 float: left;
                 display: block;
+                padding: 2px;
+                text-indent: 5px;
+                font-size: 11px;
+                background: #5F6469;
+                border: 1px solid #5F6469;
+                color: #fff;
               " />
             <div @click="onSearch(value)" style="
                 display: block;
-                background-color: #3d81cd;
+                background-color:#5F6469;
                 border-radius: 0 5px 5px 0;
                 height: 25px;
                 width: 40px;
                 font-weight: bold;
                 text-align: center;
                 color: #fff;
-                font-size: 13px;
+                font-size: 12px;
                 line-height: 25px;
                 float: left;
-                margin-left: 10px;
+                margin-left: 11px;
+                font-family: 宋体;
               ">
               发送
             </div>
@@ -420,8 +427,8 @@ export default defineComponent({
         //data.toggleFull = true;
       }
     };
-   //优先级函数
-   //URL跳转过来赋予sessionid优先级1
+    //优先级函数
+    //URL跳转过来赋予sessionid优先级1
     const router = useRouter();
     const route = useRoute();
     if (!sessionStorage.eid && !route.query.accesstoken) {
@@ -435,10 +442,10 @@ export default defineComponent({
       await useAccesstokenGetEid();
     }
     //优先级2获取分组
-   await initialize();
-    
-  
-   
+    await initialize();
+
+
+
 
     // //收缩一次聊天框
     //手机端视频100%
@@ -456,7 +463,7 @@ export default defineComponent({
         await onSearch(data.value);
       }
     };
-   
+
 
     //拉取聊天记录
     await getmessage();
@@ -473,7 +480,7 @@ export default defineComponent({
     let timec: NodeJS.Timeout | any = null;
     clearInterval(timec);
 
-    
+
 
     //1是否管理员用户
     await adminUser();
@@ -599,12 +606,12 @@ export default defineComponent({
             //Create a random number between 10-99
             await gettimeBack()
             //创造一个0-40的随机数
-            let random = Math.floor(Math.random() * 40)+20;
+            let random = Math.floor(Math.random() * 40) + 20;
             console.log("时间频率", random);
             // let randomNum = Math.floor(Math.random() * 90 + 10)+20;
             time60 = setInterval(addtime, random * 1000);
           }
-        
+
           //点击进入到直播页面后，把滚动条初始化到0，不然会继承列表的滚动条
           boxScroll();
         }

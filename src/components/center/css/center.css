@@ -3,38 +3,44 @@
   padding: 0;
 }
 
+
 .css2 {
   border-radius: 5px;
-  
+
   font-weight: 500;
-  color:#3C7CCD;
-  font-family: "黑体";
-  background:#fff;
+  color: #BBBEA7;
+  font-family: "宋体";
   font-size: 0.4rem;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-.imghover{
- border: 0.01rem solid #418cd1;
- background:#418cd1;
-}
-.imghover:hover{
-   -webkit-filter: grayscale(100%);
-    filter: grayscale(100%);
-    
+
+.imghover {
+  border: 0.01rem solid #BBBEA7;
+  ;
 
 }
+
+.imghover:hover {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+
+
+}
+
 .a1 {
   position: absolute;
   top: 7px;
   left: 10px;
   z-index: 10;
-  border: 0.01rem solid #616161;
+  border: 0.01rem solid #BBBEA7;
   border-radius: 6px;
   padding: 0px 5.5px;
 }
+
 .a11 {
-  left:190px;
+  left: 190px;
 }
+
 .c5 {
   position: absolute;
   position: relative;
@@ -43,13 +49,16 @@
   z-index: 2;
   margin: 0;
 }
+
 .touch2 {
   color: #ff9800;
 }
+
 .touch2:hover {
   cursor: pointer;
   color: #ececec;
 }
+
 .c4 {
 
   color: #2c3e50;
@@ -57,6 +66,7 @@
   right: 0px;
   top: 0px;
 }
+
 /* .mask{
    position: fixed;
    left: 0;
@@ -71,19 +81,19 @@
   position: relative;
   position: absolute;
   z-index: 11;
-  top:5px;
+  top: 5px;
   left: 0;
   width: 100%;
-  font-size:0.1rem;
+  font-size: 0.1rem;
   border-radius: 5px;
   overflow-y: scroll;
-  opacity: 0.9 ;
+  opacity: 0.9;
   padding-right: 10px;
 }
 
 .c3 {
   right: 0;
-  top:72%
+  top: 72%
 }
 
 
@@ -118,6 +128,7 @@
   right: 0;
   top: 0px;
 }
+
 ::-webkit-scrollbar {
   height: 8px !important;
   width: 5px !important;
@@ -125,9 +136,8 @@
 
 ::-webkit-scrollbar-thumb {
   border-radius: 0;
-  border-style: dashed;
-  background-color: rgba(12, 80, 235, 0.4);
-  border-color: red;
+  /* border-style: dashed; */
+  background-color: rgba(180, 184, 129, 0.4);
   border-width: 1px;
   background-clip: padding-box;
 }

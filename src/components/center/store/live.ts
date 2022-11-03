@@ -21,6 +21,7 @@ export const live = reactive({
     mobile
 })
 export const data = reactive({
+    adminSay: "管理员公告栏",
     looktime,
     branch: "",
     watermark: 158,
