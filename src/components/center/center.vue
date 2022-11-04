@@ -157,8 +157,7 @@
           </div>
 
 
-          <div style="
-              background: red;
+          <div style=" background: red;
               position: absolute;
               top: 0px;
               z-index: 100;
@@ -166,13 +165,13 @@
             "></div>
           <div
             style="color:#fff;border: 1px solid #949CA2;width: 95%;margin: auto;border-radius: 4px;height: 60px;font-size: 13px;text-indent: 2px;overflow-y: scroll;">
-            {{adminSay}}
+            {{ adminSay }}
           </div>
           <div v-if="nowvideoid" id="sc" :class="chatmclass ? 'c1m' : 'c1'" :style="{
             height: 80 + '%',
             overflowY: isactive ? 'scroll' : 'hidden',
             marginLeft: '10px',
-            marginTop: '-10px',
+            marginTop: '0px',
             position: 'relative',
           }" ref="containerRef">
             <div class="touch">
@@ -186,9 +185,9 @@
             </div>
           </div>
           <div style="position:relative;position:fixed;bottom: 60px;width: 200px;font-family: 宋体;">
-            <div v-if="looktime/60<300"
+            <div v-if="looktime / 60 < 300"
               style="color:#f3f3f4;font-size: 12px;padding-left:10px;position:relative;position:absolute">
-              累计有效观看时长{{Math.floor(looktime/60)}}分钟
+              累计有效观看时长{{ Math.floor(looktime / 60) }}分钟
               <a-popover placement="leftTop">
                 <template #content>
                   <div style="font-size:12px;color: #848382;">
@@ -208,7 +207,7 @@
               <div>
               </div>
             </div>
-            <div v-else style="color:#109754;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;">
+            <div v-else style="color:#D0D2BF;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;">
               恭喜，该课程您已获得足够时长
             </div>
           </div>

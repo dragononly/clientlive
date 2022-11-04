@@ -287,14 +287,8 @@ export const onSearch = async (searchValue: string) => {
 
 export const useAccesstokenGetEid = async () => {
     //拿token去交换eid和name
-
-
     // console.log(axios.defaults.headers.common['authorization']);
-
     let cab: any = await Mpost('/zxylive/tokenlogin', {});
-
-
-
     if (!cab?.data?.data?.eid) {
         message.info('单点登录失败')
         return;
