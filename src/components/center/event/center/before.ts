@@ -13,8 +13,9 @@ import { signContinueTime } from './signContinueTime';
 import { live } from '@components/center/store/live'
 import { myGlobal } from '@/store/app';
 
+// //loca indexdb
+// import { db } from '@config/db';
 
-//
 export const initialize = async () => {
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
@@ -60,23 +61,12 @@ export const boxScroll = async () => {
     } catch (error) { }
 };
 
+//send message
+export const onSearch = async (searchValue: string) => {
+    //1 base judge
+    if (!searchValue || searchValue === ' ') { return }
 
-
-export const getmessage = async () => {
-    //管理员
-    let type: number;
-    if (data?.admin) {
-        type = 2;
-    } else {
-        type = 1;
-    }
-    let mydata = {
-        zhiboid: data.nowvideoid,
-    };
-    const cab: any = await Rget('/message', mydata);
-
-    data.arr1.length = 0;
-    data.arr2.length = 0;
+    //2 Judge this
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
         realName = myGlobal.User
@@ -85,22 +75,96 @@ export const getmessage = async () => {
         realName = sessionStorage.user
         realEid = sessionStorage.eid
     }
-    for (const x in cab.data.data) {
-        if (cab.data.data[x].type == 1) {
-            data.arr1.push(cab.data.data[x]);
+    //Do not allow tourists to send messages
+    // if (realEid == '999999') {
+    //     message.info('你好游客，为了网络安全，您还不能发送消息～～');
+    // }
+    // data.radiovalue==>1 all people 2 admin 
 
-        } else {
-            if (data.admin) {
-                data.arr2.push(cab.data.data[x]);
-            } else if (cab.data.data[x].eid == realEid) {
-                data.arr2.push(cab.data.data[x]);
 
-            }
-        }
-    }
-    //渲染滚动条
-    await myscroll();
+    //Submit to mongodb database
+    // let url = '/live/message';
+
+    //3 Message body
+    let messagetype = '1';
+    if (data.admin) { messagetype = "2" }
+    let mydata = {
+        user: realName,
+        eid: realEid,
+        message: searchValue,
+        type: messagetype,
+        zhiboid: data.nowvideoid,
+        branch: data.branch,
+    };
+
+
+
+    //v2 Submit to indexdb
+    // const id = await db.messages.add(mydata);
+    // console.log(id);
+
+    //4 send to socketio server and all client will receive it
+    let pdata = {
+        command: 'message',
+        say: mydata
+    };
+    sendWsMessage(pdata);
+
+    //5 clear input
+    data.value = ""
 };
+
+
+// export const getmessage = async () => {
+//     //administor
+//     let type: number;
+//     if (data?.admin) {
+//         type = 2;
+//     } else {
+//         type = 1;
+//     }
+//     // let mydata = {
+//     //     zhiboid: data.nowvideoid,
+//     // };
+//     // //save to loca indexdb
+//     // const cab: any = await db.messages.where(mydata).toArray()
+//     // console.log(cab);
+
+
+
+
+
+
+
+
+//     data.arr1.length = 0;
+//     data.arr2.length = 0;
+//     let realName = '', realEid = ''
+//     if (myGlobal.Eid) {
+//         realName = myGlobal.User
+//         realEid = myGlobal.Eid
+//     } else {
+//         realName = sessionStorage.user
+//         realEid = sessionStorage.eid
+//     }
+
+//     for (const i of cab) {
+//         if (i.type == 1) {
+//             data.arr1.push(i);
+
+//         } else {
+//             if (data.admin) {
+//                 data.arr2.push(i);
+//             } else if (i.eid == realEid) {
+//                 data.arr2.push(i);
+
+//             }
+//         }
+
+//     }
+//     //渲染滚动条
+//     await myscroll();
+// };
 
 
 
@@ -147,15 +211,21 @@ export const videoStatusObjJust = async () => {
 export const isOffVideoEvent = async () => {
     const mydata3 = {
         id: data.nowvideoid,
-        operateType: '1'
+        operateType: '1',
+        limit: '1',
     }
-    //1.change live status
 
+    //use socketio  channel  to inform use the live is over
+
+
+    sendWsMessage({ command: 'live', status: "直播结束" })
+
+    //1.change live status
     const mydata = {
         status: "直播结束",
         realEndTime: moment().format('x')
     }
-    const cabStatus = await Rput('/zhibolist', data.nowvideoid, mydata)
+    Rput('/zhibolist', data.nowvideoid, mydata)
     //奇怪的知学云去更新直播状态
     const cabZxyS = await Rget('/zxylive/changePlayType', mydata3)
 
@@ -191,15 +261,19 @@ export const videoStatusObj = async () => {
         status: shoulStatus,
         realStartTime: moment().format('x')
     }
-    const cabStatus = await Rget('/zhibolist', mydata2)
+    // const cabStatus = await Rget('/zhibolist', mydata2)
 
-    if (cabStatus?.data?.data[0]?.status === "直播等待") {
-        mydata.status = "直播开始"
-        data.liveStatusColor = 'green'
+    // if (cabStatus?.data?.data[0]?.status === "直播等待") {
+    //     mydata.status = "直播开始"
+    //     data.liveStatusColor = 'green'
 
-    } else {
-        return
-    }
+    // } else {
+    //     return
+    // }
+
+
+    mydata.status = "直播开始"
+    data.liveStatusColor = 'green'
 
     await Rput('/zhibolist', data.nowvideoid, mydata)
 
@@ -236,8 +310,8 @@ export const autosendSonData = async (da: any) => {
     data.close1 = true;
     data.nowvideoid = da;
     data.videobg = '#191A21';
-    //触发连锁反应事件，因为这个函数最先之行
-    await getmessage();
+    // //触发连锁反应事件，因为这个函数最先之行
+    // await getmessage();
     //启动打卡程序
     await getsigndata();
     //去根据id获取直播视频的url
@@ -247,45 +321,9 @@ export const autosendSonData = async (da: any) => {
     data.url = htmlurl + cab.data.data.url;
 };
 
-export const onSearch = async (searchValue: string) => {
-
-    if (!searchValue || searchValue === ' ') { return }
-
-    let realName = '', realEid = ''
-    if (myGlobal.Eid) {
-        realName = myGlobal.User
-        realEid = myGlobal.Eid
-    } else {
-        realName = sessionStorage.user
-        realEid = sessionStorage.eid
-    }
-    //不允许游客发送消息
-    // if (realEid == '999999') {
-    //     message.info('你好游客，为了网络安全，您还不能发送消息～～');
-    // }
-    // data.radiovalue==>1 代表所有人 2代表老师和导播
-
-    //先去查询有没有
 
 
-    //提交到数据库
-    let url = '/live/message';
-    let mydata = {
-        user: realName,
-        eid: realEid,
-        message: searchValue,
-        type: data.radiovalue,
-        zhiboid: data.nowvideoid,
-    };
-
-    await Mpost(url, mydata);
-    let pdata = {
-        command: 'message',
-    };
-    sendWsMessage(pdata);
-    data.value = ""
-};
-
+//Single sign on
 export const useAccesstokenGetEid = async () => {
     //拿token去交换eid和name
     // console.log(axios.defaults.headers.common['authorization']);
@@ -313,8 +351,6 @@ export const useAccesstokenGetEid = async () => {
 
     const a = await Rget('/zhibolist', datax1);
 
-
-
     //下面进行跳转
     if (a.data.data) {
         let data1 = {
@@ -325,7 +361,10 @@ export const useAccesstokenGetEid = async () => {
         //通过eid去获取从而赋值sessionStorage.user
         const cab1 = await Rget('/skyuser', data1);
 
-        data.branch = cab1.data.data[0].branch
+        // data.branch = cab1.data.data[0].branch
+        // if (realEid == '100098' || realEid == "115097") {
+        //          data.admin
+        // }
 
 
         try {
@@ -490,6 +529,7 @@ export const uniqueLive = async () => {
 //进入直播间逻辑, 说明被点击了，实时触发
 export const sendSonData = async (da: any) => {
 
+
     //  message.info(da)
     //子页面点击进入后list隐藏
     data.zhibolistshow = false;
@@ -497,8 +537,8 @@ export const sendSonData = async (da: any) => {
     data.close1 = true;
     data.videobg = '#191A21';
 
-    //触发连锁反应事件，因为这个函数最先之行
-    await getmessage();
+    // //触发连锁反应事件，因为这个函数最先之行
+    // await getmessage();
     //启动签到程序
     await getsigndata();
 
@@ -656,7 +696,7 @@ export const addtimeBack = async () => {
     }
 
 
-    const cab1 = await Rget('/skyuser', { eid: realEid });
+    const cab1 = await Rget('/skyuser', { eid: realEid, limit: 1 });
     const search1 = await Rget('/zhibolist_longtimeback', { eid: realEid, zhiboid: data.nowvideoid, limit: '1' })
     let sesstime: any = moment().format('x');
     let terminalType = 0
@@ -740,16 +780,20 @@ export const gettimeBack = async () => {
     }
 
 
-    const search1 = await Rget('/zhibolist_longtime', { eid: realEid, zhiboid: data.nowvideoid, limit: '1' })
-    if (search1?.data?.data[0]?.durationTime) {
-        data.looktime = search1.data.data[0].durationTime
+    const search1 = await Rget('/get/durationtime', { eid: realEid, zhiboid: data.nowvideoid })
+
+    if (search1?.data?.data) {
+        data.looktime = search1?.data?.data
     } else {
         data.looktime = 0
     }
 
 }
-
+//Backup database
+import { v4 as uuidv4 } from 'uuid';
 export const addtime = async () => {
+
+
     //1去授权eid，和user
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
@@ -761,92 +805,104 @@ export const addtime = async () => {
     }
 
     //2去验证直播有没有结束，如果结束了，就不在添加时间了
-    //2.1去拉取直播状态
-    const cab0 = await Rget('/zhibolist', { _id: data.nowvideoid, limit: '1', back: 'status' })
-    if (cab0?.data?.data[0]?.status == '直播结束') {
+    if (data.livestatus == "直播结束") {
         return
     }
 
-
-    const cab1 = await Rget('/skyuser', { eid: realEid });
-    const search1 = await Rget('/zhibolist_longtime', { eid: realEid, zhiboid: data.nowvideoid, limit: '1' })
-    let sesstime: any = moment().format('x');
+  
+  
+    const cab1 = await Rget('/skyuser', { eid: realEid, limit: 1 });
     let terminalType = 0
     if (live.mobile) {
         terminalType = 1
     }
+    let data4 = {
+        zhiboid: data.nowvideoid,
+        eid: realEid,
+        
+      
+        
 
-    //空代表第一次更新
-    if (!search1?.data?.data[0]?.updateTime) {
-        //把当前时间迹点添加进去
-        let data4 = {
-            zhiboid: data.nowvideoid,
-            eid: realEid,
-            fullName: realName,
-            name: cab1?.data?.data[0]?.login_id,
-            organizationId: cab1?.data?.data[0]?.branch,
-            departmentId: cab1?.data?.data[0]?.departmentchild,
-            durationTime: '0',
-            entryTime: sesstime,
-            levelTime: '',
-            terminalType: terminalType,
-            time: '1',
-            updateTime: sesstime,
-            visitIp: localStorage.outIp
-        };
-        await Rpost('/zhibolist_longtime', data4);
+        // eid: uuidv4().replaceAll('-', ''),
+        fullName: realName,
+        name: cab1?.data?.data[0]?.login_id,
+        organizationId: cab1?.data?.data[0]?.branch,
+        departmentId: cab1?.data?.data[0]?.departmentchild,
+        terminalType: terminalType,
+    };
 
-    } else {
-
-        //如果已经关闭网页长时间离开检测
-        // console.log(sesstime);
-        // console.log(search1.data.data[0].updateTime);
-        // console.log((sesstime - search1.data.data[0].updateTime) / 1000)
-        // if ((sesstime - search1.data.data[0].updateTime) / 1000 > 60) {
-        //     console.log('修正模式');
-
-        //     let data5 = {
-        //         updateTime: sesstime,
-        //         visitIp: localStorage.outIp
-        //     };
-        //     const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
-        //     if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
-        // } else {
-        //  let time = Math.abs(Number(search1.data.data[0].durationTime) + Math.round((sesstime - search1.data.data[0].updateTime) / 1000))
-        let time = Math.abs(Math.round((search1.data.data[0].updateTime - search1.data.data[0].entryTime) / 1000))
-        // console.log(search1?.data?.data[0]?._id)
-        console.log("search1.data.data[0].updateTime" + search1.data.data[0].updateTime)
-        data.looktime = search1.data.data[0].durationTime
-        let data5 = {
-            zhiboid: data.nowvideoid,
-            eid: realEid,
-            fullName: realName,
-            name: cab1?.data?.data[0]?.login_id,
-            organizationId: cab1?.data?.data[0]?.branch,
-            departmentId: cab1?.data?.data[0]?.departmentchild,
-            durationTime: time,
-            levelTime: search1.data.data[0].updateTime,
-            terminalType: terminalType,
-            time: '1',
-            updateTime: sesstime,
-            visitIp: localStorage.outIp
-        };
-        // console.log(search1.data.data[0].durationTime);
-        // console.log(Math.round((sesstime - search1.data.data[0].updateTime) / 1000));
-
-
-        const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
-        //    console.log(cab3);
-
-        if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
-        //}
-
-
-
+    const cab = await Rpost('/live/addtime', data4);
+    if (cab?.data?.data != "锁") {
+        data.looktime = cab?.data?.data
     }
 
-
 }
+
+
+
+// export const addtime2 = async () => {
+//     //1去授权eid，和user
+//     let realName = '', realEid = ''
+//     if (myGlobal.Eid) {
+//         realName = myGlobal.User
+//         realEid = myGlobal.Eid
+//     } else {
+//         realName = sessionStorage.user
+//         realEid = sessionStorage.eid
+//     }
+
+//     //2去验证直播有没有结束，如果结束了，就不在添加时间了
+//     if (data.livestatus == "直播结束") {
+//         return
+//     }
+
+//     const cab1 = await Rget('/skyuser', { eid: realEid, limit: 1 });
+//     const search1 = await Rget('/zhibolist_longtime', { eid: realEid, zhiboid: data.nowvideoid, limit: '1' })
+//     let sesstime: any = moment().format('x');
+//     let terminalType = 0
+//     if (live.mobile) {
+//         terminalType = 1
+//     }
+
+//     if (!localStorage.time1) {
+
+//         localStorage.time1 = Number(moment().format('x'))
+//     }
+
+
+
+
+
+
+//     let data5 = {
+//         zhiboid: data.nowvideoid,
+//         eid: realEid,
+//         fullName: realName,
+//         name: cab1?.data?.data[0]?.login_id,
+//         organizationId: cab1?.data?.data[0]?.branch,
+//         departmentId: cab1?.data?.data[0]?.departmentchild,
+//         durationTime: Math.ceil(((Number(moment().format('x')) - Number(localStorage.time1)) / 1000) + Number(search1?.data?.data[0]?.durationTime)),
+//         levelTime: search1.data.data[0].updateTime,
+//         terminalType: terminalType,
+//         time: '1',
+//         updateTime: sesstime,
+//     };
+
+
+//     const cab3 = await Rput('/zhibolist_longtime', search1?.data?.data[0]?._id, data5);
+//     //定义每次进入的时间
+//     localStorage.time1 = Number(moment().format('x'))
+//     localStorage.durationTime = Number(search1?.data?.data[0]?.durationTime)
+
+
+
+//     if (!cab3?.data?.data) { message.info('时长计时失败,请刷新页面') }
+
+
+// }
+
+
+
 
 //收缩聊天框
 export const shrink = () => {

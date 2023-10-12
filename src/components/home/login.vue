@@ -12,40 +12,23 @@
         <!-- 用户部分 -->
         <div>
           <a-row style="margin-top: 20px">
-            <a-col
-              style="line-height: 33px"
-              :xs="6"
-              :md="{ span: 3, offset: 6 }"
-              >用户名：</a-col
-            >
+            <a-col style="line-height: 33px" :xs="6" :md="{ span: 3, offset: 6 }">用户名：</a-col>
             <a-col :xs="18" :md="10">
               <a-input v-model:value="skyuser" placeholder="请输入内容" />
             </a-col>
           </a-row>
           <a-row style="margin-top: 20px">
-            <a-col
-              style="line-height: 33px"
-              :xs="6"
-              :md="{ span: 3, offset: 6 }"
-              >密&nbsp;&nbsp;&nbsp;&nbsp;码：</a-col
-            >
+            <a-col style="line-height: 33px" :xs="6" :md="{ span: 3, offset: 6 }">密&nbsp;&nbsp;&nbsp;&nbsp;码：</a-col>
             <a-col :xs="18" :md="10">
-              <a-input-password
-                v-model:value="skypwd"
-                placeholder="请输入内容"
-              />
+              <a-input-password v-model:value="skypwd" placeholder="请输入内容" />
             </a-col>
           </a-row>
           <a-row style="margin-top: 20px">
             <a-col :md="{ offset: 6 }">
               <a-switch v-model:checked="checked1" />
             </a-col>
-            <a-col style="color: #409eff; line-height: 25px; margin-left: 5px"
-              >自动登陆</a-col
-            >
-            <a-col :xs="24" style="color: #e08922; font-weight: bold"
-              >微信用户 设置->通用->横屏开启</a-col
-            >
+            <a-col style="color: #409eff; line-height: 25px; margin-left: 5px">自动登陆</a-col>
+            <a-col :xs="24" style="color: #e08922; font-weight: bold">微信用户 设置->通用->横屏开启</a-col>
           </a-row>
 
           <a-row style="margin-top: 20px">
@@ -137,14 +120,14 @@
   </template> -->
 </template>
 <script lang="ts">
-import { TeamOutlined, UserOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
-import { Mpost } from '@config/http/index';
-import { useRouter } from 'vue-router';
-import { settime, isouttime, eid, user } from '@utils/time';
-import { defineComponent, reactive, toRefs, watch } from 'vue';
-import Cookies from 'js-cookie';
-import { myGlobal } from '@/store/app';
+import { TeamOutlined, UserOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
+import { Mpost } from "@config/http/index";
+import { useRouter } from "vue-router";
+import { settime, isouttime, eid, user } from "@utils/time";
+import { defineComponent, reactive, toRefs, watch } from "vue";
+import Cookies from "js-cookie";
+import { myGlobal } from "@/store/app";
 
 export default defineComponent({
   data() {
@@ -154,20 +137,20 @@ export default defineComponent({
   async setup() {
     const router = useRouter();
     let data = reactive({
-      value: '',
-      skyuser: '',
-      skypwd: '',
-      guestuser: '',
-      guestpwd: '',
-      activeKey: '1',
-      guestreguser: '',
-      guestregpwd: '',
-      guestregpwd2: '',
-      guestregemail: '',
+      value: "",
+      skyuser: "",
+      skypwd: "",
+      guestuser: "",
+      guestpwd: "",
+      activeKey: "1",
+      guestreguser: "",
+      guestregpwd: "",
+      guestregpwd2: "",
+      guestregemail: "",
       visible: false,
       checked1: false,
     });
-    if (localStorage.autologin == '1') {
+    if (localStorage.autologin == "1") {
       //如果登陆认证没有过期
       data.checked1 = true;
       setTimeout(async () => {
@@ -176,9 +159,9 @@ export default defineComponent({
           sessionStorage.eid = await eid();
           sessionStorage.user = await user();
 
-          message.success('欢迎回来👏 ' + (await user()));
+          message.success("欢迎回来👏 " + (await user()));
           setTimeout(() => {
-            router.push('center');
+            router.push("center");
           }, 1500);
           return;
         }
@@ -190,11 +173,11 @@ export default defineComponent({
       (a) => {
         console.log(a);
         if (a) {
-          localStorage.autologin = '1';
+          localStorage.autologin = "1";
         } else {
-          localStorage.autologin = '0';
+          localStorage.autologin = "0";
         }
-      },
+      }
     );
 
     //天健用户登陆
@@ -205,33 +188,35 @@ export default defineComponent({
       };
 
       //这里是一个仿生账号
-      if (data.skyuser == 'test2' && data.skypwd == '000000') {
-        sessionStorage.eid = '100698';
-        sessionStorage.user = '叶怀敏';
-        myGlobal.User = '叶怀敏';
-        myGlobal.Eid = '100698';
-        message.success('欢迎登陆👏 ' + sessionStorage.user);
+      if (data.skyuser == "test2" && data.skypwd == "000000") {
+        sessionStorage.eid = "123225";
+        sessionStorage.user = "王凌煜";
+        myGlobal.User = "王凌煜";
+        myGlobal.Eid = "123225";
+        message.success("欢迎登陆👏 " + sessionStorage.user);
         // Cookies.set('eid', '100698');
         // Cookies.set('user', '叶怀敏');
-        router.push('center');
+        router.push("center");
         return;
       }
 
       //模拟管理员账号
-      if (data.skyuser == 'test' && data.skypwd == '000000') {
-        sessionStorage.eid = '115097';
-        sessionStorage.user = '熊忠波';
-        myGlobal.User = '熊忠波';
-        myGlobal.Eid = '115097';
-        message.success('欢迎登陆👏 ' + sessionStorage.user);
+      if (data.skyuser == "test" && data.skypwd == "000000") {
+        sessionStorage.eid = "115097";
+        sessionStorage.user = "熊忠波";
+        myGlobal.User = "熊忠波";
+        myGlobal.Eid = "115097";
+        message.success("欢迎登陆👏 " + sessionStorage.user);
         // Cookies.set('eid', '115097');
         // Cookies.set('user', '熊忠波');
 
-        router.push('center');
+        router.push("center");
         return;
       }
 
-      let url = '/live/login';
+      //1.先去登陆
+
+      let url = "/live/login";
       let cab = await Mpost(url, mydata);
 
       if (cab?.data?.data) {
@@ -240,7 +225,7 @@ export default defineComponent({
         sessionStorage.eid = String(cab.data.data.eid);
         myGlobal.Eid = String(cab.data.data.eid);
         // Cookies.set('eid', String(cab.data.data.eid));
-        let url = '/live/eid';
+        let url = "/live/eid";
         let mydata: any = {
           eid: sessionStorage.eid,
         };
@@ -251,10 +236,10 @@ export default defineComponent({
         sessionStorage.user = cab2.data.data.name;
         myGlobal.User = cab2.data.data.name;
         // Cookies.set('user', cab2.data.data.name);
-        message.success('欢迎登陆👏 ' + sessionStorage.user);
-        router.push('center');
+        message.success("欢迎登陆👏 " + sessionStorage.user);
+        router.push("center");
       } else {
-        message.error('账号密码错误');
+        message.error("账号密码错误");
       }
     };
 

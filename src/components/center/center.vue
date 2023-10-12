@@ -1,5 +1,30 @@
 <template>
   <div id="box" :style="{ overflowY: isactive ? 'scroll' : 'hidden' }">
+    <div
+      v-show="livestatusshow"
+      style="
+        position: fixed;
+        z-index: 10;
+        width: 500px;
+        height: 250px;
+        margin: auto;
+        left: 30%;
+        top: 25%;
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        text-align: center;
+      "
+    >
+      <p style="margin-top: 20px; margin-left: 10px">直播已经结束啦~</p>
+      <p>请退出本场，加入新的直播间，本场直播间，只累计本场时长成绩哦~</p>
+      <a-button
+        type="primary"
+        href="https://edu.pccpa.cn/"
+        style="padding: 5px; height: 35px; margin-top: 40px"
+        >回到首页
+      </a-button>
+    </div>
     <!-- <div v-if="nowvideoid && !mobile" @dblclick="fullshow()" class="mask"></div> -->
 
     <div v-if="!nowvideoid" class="a1" style="margin-left: 45px">
@@ -10,31 +35,57 @@
     </div>
 
     <div v-if="admin && nowvideoid" class="a1 a11" style="color: #fff">
-      <QuestionCircleOutlined class="touch2" @click="askshowclick()" :style="{ fontSize: '15px' }" />
+      <QuestionCircleOutlined
+        class="touch2"
+        @click="askshowclick()"
+        :style="{ fontSize: '15px' }"
+      />
     </div>
 
-    <div v-show="nowvideoid" class="a1" :style="{
-      marginLeft: watermark + 'px',
-      color: '#fff',
-      border: '1px solid #4596F2',
-      opacity: '0.6',
-    }">
+    <div
+      v-show="nowvideoid"
+      class="a1"
+      :style="{
+        marginLeft: watermark + 'px',
+        color: '#fff',
+        border: '1px solid #4596F2',
+        opacity: '0.6',
+      }"
+    >
       <div v-if="Eid">{{ Eid }}&nbsp;{{ User }}</div>
       <div v-else>{{ eid }}&nbsp;{{ user }}</div>
     </div>
 
     <div class="a1" v-if="nowvideoid && admin" style="margin-left: 213px">
-      <a-popconfirm title="是否开启直播" ok-text="确认" cancel-text="取消" @confirm="confirm2" @cancel="cancel2">
+      <a-popconfirm
+        title="是否开启直播"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="confirm2"
+        @cancel="cancel2"
+      >
         <a href="#">
-          <play-circle-filled class="touch2" :style="{ fontSize: '15px', color: liveStatusColor }" />
+          <play-circle-filled
+            class="touch2"
+            :style="{ fontSize: '15px', color: liveStatusColor }"
+          />
         </a>
       </a-popconfirm>
     </div>
 
     <div class="a1" v-if="nowvideoid && admin" style="margin-left: 246px">
-      <a-popconfirm title="是否关闭直播" ok-text="确认" cancel-text="取消" @confirm="confirm" @cancel="cancel">
+      <a-popconfirm
+        title="是否关闭直播"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="confirm"
+        @cancel="cancel"
+      >
         <a href="#">
-          <poweroff-outlined class="touch2" :style="{ fontSize: '15px', color: videoOffColor }" />
+          <poweroff-outlined
+            class="touch2"
+            :style="{ fontSize: '15px', color: videoOffColor }"
+          />
         </a>
       </a-popconfirm>
     </div>
@@ -51,40 +102,70 @@
     <div>
       <ask v-show="askshow" />
     </div>
-
-    <a-modal :footer="null" v-model:visible="visibleCenter" title="设置" :width="width" @ok="handleOk">
+    <a-modal
+      :footer="null"
+      v-model:visible="visibleCenter"
+      title="设置"
+      :width="width"
+      @ok="handleOk"
+    >
       <myset />
     </a-modal>
 
-    <div :style="{
-      position: 'relative',
-      height: 'calc(100vh)',
-    
-      background: videobg,
-    }">
-      <div class="c5" v-if="videoplay" style="width: 100%; position: relative;">
-        <iframe sandbox="allow-same-origin allow-scripts" name="iframe_a" :src="url" :width="ifrawidth" height="100%"
-          frameborder="0" id="childFrame" scrolling="no" allowfullscreen="allowfullscreen"
-          mozallowfullscreen="mozallowfullscreen" msallowfullscreen="msallowfullscreen"
-          oallowfullscreen="oallowfullscreen" webkitallowfullscreen="webkitallowfullscreen"></iframe>
-        <div @click="shrink()" class="touch" :style="{
-          position: 'fixed',
-          top: '120px',
-          right: '-10px',
-          width: '30px',
-          height: '30px',
-          zIndex: '999',
-          marginLeft: '-10px',
-        }"></div>
-        <div v-if="!mobile" @click="shrinkLeftEvent()" class="touch" :style="{
-          position: 'fixed',
-          top: '120px',
-          right: '-10px',
-          width: '30px',
-          height: '30px',
-          zIndex: '999',
-          marginLeft: '-10px',
-        }">
+    <div class="a1">
+      <SettingFilled @click="showModal" class="touch2" :style="{ fontSize: '11px' }" />
+    </div>
+
+    <div
+      :style="{
+        position: 'relative',
+        height: 'calc(100vh)',
+        background: videobg,
+      }"
+    >
+      <div class="c5" v-if="videoplay" style="width: 100%; position: relative">
+        <iframe
+          sandbox="allow-same-origin allow-scripts"
+          name="iframe_a"
+          :src="url"
+          :width="ifrawidth"
+          height="100%"
+          frameborder="0"
+          id="childFrame"
+          scrolling="no"
+          allowfullscreen="allowfullscreen"
+          mozallowfullscreen="mozallowfullscreen"
+          msallowfullscreen="msallowfullscreen"
+          oallowfullscreen="oallowfullscreen"
+          webkitallowfullscreen="webkitallowfullscreen"
+        ></iframe>
+        <div
+          @click="shrink()"
+          class="touch"
+          :style="{
+            position: 'fixed',
+            top: '120px',
+            right: '-10px',
+            width: '30px',
+            height: '30px',
+            zIndex: '999',
+            marginLeft: '-10px',
+          }"
+        ></div>
+        <div
+          v-if="!mobile"
+          @click="shrinkLeftEvent()"
+          class="touch"
+          :style="{
+            position: 'fixed',
+            top: '120px',
+            right: '-10px',
+            width: '30px',
+            height: '30px',
+            zIndex: '999',
+            marginLeft: '-10px',
+          }"
+        >
           <img v-if="!fulloff" style="width: 20px" src="../../assets/left.png" />
         </div>
 
@@ -103,10 +184,20 @@
               <a-row>
                 <a-col :span="12">剩余时间{{ signshowtime }}秒</a-col>
                 <a-col :span="8" :offset="4" style="padding: 0 10px">
-                  <a-button @click="signtimeclick()" v-show="!userOffSignTable" type="primary" style="width: 100%">
+                  <a-button
+                    @click="signtimeclick()"
+                    v-show="!userOffSignTable"
+                    type="primary"
+                    style="width: 100%"
+                  >
                     签 到
                   </a-button>
-                  <a-button @click="userCloseSign()" v-show="userOffSignTable" type="primary" style="width: 100%">
+                  <a-button
+                    @click="userCloseSign()"
+                    v-show="userOffSignTable"
+                    type="primary"
+                    style="width: 100%"
+                  >
                     关 闭
                   </a-button>
                 </a-col>
@@ -115,7 +206,9 @@
           </a-card>
         </div>
 
-        <div v-if="shrinkOff && !mobile" style="
+        <div
+          v-if="shrinkOff && !mobile"
+          style="
             position: relative;
             position: fixed;
             right: 3px;
@@ -123,102 +216,150 @@
             height: 99%;
             width: 13.5%;
             border-radius: 8px;
-            background: #4D5256;
+            background: #4d5256;
             padding-right: 10px;
-          ">
+          "
+        >
           <div style="height: 38px; margin-top: 7px; position: relative">
-            <div class="a1">
-              <SettingFilled @click="showModal" class="touch2" :style="{ fontSize: '11px' }" />
-            </div>
-            <div v-show="nowvideoid" class="a1" style="
+            <div
+              v-show="nowvideoid"
+              class="a1"
+              style="
                 margin-left: 27px;
-                color:#BBBEA7;
+                color: #bbbea7;
                 font-weight: 400;
                 font-size: 12px;
-                border: 0.01rem solid #BBBEA7;
+                border: 0.01rem solid #bbbea7;
                 padding: 0px 3px 0px 3px;
                 line-height: 21.5px;
-              ">
+              "
+            >
               <team-outlined />
-              <span style="font-size: 13px">
-                在线{{ parseInt(people) }}人</span>
-
+              <span style="font-size: 13px"> 在线人数{{ parseInt(people) }}</span>
+              <span v-show="looktime" style="margin-left: 2px"> 已打卡 </span>
+              <span v-show="!looktime"> 未打卡 </span>
             </div>
-            <div @click="fullshow()" v-if="nowvideoid" class="imghover touch" :style="{
-              position: 'absolute',
-              top: '7px',
-              borderRadius: '3px',
-              padding: '0px 3px',
-              zIndex: '12',
-              right: '3px',
-            }">
+
+            <div
+              @click="fullshow()"
+              v-if="nowvideoid"
+              class="imghover touch"
+              :style="{
+                position: 'absolute',
+                top: '7px',
+                borderRadius: '3px',
+                padding: '0px 3px',
+                zIndex: '12',
+                right: '3px',
+              }"
+            >
               <FullscreenOutlined class="touch2" :style="{ fontSize: '14px' }" />
             </div>
           </div>
 
-
-          <div style=" background: red;
-              position: absolute;
-              top: 0px;
-              z-index: 100;
-              width: 100%;
-            "></div>
           <div
-            style="color:#fff;border: 1px solid #949CA2;width: 95%;margin: auto;border-radius: 4px;height: 60px;font-size: 13px;text-indent: 2px;overflow-y: scroll;">
+            style="
+              color: #fff;
+              border: 1px solid #949ca2;
+              width: 100%;
+              margin: auto;
+              border-radius: 4px;
+              height: 60px;
+              font-size: 13px;
+              text-indent: 2px;
+              overflow-y: scroll;
+              margin-left: 10px;
+            "
+          >
             {{ adminSay }}
           </div>
-          <div v-if="nowvideoid" id="sc" :class="chatmclass ? 'c1m' : 'c1'" :style="{
-            height: 80 + '%',
-            overflowY: isactive ? 'scroll' : 'hidden',
-            marginLeft: '10px',
-            marginTop: '0px',
-            position: 'relative',
-          }" ref="containerRef">
+          <div
+            v-if="nowvideoid"
+            id="sc"
+            :class="chatmclass ? 'c1m' : 'c1'"
+            :style="{
+              height: 77 + '%',
+              overflowY: 'scroll',
+              marginLeft: '10px',
+              marginTop: '0px',
+              position: 'relative',
+            }"
+            ref="containerRef"
+          >
             <div class="touch">
               <div v-for="(i, key) in arr1" :key="key" style="margin-bottom: 0px">
-                <div class="line2 css2" style="line-height: 18px;font-size:12px;">
+                <div class="line3 css2" style="line-height: 18px; font-size: 12px">
                   <span style="color: #fff"></span>
-                  {{ i.user }}说:
-                  <span style="color:#F1F3E9"> {{ i.message }}</span>
+                  {{ i.branch }} {{ i.user }}:
+                  <span style="color: #f1f3e9"> {{ i.message }}</span>
                 </div>
               </div>
             </div>
           </div>
-          <div style="position:relative;position:fixed;bottom: 60px;width: 200px;font-family: 宋体;">
-            <div v-if="looktime / 60 < 300"
-              style="color:#f3f3f4;font-size: 12px;padding-left:10px;position:relative;position:absolute">
-              累计有效观看时长{{ Math.floor(looktime / 60) }}分钟
+          <div
+            style="
+              position: relative;
+              position: fixed;
+              bottom: 60px;
+              width: 200px;
+              font-family: 宋体;
+            "
+          >
+            <div
+              style="
+                color: #f3f3f4;
+                font-size: 12px;
+                padding-left: 10px;
+                position: relative;
+                position: absolute;
+              "
+            >
+              <span v-show="looktime && looktime != '第一次添加时间'"
+                >累计观看时长{{ Math.floor(looktime / 60) }}分钟{{
+                  Math.floor(looktime % 60)
+                }}秒</span
+              >
+              <span v-show="!looktime">累计观看时长0秒</span>
               <a-popover placement="leftTop">
                 <template #content>
-                  <div style="font-size:12px;color: #848382;">
-                    <p>(1)第一次进入，时间增加需要1-2分钟缓冲同步，不影响实际计时</p>
+                  <div style="font-size: 12px; color: #848382">
+                    <p>(1)时间20秒记录一次，如时间不增加请联系工作人员</p>
                     <p>(2)如需技术支援，请联系运营维护部，或者开发作者熊忠波</p>
                     <p>(3)联系方式，企业微信</p>
                   </div>
                 </template>
                 <template #title>
-                  <span style="font-size:12px;color: #848382;">提示</span>
+                  <span style="font-size: 12px; color: #848382">提示</span>
                 </template>
-                <span style="position:relative;">
-                  <question-circle-outlined class="touch"
-                    style="font-weight: bold;font-size:15px;margin-left:2px;color:#FF9800;position:absolute;top:-1px;" />
+                <span style="position: relative">
+                  <question-circle-outlined
+                    class="touch"
+                    style="
+                      font-weight: bold;
+                      font-size: 15px;
+                      margin-left: 2px;
+                      color: #ff9800;
+                      position: absolute;
+                      top: -1px;
+                    "
+                  />
                 </span>
               </a-popover>
-              <div>
-              </div>
+              <div></div>
             </div>
-            <div v-else style="color:#D0D2BF;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;">
+            <!-- <div v-else style="color:#D0D2BF;font-size: 12px;padding-left:10px;position:relative;font-weight: bold;">
               恭喜，该课程您已获得足够时长
-            </div>
+            </div> -->
           </div>
-          <div style="
-              bottom: 1%;
-              position: fixed;
-              right: 0;
-              width: 14%;
-              padding: 5px;
-            " class="touch">
-            <a-input v-model:value="value" placeholder="说点什么吧..." size="small" style="
+          <div
+            style="bottom: 1%; position: fixed; right: 0; width: 14%; padding: 5px"
+            class="touch"
+          >
+            <a-input
+              v-model:value="value"
+              placeholder="说点什么吧..."
+              size="small"
+              style="
                 border-radius: 5px 0 0 5px;
                 opacity: 0.9;
                 font-size: 0.9rem;
@@ -232,13 +373,16 @@
                 padding: 2px;
                 text-indent: 5px;
                 font-size: 11px;
-                background: #5F6469;
-                border: 1px solid #5F6469;
+                background: #5f6469;
+                border: 1px solid #5f6469;
                 color: #fff;
-              " />
-            <div @click="onSearch(value)" style="
+              "
+            />
+            <div
+              @click="onSearch(value)"
+              style="
                 display: block;
-                background-color:#5F6469;
+                background-color: #5f6469;
                 border-radius: 0 5px 5px 0;
                 height: 25px;
                 width: 40px;
@@ -250,7 +394,8 @@
                 float: left;
                 margin-left: 11px;
                 font-family: 宋体;
-              ">
+              "
+            >
               发送
             </div>
           </div>
@@ -261,7 +406,24 @@
         <!-- 进入直播间页面 -->
         <a-col :md="24">
           <div v-if="zhibolistshow">
-            <Zhibolist :arr="showzhibolist" @sendF="sendSonData" />
+            <div
+              v-show="bitime > 0"
+              style="
+                text-align: center;
+                background: #638866;
+                padding: 40px;
+                color: #fff;
+                font-size: 30px;
+                width: 80%;
+                margin: auto;
+                margin-top: 100px;
+              "
+            >
+              年会还没开始--倒计时{{ Math.floor(bitime / 60) }}分钟{{ bitime % 60 }}秒
+            </div>
+            <div v-show="bitime < 0">
+              <Zhibolist :arr="showzhibolist" @sendF="sendSonData" />
+            </div>
           </div>
         </a-col>
       </a-row>
@@ -352,7 +514,6 @@ import { useRouter, useRoute } from "vue-router";
 
 import axios from "axios";
 import {
-  getmessage,
   getsigndata,
   onSearch,
   useAccesstokenGetEid,
@@ -372,8 +533,7 @@ import {
   shrink,
   shrinkLeftEvent,
   initialize,
-  gettimeBack
-
+  gettimeBack,
 } from "./event/center/before";
 import { message } from "ant-design-vue";
 import screenfull from "screenfull";
@@ -390,6 +550,16 @@ export default defineComponent({
 
   async setup(myself) {
     //初始化事件**************************************************************************//
+
+    //相对时间
+    const timebi2 = () => {
+      let pretime = moment().format("YYYY-MM-DD HH:mm:ss");
+      let pretime_moment = moment(pretime, "YYYY-MM-DD HH:mm:ss");
+      // let dftime = pretime_moment.diff('2022-12-30 15:42:00', 'seconds');
+      let dftime = pretime_moment.diff("2023-01-02 13:25:00", "seconds");
+      data.bitime = -dftime;
+    };
+    const timebi = setInterval(timebi2, 1000);
 
     //观察屏幕放大缩小同步
     window.onresize = () => {
@@ -443,12 +613,23 @@ export default defineComponent({
     //优先级2获取分组
     await initialize();
 
+    ///Observe whether the live broadcast status is closed by the administrator
+    watch(
+      () => data.livestatus,
+      (newVal, oldVal) => {
+        if (newVal == "直播结束") {
+          data.livestatusshow = true;
+        }
+      }
+    );
 
-
+    const handleOk2 = (e: MouseEvent) => {
+      console.log(e);
+    };
 
     // //收缩一次聊天框
     //手机端视频100%
-    gettimeBack()
+    gettimeBack();
     //
     //展开一次
     shrinkLeftEvent();
@@ -463,23 +644,9 @@ export default defineComponent({
       }
     };
 
-
-    //拉取聊天记录
-    await getmessage();
-
-    //4拉取聊天消息
-    watch(
-      () => wsdata.messagestatus,
-      async () => {
-        await getmessage();
-      }
-    );
-
     //5.签到逻辑
     let timec: NodeJS.Timeout | any = null;
     clearInterval(timec);
-
-
 
     //1是否管理员用户
     await adminUser();
@@ -538,8 +705,7 @@ export default defineComponent({
         //上一个打卡时间范围内,见到用户过了很久才签到的那个时间
         if (
           dftime <
-          Number(data.signContinueTime) -
-          Number(localStorage.getItem("passedtime"))
+          Number(data.signContinueTime) - Number(localStorage.getItem("passedtime"))
         ) {
           //说明打卡过上个锁
           localStorage.setItem("lock", "on");
@@ -574,6 +740,9 @@ export default defineComponent({
       }
     );
 
+    //清空一次
+    localStorage.clear();
+
     //点击签到事件
     await signtimeclick();
 
@@ -586,7 +755,7 @@ export default defineComponent({
     //6通过观察 data.nowvideoid ，来判断和增加累计时长
     //6.1先去查询看数据库有没有已经添加的信息
 
-    let time60: NodeJS.Timeout;
+    let time60: NodeJS.Timeout, time61: NodeJS.Timeout;
     watch(
       () => data.nowvideoid,
       async (a: string) => {
@@ -594,8 +763,10 @@ export default defineComponent({
           console.log("进入直播间-nowvideoid change");
           // //优先级3 插入一次计时
           await addtime();
+          // await addtime2()
 
           clearInterval(time60);
+          // clearInterval(time61);
           //Execution time increaser
           if (data.nowvideoid) {
             // initialization video status colors
@@ -603,12 +774,15 @@ export default defineComponent({
             data.isactive = false;
 
             //Create a random number between 10-99
-            await gettimeBack()
-            //创造一个0-40的随机数
-            let random = Math.floor(Math.random() * 40) + 20;
-            console.log("时间频率", random);
-            // let randomNum = Math.floor(Math.random() * 90 + 10)+20;
+            await gettimeBack();
+            //V1备份服务器创造一个10-17的随机数
+            let random = Math.floor(Math.random() * 7) + 10;
+            console.log(`你的时钟频率是${random}秒`);
             time60 = setInterval(addtime, random * 1000);
+
+            // //V2时间同步到sql 5分钟同步一次
+            // time61 = setInterval(addtime2, 5 * 60 * 1000);
+            // time61 = setInterval(addtime2, 5 * 1000);
           }
 
           //点击进入到直播页面后，把滚动条初始化到0，不然会继承列表的滚动条
@@ -704,7 +878,7 @@ export default defineComponent({
       askshowclick,
       fullshow,
       shrink,
-
+      handleOk2,
       shrinkLeftEvent,
       ...toRefs(data),
     };
@@ -735,6 +909,22 @@ export default defineComponent({
 
 <style scoped>
 @import "./css/center.css";
-/*引入公共样式*/
-</style>
 
+/*引入公共样式*/
+.a2 {
+  margin-left: 5px;
+  font-size: 10px;
+  text-align: center;
+  color: #888;
+  font-weight: 500;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.a3 {
+  margin-bottom: 2px;
+  margin-left: 4px;
+}
+</style>

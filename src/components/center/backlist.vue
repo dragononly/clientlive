@@ -15,8 +15,7 @@
         <a-row style="margin-top: 65px">
           <a-col :span="4" v-for="i in zhiboDetails" :key="1">
             <div style="margin-right: 20px">
-              <a-card hoverable style="width: 100%; border: 1px solid #fff; margin-bottom: 15px"
-                @click="LookBackUrl(i._id)">
+              <a-card hoverable style="width: 100%; border: 1px solid #fff; margin-bottom: 15px" @click="LookBackUrl(i._id)">
                 <template #cover>
                   <img alt="example" src="http://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
                 </template>
@@ -36,14 +35,14 @@
   </div>
 </template>
 <script lang="ts">
-import myset from './myset.vue';
-import { Rget } from '@/config/http';
-import { baseURL } from '@/config/http/env';
-import { SettingFilled } from '@ant-design/icons-vue';
-import { defineComponent, reactive, toRefs } from 'vue';
-import axios from 'axios';
-import md5 from 'js-md5';
-import { data } from './store/live';
+import myset from "./myset.vue";
+import { Rget } from "@/config/http";
+import { baseURL } from "@/config/http/env";
+import { SettingFilled } from "@ant-design/icons-vue";
+import { defineComponent, reactive, toRefs } from "vue";
+import axios from "axios";
+import md5 from "js-md5";
+import { data } from "./store/live";
 export default defineComponent({
   data() {
     return {
@@ -55,12 +54,12 @@ export default defineComponent({
     const backlistData = reactive({
       zhiboDetails,
     });
-    const zhibolisCab = await Rget('/zhibolist', {
-      back: 'name,starttime,backurl',
+    const zhibolisCab = await Rget("/zhibolist", {
+      back: "name,starttime,backurl",
     });
 
     for (const i of zhibolisCab?.data?.data) {
-      if (i.backurl != '等待回传') {
+      if (i.backurl != "等待回传") {
         backlistData.zhiboDetails.push(i);
         backlistData.zhiboDetails.reverse();
       }
@@ -68,12 +67,12 @@ export default defineComponent({
 
     const LookBackUrl = async (id: string) => {
       axios
-        .get(baseURL + '/zxylive/backwatch', {
+        .get(baseURL + "/zxylive/backwatch", {
           params: {
             eid: sessionStorage.eid,
             zhiboid: id,
-            sign: md5(md5(sessionStorage.eid + id + '1322154454')),
-            times: '1322154454',
+            sign: md5(md5(sessionStorage.eid + id + "1322154454")),
+            times: "1322154454",
           },
         })
         .then(function (res) {
@@ -97,7 +96,7 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-@import './css/center.css';
+@import "./css/center.css";
 
 /*引入公共样式*/
 #box {

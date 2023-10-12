@@ -31,6 +31,15 @@ body {
   -webkit-box-orient: vertical;
 }
 
+.line3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: box;
+  display: -webkit-box;
+  -webkit-line-clamp: 113;
+  -webkit-box-orient: vertical;
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)

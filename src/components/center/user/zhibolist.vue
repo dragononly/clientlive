@@ -1,11 +1,7 @@
 <template>
-  <div>
+  <div style="overflow-y: scroll; height: calc(100vh)">
     <div>
-      <img
-        v-if="show"
-        style="width: 100%; height: 100%"
-        src="../../../assets/no.jpg"
-      />
+      <img v-if="show" style="width: 100%; height: 100%" src="../../../assets/no.jpg" />
     </div>
     <div v-for="(item, index) in showarr" :key="index">
       <a-row
@@ -52,12 +48,7 @@
                 </div>
               </template>
               <div
-                style="
-                  background: #fff;
-                  border-radius: 5px;
-                  padding: 5px;
-                  height: 8rem;
-                "
+                style="background: #fff; border-radius: 5px; padding: 5px; height: 8rem"
               >
                 <div
                   class="a2"
@@ -71,22 +62,16 @@
                   {{ item.name }}
                 </div>
                 <div class="a2" style="font-size: 1.6rem; margin-top: 0.5rem">
-                  {{ item.starttime[0].split(' ')[0] }}
+                  {{ item.starttime[0].split(" ")[0] }}
                 </div>
               </div>
-              <a-button block style="text-align: left; border: none">
-              </a-button>
+              <a-button block style="text-align: left; border: none"> </a-button>
             </a-popover>
             <div
-              style="
-                padding-left: 5px;
-                margin-top: 10px;
-                color: #fff;
-                text-align: center;
-              "
+              style="padding-left: 5px; margin-top: 10px; color: #fff; text-align: center"
             >
               <span style="font-weight: 600; font-size: 1rem"
-                >开始时间:{{ item.starttime[0].split(' ')[1] }}
+                >开始时间:{{ item.starttime[0].split(" ")[1] }}
               </span>
 
               <TeamOutlined style="font-size: 1.2rem; margin-left: 3px" />
@@ -118,13 +103,13 @@ import {
   FormOutlined,
   CheckOutlined,
   CloseOutlined,
-} from '@ant-design/icons-vue';
-import { wsdata } from '@config/http/wsdata';
-import { toRefs, defineComponent } from 'vue';
-import { useStore } from 'vuex';
-import { zhibolist } from './store/zhibolist';
-import { data } from '../store/live';
-import img1 from '@/assets/1.jpg';
+} from "@ant-design/icons-vue";
+import { wsdata } from "@config/http/wsdata";
+import { toRefs, defineComponent } from "vue";
+import { useStore } from "vuex";
+import { zhibolist } from "./store/zhibolist";
+import { data } from "../store/live";
+import img1 from "@/assets/1.jpg";
 export default defineComponent({
   data() {
     return {
@@ -150,11 +135,11 @@ export default defineComponent({
 
     const sendF = (id) => {
       data.nowvideoid = id;
-      ctx.emit('sendF', id);
+      ctx.emit("sendF", id);
     };
 
     const tigerfun = () => {
-      zhibolist.tiger = '获得生肖祝福,幸运指数大幅度提升';
+      zhibolist.tiger = "获得生肖祝福,幸运指数大幅度提升";
     };
 
     return {

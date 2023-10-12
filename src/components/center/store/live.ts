@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { myGlobal } from "@/store/app";
 // console.log("device.mobile() === %s", device.mobile());
 let width: string = "50%", chatmclass = false, xiaoxiwidth = "70%", ifrawidth = "85%", signshowtime: any = 0,
-    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false, looktime: any = "0"
+    timeI: any, nowtime: any, lock2: any = "no", timeRecord: any, signed: any, passedtime: any, mobile: boolean = false, looktime: any = "0", looktime2: any = "0"
 let shrinkOff = true
 if (device.mobile()) {
     width = '100%'
@@ -21,9 +21,16 @@ export const live = reactive({
     mobile
 })
 export const data = reactive({
+    bitime: 0,
+    livestatus: "未开始",
+    livestatusshow: false,
+    type: "1",
+    message: "",
     adminSay: "管理员公告栏",
     looktime,
+    looktime2,
     branch: "",
+    hisbranch: "",
     watermark: 158,
     closeOff: '2%',
     shrinkOff,
@@ -69,7 +76,7 @@ export const data = reactive({
     signdata,
     cssheight: 90,
     cssheight2: 10,
-    isactive: true,
+    isactive: false,
     sayColor: ['#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81', '#fff', '#fff', '#f4cc81', '#f4cc81'],
     saybgcolor: ['#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2', '#4BA626', '#C8824A', '#7834d4', '#587ED2'],
     arr1: [

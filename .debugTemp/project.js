@@ -1,0 +1,1 @@
+var projInfo = {"name":"undefined","type":"undefined"}
