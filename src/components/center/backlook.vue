@@ -19,7 +19,7 @@
       <video v-if="theData.mobile" preload="auto" width="auto" height="auto"  controls controlsList="nodownload">
         <source :src="backlook.src" on type="video/mp4" />
       </video>
-       <vue3VideoPlay v-if="!theData.mobile" v-bind="backlook" /> 
+
     </div>
   </div>
 </template> 

@@ -19,7 +19,7 @@
       <!-- <video controls controlsList="nodownload" oncontextmenu="return(false);">
         <source :src="backUrl" type="video/mp4" />
       </video> -->
-      <vue3VideoPlay v-bind="backlook" />
+      <!-- <vue3VideoPlay v-bind="backlook" /> -->
     </div>
   </div>
 </template> 

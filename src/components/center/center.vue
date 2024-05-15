@@ -317,8 +317,9 @@
               <span v-show="looktime && looktime != '第一次添加时间'"
                 >累计观看时长{{ Math.floor(looktime / 60) }}分钟{{
                   Math.floor(looktime % 60)
-                }}秒</span
-              >
+                }}秒
+                {{looktime}}
+                </span>
               <span v-show="!looktime">累计观看时长0秒</span>
               <a-popover placement="leftTop">
                 <template #content>

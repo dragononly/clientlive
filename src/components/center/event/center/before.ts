@@ -781,7 +781,9 @@ export const gettimeBack = async () => {
 
 
     const search1 = await Rget('/get/durationtime', { eid: realEid, zhiboid: data.nowvideoid })
+    
 
+    
     if (search1?.data?.data) {
         data.looktime = search1?.data?.data
     } else {
@@ -792,8 +794,6 @@ export const gettimeBack = async () => {
 //Backup database
 import { v4 as uuidv4 } from 'uuid';
 export const addtime = async () => {
-
-
     //1去授权eid，和user
     let realName = '', realEid = ''
     if (myGlobal.Eid) {
@@ -819,10 +819,6 @@ export const addtime = async () => {
     let data4 = {
         zhiboid: data.nowvideoid,
         eid: realEid,
-        
-      
-        
-
         // eid: uuidv4().replaceAll('-', ''),
         fullName: realName,
         name: cab1?.data?.data[0]?.login_id,
@@ -832,6 +828,8 @@ export const addtime = async () => {
     };
 
     const cab = await Rpost('/live/addtime', data4);
+    
+    
     if (cab?.data?.data != "锁") {
         data.looktime = cab?.data?.data
     }
